@@ -1,23 +1,70 @@
-// JavaScript для аутентификации
+// Обработчик формы входа
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
 
-// Функция входа в систему
-// Запрос к API: POST /api/auth/login
-// Получение JWT токена, сохранение в localStorage
-// Редирект на страницу студента или преподавателя в зависимости от роли
+  if (loginForm) {
+    loginForm.addEventListener('submit', handleLogin);
+  }
 
-// Функция регистрации
-// Запрос к API: POST /api/auth/register
-// Валидация формы (email, пароль, подтверждение пароля)
+  if (registerForm) {
+    registerForm.addEventListener('submit', handleRegister);
+  }
+});
 
-// Функция выхода
-// Удаление токена из localStorage
-// Редирект на страницу входа
+// Обработка входа
+async function handleLogin(e) {
+  e.preventDefault();
 
-// Проверка авторизации
-// При загрузке страницы проверить наличие токена
-// Если токен есть и валиден - разрешить доступ
-// Если нет - редирект на login
+  const email = e.target.querySelector('input[name="email"]').value;
+  const password = e.target.querySelector('input[name="password"]').value;
 
-// Функция получения профиля пользователя
-// Запрос к API: GET /api/auth/me
-// Отображение имени, фото, роли
+  try {
+    const data = await API.auth.login(email, password);
+    saveAuth(data.token, data.user);
+
+    if (data.user.role === 'teacher') {
+      window.location.href = '/pages/teacher/dashboard.html';
+    } else {
+      window.location.href = '/pages/student/dashboard.html';
+    }
+  } catch (error) {
+    alert('Ошибка входа: ' + error.message);
+  }
+}
+
+// Обработка регистрации
+async function handleRegister(e) {
+  e.preventDefault();
+
+  const email = e.target.querySelector('input[name="email"]').value;
+  const password = e.target.querySelector('input[name="password"]').value;
+  const confirmPassword = e.target.querySelector('input[name="confirm-password"]').value;
+  const role = e.target.querySelector('select[name="role"]').value;
+  const firstName = e.target.querySelector('input[name="firstName"]').value;
+  const lastName = e.target.querySelector('input[name="lastName"]').value;
+
+  if (password !== confirmPassword) {
+    alert('Пароли не совпадают');
+    return;
+  }
+
+  try {
+    const data = await API.auth.register(email, password, role, firstName, lastName);
+    saveAuth(data.token, data.user);
+
+    if (data.user.role === 'teacher') {
+      window.location.href = '/pages/teacher/dashboard.html';
+    } else {
+      window.location.href = '/pages/student/dashboard.html';
+    }
+  } catch (error) {
+    alert('Ошибка регистрации: ' + error.message);
+  }
+}
+
+// Выход из системы
+function logout() {
+  clearAuth();
+  window.location.href = '/pages/common/login.html';
+}

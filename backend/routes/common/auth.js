@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../models');
+const { User, Student, Teacher, Admin } = require('../../models');
 const { authenticateToken } = require('../../middleware/auth');
 
-// Регистрация нового пользователя
+// Регистрация студента
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, role, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, organizationId } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -16,9 +16,13 @@ router.post('/register', async (req, res) => {
     const user = await User.create({
       email,
       password,
-      role,
       firstName,
       lastName
+    });
+
+    const student = await Student.create({
+      userId: user.id,
+      organizationId: organizationId || null
     });
 
     const token = user.generateToken();
@@ -27,9 +31,10 @@ router.post('/register', async (req, res) => {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        role: 'student',
+        studentId: student.id
       },
       token
     });
@@ -43,7 +48,15 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: [
+        { association: 'studentProfile' },
+        { association: 'teacherProfile' },
+        { association: 'adminProfile' }
+      ]
+    });
+
     if (!user) {
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
@@ -53,15 +66,36 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
 
+    let role = null;
+    let roleId = null;
+
+    if (user.email === process.env.SUPER_ADMIN_EMAIL) {
+      role = 'superadmin';
+    } else if (user.studentProfile) {
+      role = 'student';
+      roleId = user.studentProfile.id;
+    } else if (user.teacherProfile) {
+      role = 'teacher';
+      roleId = user.teacherProfile.id;
+    } else if (user.adminProfile) {
+      role = 'admin';
+      roleId = user.adminProfile.id;
+    }
+
+    if (!role) {
+      return res.status(403).json({ error: 'Роль пользователя не определена' });
+    }
+
     const token = user.generateToken();
 
     res.json({
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        role,
+        roleId
       },
       token
     });
@@ -74,41 +108,30 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ['password'] }
+      attributes: { exclude: ['password'] },
+      include: [
+        { association: 'studentProfile' },
+        { association: 'teacherProfile' },
+        { association: 'adminProfile' }
+      ]
     });
 
     if (!user) {
       return res.status(404).json({ error: 'Пользователь не найден' });
     }
 
-    res.json({ user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Обновить профиль
-router.put('/profile', authenticateToken, async (req, res) => {
-  try {
-    const { firstName, lastName, avatar } = req.body;
-
-    const user = await User.findByPk(req.user.id);
-    if (!user) {
-      return res.status(404).json({ error: 'Пользователь не найден' });
+    let role = null;
+    if (user.email === process.env.SUPER_ADMIN_EMAIL) {
+      role = 'superadmin';
+    } else if (user.studentProfile) {
+      role = 'student';
+    } else if (user.teacherProfile) {
+      role = 'teacher';
+    } else if (user.adminProfile) {
+      role = 'admin';
     }
 
-    await user.update({ firstName, lastName, avatar });
-
-    res.json({
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        avatar: user.avatar
-      }
-    });
+    res.json({ user: { ...user.toJSON(), role } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

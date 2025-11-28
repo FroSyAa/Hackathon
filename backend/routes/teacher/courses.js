@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { Course, Assignment } = require('../../models');
-const { authenticateToken, authorizeRole } = require('../../middleware/auth');
+const { authenticateToken, authorizeTeacher } = require('../../middleware/auth');
 
 // Создать курс
-router.post('/', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.post('/', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const { title, description } = req.body;
 
     const course = await Course.create({
       title,
       description,
-      teacherId: req.user.id
+      teacherId: req.teacher.id
     });
 
     res.status(201).json({ course });
@@ -21,10 +21,10 @@ router.post('/', authenticateToken, authorizeRole('teacher'), async (req, res) =
 });
 
 // Получить все курсы преподавателя
-router.get('/', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.get('/', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const courses = await Course.findAll({
-      where: { teacherId: req.user.id }
+      where: { teacherId: req.teacher.id }
     });
 
     res.json({ courses });
@@ -34,7 +34,7 @@ router.get('/', authenticateToken, authorizeRole('teacher'), async (req, res) =>
 });
 
 // Создать задание
-router.post('/:courseId/assignments', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.post('/:courseId/assignments', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const { courseId } = req.params;
     const { title, description, deadline, maxScore, attachments } = req.body;
@@ -44,7 +44,7 @@ router.post('/:courseId/assignments', authenticateToken, authorizeRole('teacher'
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.user.id) {
+    if (course.teacherId !== req.teacher.id) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 

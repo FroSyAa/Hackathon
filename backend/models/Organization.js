@@ -1,30 +1,22 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const Course = sequelize.define('Course', {
+const Organization = sequelize.define('Organization', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  title: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
   description: {
     type: DataTypes.TEXT,
     allowNull: true
-  },
-  teacherId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: 'Teachers',
-      key: 'id'
-    }
   }
 }, {
   timestamps: true
 });
 
-module.exports = Course;
+module.exports = Organization;
