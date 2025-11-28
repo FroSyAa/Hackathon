@@ -1,22 +1,117 @@
-// Маршруты для аутентификации и авторизации
-// Для всех пользователей системы
-
 const express = require('express');
 const router = express.Router();
+const { User } = require('../../models');
+const { authenticateToken } = require('../../middleware/auth');
 
-// POST /api/auth/register - регистрация нового пользователя
-// Email, пароль, роль (студент/преподаватель)
+// Регистрация нового пользователя
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password, role, firstName, lastName } = req.body;
 
-// POST /api/auth/login - вход в систему
-// Проверка учетных данных, выдача JWT токена
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email уже используется' });
+    }
 
-// POST /api/auth/logout - выход из системы
-// Инвалидация токена
+    const user = await User.create({
+      email,
+      password,
+      role,
+      firstName,
+      lastName
+    });
 
-// GET /api/auth/me - получить информацию о текущем пользователе
-// Профиль, роль, права доступа
+    const token = user.generateToken();
 
-// PUT /api/auth/profile - обновить профиль
-// Имя, фото, контактные данные
+    res.status(201).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
+      },
+      token
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Вход в систему
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: 'Неверный email или пароль' });
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Неверный email или пароль' });
+    }
+
+    const token = user.generateToken();
+
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
+      },
+      token
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получить профиль текущего пользователя
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Обновить профиль
+router.put('/profile', authenticateToken, async (req, res) => {
+  try {
+    const { firstName, lastName, avatar } = req.body;
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    await user.update({ firstName, lastName, avatar });
+
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

@@ -1,16 +1,31 @@
-// Middleware для проверки аутентификации
-// Проверка JWT токена, защита маршрутов
+const jwt = require('jsonwebtoken');
 
-// authenticateToken - проверить, что пользователь вошел в систему
-// Извлечение токена из заголовка, проверка подписи
+// Проверка JWT токена
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-// authorizeRole - проверить роль пользователя
-// Разрешить доступ только студентам или только преподавателям
+  if (!token) {
+    return res.status(401).json({ error: 'Токен не предоставлен' });
+  }
 
-// Пример использования:
-// router.get('/teacher/materials', authenticateToken, authorizeRole('teacher'), ...)
+  jwt.verify(token, process.env.JWT_SECRET || 'secret_key', (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Неверный токен' });
+    }
+    req.user = user;
+    next();
+  });
+}
 
-module.exports = {
-  // authenticateToken,
-  // authorizeRole
-};
+// Проверка роли пользователя
+function authorizeRole(role) {
+  return (req, res, next) => {
+    if (req.user.role !== role) {
+      return res.status(403).json({ error: 'Доступ запрещен' });
+    }
+    next();
+  };
+}
+
+module.exports = { authenticateToken, authorizeRole };

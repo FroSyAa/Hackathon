@@ -1,23 +1,30 @@
-// Модель курса
-// Описание структуры данных курса в БД
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-// Поля:
-// - id: уникальный идентификатор курса
-// - title: название курса
-// - description: описание курса
-// - teacherId: ID преподавателя-создателя
-// - students: массив ID студентов, записанных на курс
-// - materials: массив учебных материалов
-// - assignments: массив домашних заданий\курсачей\лаб
-// - createdAt: дата создания курса
-// - updatedAt: дата последнего обновления
+const Course = sequelize.define('Course', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  teacherId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  }
+}, {
+  timestamps: true
+});
 
-// Связи:
-// - belongsTo Teacher (преподаватель)
-// - hasMany Students (студенты)
-// - hasMany Materials (материалы)
-// - hasMany Assignments (задания)
-
-module.exports = {
-  // Course model будет описан здесь
-};
+module.exports = Course;
