@@ -19,10 +19,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  role: {
-    type: DataTypes.ENUM('student', 'teacher'),
-    allowNull: false
-  },
   firstName: {
     type: DataTypes.STRING,
     allowNull: false
@@ -38,7 +34,6 @@ const User = sequelize.define('User', {
 }, {
   timestamps: true,
   hooks: {
-    // Хеширование пароля перед сохранением
     beforeCreate: async (user) => {
       if (user.password) {
         user.password = await bcrypt.hash(user.password, 10);
@@ -60,7 +55,7 @@ User.prototype.comparePassword = async function(candidatePassword) {
 // Генерация JWT токена
 User.prototype.generateToken = function() {
   return jwt.sign(
-    { id: this.id, email: this.email, role: this.role },
+    { id: this.id, email: this.email },
     process.env.JWT_SECRET || 'secret_key',
     { expiresIn: process.env.JWT_EXPIRE || '7d' }
   );

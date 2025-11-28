@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Управление организациями</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/main_teacher.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="teacher-dashboard">
+    <header class="teacher-header">
+      <div class="header-left">
+        <h1><i class="fas fa-building"></i> Панель супер-администратора</h1>
+        <div class="breadcrumbs">
+          <a href="organizations.html"><i class="fas fa-home"></i> Организации</a>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <span id="admin-name">Супер-админ</span>
+          <button onclick="logout()" class="btn btn-outline btn-small">Выход</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="teacher-main">
+      <section class="courses-section">
+        <div class="section-header">
+          <h2>Учебные заведения</h2>
+          <button id="add-org-btn" class="btn btn-primary">+ Добавить организацию</button>
+        </div>
+
+        <div id="organizations-list" class="courses-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="add-org-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Добавить учебное заведение</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="add-org-form">
+        <div class="form-group">
+          <label for="org-name">Название</label>
+          <input type="text" id="org-name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="org-description">Описание</label>
+          <textarea id="org-description" name="description" rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Создать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="add-admin-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Добавить администратора ВУЗа</h2>
+        <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+      </div>
+      <form id="add-admin-form">
+        <input type="hidden" id="admin-org-id" name="orgId">
+        <div class="form-group">
+          <label for="admin-email">Email</label>
+          <input type="email" id="admin-email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Пароль</label>
+          <input type="text" id="admin-password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="admin-firstName">Имя</label>
+          <input type="text" id="admin-firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+          <label for="admin-lastName">Фамилия</label>
+          <input type="text" id="admin-lastName" name="lastName" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeAdminModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Создать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h2 {
+      margin: 0;
+      color: #004C97;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+    }
+    .modal-footer {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+    .org-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .org-card h3 {
+      color: #004C97;
+      margin-bottom: 0.5rem;
+    }
+    .org-card p {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+  </style>
+
+  <script src="../../js/common/api.js"></script>
+  <script src="../../js/superadmin/organizations.js"></script>
+</body>
+</html>

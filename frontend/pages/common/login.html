@@ -6,24 +6,47 @@
   <title>Вход в систему</title>
   <link rel="stylesheet" href="../../styles/main.css">
   <link rel="stylesheet" href="../../styles/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <!-- Страница входа в систему -->
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-header">
+        <i class="fas fa-graduation-cap"></i>
+        <h1>Образовательная платформа</h1>
+        <p>Войдите в систему для продолжения</p>
+      </div>
 
-  <div class="auth-container">
-    <h1>Образовательная платформа</h1>
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">
+            <i class="fas fa-envelope"></i>
+            Email
+          </label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
 
-    <!-- Форма входа -->
-    <form id="login-form">
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Пароль" required>
-      <button type="submit">Войти</button>
-    </form>
+        <div class="form-group">
+          <label for="password">
+            <i class="fas fa-lock"></i>
+            Пароль
+          </label>
+          <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+        </div>
 
-    <!-- Ссылка на регистрацию -->
-    <a href="register.html">Еще нет аккаунта? Зарегистрироваться</a>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-sign-in-alt"></i>
+          Войти
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Еще нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+      </div>
+    </div>
   </div>
 
+  <script src="../../js/common/api.js"></script>
   <script src="../../js/common/auth.js"></script>
 </body>
 </html>

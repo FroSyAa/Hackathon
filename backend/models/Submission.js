@@ -19,7 +19,7 @@ const Submission = sequelize.define('Submission', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: 'Students',
       key: 'id'
     }
   },

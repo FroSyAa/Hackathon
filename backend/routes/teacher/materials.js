@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { Material, Course } = require('../../models');
-const { authenticateToken, authorizeRole } = require('../../middleware/auth');
+const { authenticateToken, authorizeTeacher } = require('../../middleware/auth');
 
 const storage = multer.diskStorage({
   destination: './uploads/materials/',
@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 // Загрузка нового учебного материала
-router.post('/', authenticateToken, authorizeRole('teacher'), upload.single('file'), async (req, res) => {
+router.post('/', authenticateToken, authorizeTeacher, upload.single('file'), async (req, res) => {
   try {
     const { courseId, title, description, type } = req.body;
 
@@ -26,7 +26,7 @@ router.post('/', authenticateToken, authorizeRole('teacher'), upload.single('fil
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.user.id) {
+    if (course.teacherId !== req.teacher.id) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -46,7 +46,7 @@ router.post('/', authenticateToken, authorizeRole('teacher'), upload.single('fil
 });
 
 // Получить все материалы курса
-router.get('/:courseId', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.get('/:courseId', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const { courseId } = req.params;
 
@@ -55,7 +55,7 @@ router.get('/:courseId', authenticateToken, authorizeRole('teacher'), async (req
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.user.id) {
+    if (course.teacherId !== req.teacher.id) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -71,7 +71,7 @@ router.get('/:courseId', authenticateToken, authorizeRole('teacher'), async (req
 });
 
 // Редактировать материал
-router.put('/:id', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.put('/:id', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -84,7 +84,7 @@ router.put('/:id', authenticateToken, authorizeRole('teacher'), async (req, res)
       return res.status(404).json({ error: 'Материал не найден' });
     }
 
-    if (material.course.teacherId !== req.user.id) {
+    if (material.course.teacherId !== req.teacher.id) {
       return res.status(403).json({ error: 'Это не ваш материал' });
     }
 
@@ -97,7 +97,7 @@ router.put('/:id', authenticateToken, authorizeRole('teacher'), async (req, res)
 });
 
 // Удалить материал
-router.delete('/:id', authenticateToken, authorizeRole('teacher'), async (req, res) => {
+router.delete('/:id', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -109,7 +109,7 @@ router.delete('/:id', authenticateToken, authorizeRole('teacher'), async (req, r
       return res.status(404).json({ error: 'Материал не найден' });
     }
 
-    if (material.course.teacherId !== req.user.id) {
+    if (material.course.teacherId !== req.teacher.id) {
       return res.status(403).json({ error: 'Это не ваш материал' });
     }
 

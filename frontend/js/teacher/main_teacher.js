@@ -1,48 +1,25 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const periodBtns = document.querySelectorAll('.period-btn');
-    const currentPeriodSpan = document.getElementById('current-period');
-    
-    let currentPeriod = 'week';
-    
-    // Функция получения текущей даты для отображения периода
-    function getPeriodText(period) {
-        const now = new Date();
-        
-        switch(period) {
-            case 'week':
-                const startWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                return `последние 7 дней (${startWeek.toLocaleDateString('ru-RU')} - ${now.toLocaleDateString('ru-RU')})`;
-            case 'month':
-                return `за ${now.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}`;
-            case 'year':
-                return `за ${now.getFullYear()} год`;
-            default:
-                return 'последняя неделя';
-        }
+document.addEventListener('DOMContentLoaded', async function() {
+    checkAuth();
+    const user = getUser();
+
+    if (user.role !== 'teacher') {
+        window.location.href = '/pages/student/dashboard.html';
+        return;
     }
-    
-    // Обработчики кнопок переключения периода
+
+    document.querySelector('.user-info span').textContent = `${user.firstName} ${user.lastName}`;
+
+    await loadCourses();
+    await loadPendingSubmissions();
+
+    const periodBtns = document.querySelectorAll('.period-btn');
     periodBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Убираем активный класс со всех кнопок
             periodBtns.forEach(b => b.classList.remove('active'));
-            // Добавляем активный класс на текущую кнопку
             this.classList.add('active');
-            
-            const period = this.dataset.period;
-            
-            // Меняем только текст периода
-            currentPeriodSpan.textContent = getPeriodText(period);
-            currentPeriod = period;
         });
     });
-    
-    // Инициализация - показываем текущий период
-    if (currentPeriodSpan) {
-        currentPeriodSpan.textContent = getPeriodText(currentPeriod);
-    }
-    
-    // Добавляем эффект появления карточек (без изменения статистики)
+
     const statCards = document.querySelectorAll('.stat-card');
     setTimeout(() => {
         statCards.forEach((card, index) => {
@@ -51,3 +28,86 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 500);
 });
+
+// Загрузка курсов
+async function loadCourses() {
+    try {
+        const data = await API.teacher.getCourses();
+        const coursesGrid = document.querySelector('.courses-grid');
+
+        if (!data.courses || data.courses.length === 0) {
+            coursesGrid.innerHTML = '<p>Нет курсов. Создайте свой первый курс!</p>';
+            return;
+        }
+
+        coursesGrid.innerHTML = data.courses.map(course => `
+            <div class="course-card">
+                <div class="course-image">
+                    <img src="../../assets/course_placeholder.jpg" alt="${course.title}">
+                    <div class="course-progress">
+                        <span>0%</span>
+                    </div>
+                </div>
+                <div class="course-info">
+                    <h3>${course.title}</h3>
+                    <div class="course-meta">
+                        <span class="students"><i class="fas fa-users"></i> 0 студентов</span>
+                        <span class="tasks"><i class="fas fa-tasks"></i> 0 заданий</span>
+                    </div>
+                </div>
+                <div class="course-actions">
+                    <a href="course_detail.html?id=${course.id}" class="btn btn-primary btn-small">Перейти</a>
+                    <a href="#" class="btn btn-outline btn-small">Статистика</a>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Ошибка загрузки курсов:', error);
+    }
+}
+
+// Загрузка работ на проверке
+async function loadPendingSubmissions() {
+    try {
+        const data = await API.teacher.getPendingSubmissions();
+        const pendingList = document.querySelector('.pending-list');
+
+        if (!data.submissions || data.submissions.length === 0) {
+            pendingList.innerHTML = '<p>Нет работ на проверке</p>';
+            document.querySelector('.badge.urgent').textContent = '0';
+            return;
+        }
+
+        document.querySelector('.badge.urgent').textContent = data.submissions.length;
+
+        pendingList.innerHTML = data.submissions.map(submission => {
+            const deadline = new Date(submission.Assignment.deadline);
+            const isUrgent = deadline - new Date() < 24 * 60 * 60 * 1000;
+
+            return `
+                <div class="pending-item ${isUrgent ? 'priority' : ''}">
+                    <div class="pending-left">
+                        <img src="../../assets/student.png" alt="Студент" class="student-avatar">
+                        <div class="student-info">
+                            <h4>${submission.User.firstName} ${submission.User.lastName}</h4>
+                            <div class="assignment-info">
+                                <i class="fas fa-file-code"></i>
+                                <span>${submission.Assignment.title}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pending-deadline ${isUrgent ? 'urgent' : ''}">
+                        <i class="fas fa-clock"></i>
+                        <strong>${deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</strong>
+                        ${isUrgent ? '<span>Срочно</span>' : ''}
+                    </div>
+                    <div class="pending-actions">
+                        <a href="grading.html?id=${submission.id}" class="btn btn-${isUrgent ? 'warning' : 'primary'} btn-small">Проверить</a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Ошибка загрузки работ:', error);
+    }
+}
