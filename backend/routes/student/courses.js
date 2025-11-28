@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { Course, Material, Assignment, Submission, User } = require('../../models');
-const { authenticateToken, authorizeRole } = require('../../middleware/auth');
+const { authenticateToken, authorizeStudent } = require('../../middleware/auth');
 
 // Получить список всех курсов студента
-router.get('/', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const courses = await Course.findAll({
       include: [
@@ -19,7 +19,7 @@ router.get('/', authenticateToken, authorizeRole('student'), async (req, res) =>
 });
 
 // Получить материалы курса
-router.get('/:courseId/materials', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/:courseId/materials', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const { courseId } = req.params;
 
@@ -35,7 +35,7 @@ router.get('/:courseId/materials', authenticateToken, authorizeRole('student'), 
 });
 
 // Статистика по курсу
-router.get('/:courseId/stats', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/:courseId/stats', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const { courseId } = req.params;
 
