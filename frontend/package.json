@@ -1,0 +1,19 @@
+{
+  "name": "education-platform-frontend",
+  "version": "1.0.0",
+  "description": "Frontend для образовательной платформы",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=8080",
+    "test": "echo \"Тесты будут добавлены позже\" && exit 0"
+  },
+  "keywords": [
+    "education",
+    "frontend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

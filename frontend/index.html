@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Образовательная платформа</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    /* Временные стили для главной страницы */
+    .landing {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .hero {
+      margin-bottom: 60px;
+    }
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+    .hero p {
+      font-size: 20px;
+      color: var(--text-light);
+      margin-bottom: 40px;
+    }
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 15px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+    .btn-secondary {
+      background: var(--secondary-color);
+      color: white;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 60px;
+    }
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .feature-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <div class="hero">
+      <h1>Образовательная платформа</h1>
+      <p>Единое пространство для обучения, где материалы, задания и коммуникация работают как единая экосистема</p>
+
+      <div class="buttons">
+        <a href="pages/student/dashboard.html" class="btn btn-primary">Войти как студент</a>
+        <a href="pages/teacher/dashboard.html" class="btn btn-secondary">Войти как преподаватель</a>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <h3>Для студентов</h3>
+        <ul style="text-align: left;">
+          <li>Просмотр материалов курса</li>
+          <li>Загрузка домашних заданий</li>
+          <li>Отслеживание прогресса</li>
+          <li>Чат с преподавателем</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h3>Для преподавателей</h3>
+        <ul style="text-align: left;">
+          <li>Загрузка материалов</li>
+          <li>Проверка работ студентов</li>
+          <li>Выставление оценок</li>
+          <li>Журнал успеваемости</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <h3>Удобная навигация</h3>
+        <ul style="text-align: left;">
+          <li>Простой интерфейс</li>
+          <li>Быстрый доступ к материалам</li>
+          <li>Уведомления о дедлайнах</li>
+          <li>Оперативная обратная связь</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/* Основные стили для всего приложения */
+
+/* Сброс стилей */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Общие переменные цветов */
+:root {
+  --primary-color: #4A3AFF; /* Основной фиолетовый */
+  --secondary-color: #FF6B35; /* Оранжевый акцент */
+  --background: #F5F5F7;
+  --text-dark: #1D1D1F;
+  --text-light: #86868B;
+  --white: #FFFFFF;
+  --success: #34C759;
+  --error: #FF3B30;
+}
+
+/* Типографика */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--background);
+  line-height: 1.6;
+}
+
+/* Навигация */
+nav {
+  /* Стили для навигационного меню */
+  /* Логотип, пункты меню, профиль пользователя */
+}
+
+/* Кнопки */
+button {
+  /* Общие стили для кнопок */
+  /* Hover эффекты, активное состояние */
+}
+
+/* Карточки */
+.card {
+  /* Стили для карточек (курсы, задания) */
+  /* Тень, скругление углов, отступы */
+}
