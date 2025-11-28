@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель преподавателя</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/main_teacher.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="teacher-dashboard">
+    <!-- Header с навигацией -->
+    <header class="teacher-header">
+      <div class="header-left">
+        <h1><i class="fas fa-graduation-cap"></i> Панель преподавателя</h1>
+        <div class="breadcrumbs">
+          <a href="main_teacher.html"><i class="fas fa-home"></i> Главная</a>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="notifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </div>
+        <div class="user-info">
+          <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
+          <span>Иванов И.И.</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Главная навигация -->
+    <nav class="teacher-nav">
+      <a href="main_teacher.html" class="nav-item active">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Дашборд</span>
+      </a>
+      <a href="students.html" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Студенты</span>
+      </a>
+      <a href="grading.html" class="nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Проверка работ</span>
+      </a>
+      <a href="../../pages/common/chat.html" class="nav-item">
+        <i class="fas fa-comments"></i>
+        <span>Чат</span>
+      </a>
+    </nav>
+
+    <main class="teacher-main">
+      <!-- Статистика -->
+      <section id="stats" class="stats-section">
+        <div class="stats-header">
+          <h2>Статистика</h2>
+          <div class="stats-period">
+            <button class="period-btn active">Неделя</button>
+            <button class="period-btn">Месяц</button>
+            <button class="period-btn">Семестр</button>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">124</div>
+              <div class="stat-label">Студентов</div>
+            </div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-icon">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">17</div>
+              <div class="stat-label">На проверке</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">8</div>
+              <div class="stat-label">Курсов</div>
+            </div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">92%</div>
+              <div class="stat-label">Успеваемость</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="dashboard-grid">
+        <!-- Список курсов преподавателя -->
+        <section id="courses-list" class="courses-section">
+          <div class="section-header">
+            <h2>Мои курсы</h2>
+            <a href="add_course.html" class="btn btn-primary">+ Новый курс</a>
+          </div>
+          <div class="courses-grid">
+            <div class="course-card">
+              <div class="course-image">
+                <img src="../../assets/algo.jpg" alt="Алгоритмы">
+                <div class="course-progress">
+                  <span>75%</span>
+                </div>
+              </div>
+              <div class="course-info">
+                <h3>Алгоритмы и структуры данных</h3>
+                <div class="course-meta">
+                  <span class="students"><i class="fas fa-users"></i> 32 студента</span>
+                  <span class="tasks"><i class="fas fa-tasks"></i> 5/8 заданий</span>
+                </div>
+              </div>
+              <div class="course-actions">
+                <a href="#" class="btn btn-primary btn-small">Перейти</a>
+                <a href="#" class="btn btn-outline btn-small">Статистика</a>
+              </div>
+            </div>
+
+            <div class="course-card">
+              <div class="course-image">
+                <img src="../../assets/web.jpg" alt="Веб-разработка">
+                <div class="course-progress">
+                  <span>60%</span>
+                </div>
+              </div>
+              <div class="course-info">
+                <h3>Веб-разработка на Python</h3>
+                <div class="course-meta">
+                  <span class="students"><i class="fas fa-users"></i> 28 студентов</span>
+                  <span class="tasks"><i class="fas fa-tasks"></i> 3/6 заданий</span>
+                </div>
+              </div>
+              <div class="course-actions">
+                <a href="#" class="btn btn-primary btn-small">Перейти</a>
+                <a href="#" class="btn btn-outline btn-small">Статистика</a>
+              </div>
+            </div>
+
+            <div class="course-card">
+              <div class="course-image">
+                <img src="../../assets/db.png" alt="Базы данных">
+                <div class="course-progress">
+                  <span>88%</span>
+                </div>
+              </div>
+              <div class="course-info">
+                <h3>Базы данных и SQL</h3>
+                <div class="course-meta">
+                  <span class="students"><i class="fas fa-users"></i> 25 студентов</span>
+                  <span class="tasks"><i class="fas fa-tasks"></i> 7/7 заданий</span>
+                </div>
+              </div>
+              <div class="course-actions">
+                <a href="#" class="btn btn-primary btn-small">Перейти</a>
+                <a href="#" class="btn btn-outline btn-small">Статистика</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Работы на проверке -->
+        <section id="pending-reviews" class="pending-section">
+          <div class="section-header">
+            <h2>Работы на проверке <span class="badge urgent">17</span></h2>
+            <div class="sort-controls">
+              <select class="sort-select">
+                <option>По дедлайну</option>
+                <option>По курсу</option>
+                <option>По студенту</option>
+              </select>
+            </div>
+          </div>
+          <div class="pending-list">
+            <div class="pending-item priority">
+              <div class="pending-left">
+                <img src="../../assets/student.png" alt="Студент" class="student-avatar">
+                <div class="student-info">
+                  <h4>Петров В.А.</h4>
+                  <div class="assignment-info">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Задание #3 • Алгоритмы</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pending-deadline urgent">
+                <i class="fas fa-clock"></i>
+                <strong>28.11</strong> <span>Сегодня</span>
+              </div>
+              <div class="pending-actions">
+                <a href="grading.html" class="btn btn-warning btn-small">Проверить</a>
+              </div>
+            </div>
+
+            <div class="pending-item">
+              <div class="pending-left">
+                <img src="../../assets/student.png" alt="Студент" class="student-avatar">
+                <div class="student-info">
+                  <h4>Сидорова А.С.</h4>
+                  <div class="assignment-info">
+                    <i class="fas fa-file-code"></i>
+                    <span>Проект #2 • Веб-разработка</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pending-deadline">
+                <i class="fas fa-clock"></i>
+                <strong>02.12</strong>
+              </div>
+              <div class="pending-actions">
+                <a href="grading.html" class="btn btn-primary btn-small">Проверить</a>
+              </div>
+            </div>
+
+            <div class="pending-item">
+              <div class="pending-left">
+                <img src="../../assets/student.png" alt="Студент" class="student-avatar">
+                <div class="student-info">
+                  <h4>Козлов Д.П.</h4>
+                  <div class="assignment-info">
+                    <i class="fas fa-database"></i>
+                    <span>Задание #5 • Базы данных</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pending-deadline">
+                <i class="fas fa-clock"></i>
+                <strong>05.12</strong>
+              </div>
+              <div class="pending-actions">
+                <a href="grading.html" class="btn btn-primary btn-small">Проверить</a>
+              </div>
+            </div>
+          </div>
+          <div class="section-footer">
+            <a href="grading.html" class="view-all">Посмотреть все <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/teacher/main_teacher.js"></script>
+</body>
+</html>
