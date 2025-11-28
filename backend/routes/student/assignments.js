@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { Assignment, Submission, Course } = require('../../models');
-const { authenticateToken, authorizeRole } = require('../../middleware/auth');
+const { authenticateToken, authorizeStudent } = require('../../middleware/auth');
 
 const storage = multer.diskStorage({
   destination: './uploads/assignments/',
@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 // Получить список всех заданий студента
-router.get('/', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const assignments = await Assignment.findAll({
       include: [
@@ -39,7 +39,7 @@ router.get('/', authenticateToken, authorizeRole('student'), async (req, res) =>
 });
 
 // Посмотреть конкретное задание
-router.get('/:id', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/:id', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -58,7 +58,7 @@ router.get('/:id', authenticateToken, authorizeRole('student'), async (req, res)
 });
 
 // Загрузить работу
-router.post('/:id/submit', authenticateToken, authorizeRole('student'), upload.single('file'), async (req, res) => {
+router.post('/:id/submit', authenticateToken, authorizeStudent, upload.single('file'), async (req, res) => {
   try {
     const { id } = req.params;
     const { comment } = req.body;
@@ -91,7 +91,7 @@ router.post('/:id/submit', authenticateToken, authorizeRole('student'), upload.s
 });
 
 // Посмотреть оценку и комментарии
-router.get('/:id/feedback', authenticateToken, authorizeRole('student'), async (req, res) => {
+router.get('/:id/feedback', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -111,7 +111,7 @@ router.get('/:id/feedback', authenticateToken, authorizeRole('student'), async (
 });
 
 // Загрузить исправленную версию
-router.put('/:id/resubmit', authenticateToken, authorizeRole('student'), upload.single('file'), async (req, res) => {
+router.put('/:id/resubmit', authenticateToken, authorizeStudent, upload.single('file'), async (req, res) => {
   try {
     const { id } = req.params;
     const { comment } = req.body;
