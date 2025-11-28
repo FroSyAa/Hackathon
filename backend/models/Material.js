@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const Assignment = sequelize.define('Assignment', {
+const Material = sequelize.define('Material', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -23,20 +23,20 @@ const Assignment = sequelize.define('Assignment', {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  deadline: {
-    type: DataTypes.DATE,
-    allowNull: true
+  type: {
+    type: DataTypes.ENUM('video', 'text', 'pdf', 'presentation'),
+    allowNull: false
   },
-  maxScore: {
+  fileUrl: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  version: {
     type: DataTypes.INTEGER,
-    defaultValue: 100
-  },
-  attachments: {
-    type: DataTypes.JSON,
-    defaultValue: []
+    defaultValue: 1
   }
 }, {
   timestamps: true
 });
 
-module.exports = Assignment;
+module.exports = Material;
