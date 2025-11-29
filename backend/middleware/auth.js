@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User, Student, Teacher, Admin } = require('../models');
+const { User, Student, Teacher, Admin, SuperAdmin } = require('../models');
 
 // Проверка JWT токена
 function authenticateToken(req, res, next) {
@@ -19,12 +19,32 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Проверка супер-админа
-function authorizeSuperAdmin(req, res, next) {
-  if (req.user.email !== process.env.SUPER_ADMIN_EMAIL) {
+// Проверка супер-админа (новая система - множество супер-админов)
+async function authorizeSuperAdmin(req, res, next) {
+  try {
+    // Сначала проверяем email из .env (главный супер-админ)
+    const isMainAdmin = req.user.email === process.env.SUPER_ADMIN_EMAIL;
+
+    if (isMainAdmin) {
+      req.superAdmin = { isMainAdmin: true };
+      return next();
+    }
+
+    // Если не главный админ, проверяем в БД
+    if (req.user.id) {
+      const superAdmin = await SuperAdmin.findOne({ where: { userId: req.user.id } });
+
+      if (superAdmin) {
+        req.superAdmin = superAdmin;
+        return next();
+      }
+    }
+
+    // Доступ запрещён
     return res.status(403).json({ error: 'Доступ запрещен' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  next();
 }
 
 // Проверка роли студента

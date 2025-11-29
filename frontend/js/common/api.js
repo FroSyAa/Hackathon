@@ -102,11 +102,19 @@ const API = {
         body: JSON.stringify({ title, description })
       }),
 
+    updateCourseImage: (courseId, imageUrl) =>
+      fetchAPI(`/teacher/courses/${courseId}/image`, {
+        method: 'PATCH',
+        body: JSON.stringify({ imageUrl })
+      }),
+
     createAssignment: (courseId, data) =>
       fetchAPI(`/teacher/courses/${courseId}/assignments`, {
         method: 'POST',
         body: JSON.stringify(data)
       }),
+
+    getAssignments: (courseId) => fetchAPI(`/teacher/courses/${courseId}/assignments`),
 
     uploadMaterial: (formData) =>
       fetchAPI('/teacher/materials', {
@@ -127,7 +135,15 @@ const API = {
 
     getProgress: (courseId) => fetchAPI(`/teacher/progress/${courseId}`),
 
-    getStatistics: () => fetchAPI('/teacher/courses/statistics')
+    getStatistics: () => fetchAPI('/teacher/courses/statistics'),
+
+    bulkUploadStudents: (courseId, students) =>
+      fetchAPI('/teacher/students/bulk-upload', {
+        method: 'POST',
+        body: JSON.stringify({ courseId, students })
+      }),
+
+    getCourseStudents: (courseId) => fetchAPI(`/teacher/students/course/${courseId}`)
   },
 
   student: {
@@ -144,17 +160,21 @@ const API = {
   },
 
   superadmin: {
-    getOrganizations: () => fetchAPI('/superadmin/organizations'),
-    createOrganization: (name, city) =>
-      fetchAPI('/superadmin/organizations', {
+    getDirections: () => fetchAPI('/superadmin/directions'),
+    createDirection: (name) =>
+      fetchAPI('/superadmin/directions', {
         method: 'POST',
-        body: JSON.stringify({ name, city })
+        body: JSON.stringify({ name })
       }),
-    getOrgAdmins: (orgId) => fetchAPI(`/superadmin/organizations/${orgId}/admins`),
-    createOrgAdmin: (orgId, email, password, firstName, lastName) =>
-      fetchAPI(`/superadmin/organizations/${orgId}/admins`, {
+    deleteDirection: (directionId) =>
+      fetchAPI(`/superadmin/directions/${directionId}`, {
+        method: 'DELETE'
+      }),
+    getDirectionAdmins: (directionId) => fetchAPI(`/superadmin/directions/${directionId}/admins`),
+    createDirectionAdmin: (directionId, email, password, firstName, lastName, middleName) =>
+      fetchAPI(`/superadmin/directions/${directionId}/admins`, {
         method: 'POST',
-        body: JSON.stringify({ email, password, firstName, lastName })
+        body: JSON.stringify({ email, password, firstName, lastName, middleName })
       })
   },
 

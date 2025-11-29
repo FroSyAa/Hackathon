@@ -15,11 +15,11 @@ const Teacher = sequelize.define('Teacher', {
       key: 'id'
     }
   },
-  organizationId: {
+  directionId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Organizations',
+      model: 'Directions',
       key: 'id'
     }
   }

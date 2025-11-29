@@ -1,12 +1,14 @@
 const User = require('./User');
-const Organization = require('./Organization');
+const Direction = require('./Direction');
 const Student = require('./Student');
 const Teacher = require('./Teacher');
 const Admin = require('./Admin');
+const SuperAdmin = require('./SuperAdmin');
 const Course = require('./Course');
 const Material = require('./Material');
 const Assignment = require('./Assignment');
 const Submission = require('./Submission');
+const Enrollment = require('./Enrollment');
 
 // User связи
 User.hasOne(Student, { foreignKey: 'userId', as: 'studentProfile' });
@@ -18,15 +20,18 @@ Teacher.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasOne(Admin, { foreignKey: 'userId', as: 'adminProfile' });
 Admin.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-// Organization связи
-Organization.hasMany(Student, { foreignKey: 'organizationId', as: 'students' });
-Student.belongsTo(Organization, { foreignKey: 'organizationId', as: 'organization' });
+User.hasOne(SuperAdmin, { foreignKey: 'userId', as: 'superAdminProfile' });
+SuperAdmin.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-Organization.hasMany(Teacher, { foreignKey: 'organizationId', as: 'teachers' });
-Teacher.belongsTo(Organization, { foreignKey: 'organizationId', as: 'organization' });
+// Direction связи
+Direction.hasMany(Student, { foreignKey: 'directionId', as: 'students' });
+Student.belongsTo(Direction, { foreignKey: 'directionId', as: 'direction' });
 
-Organization.hasMany(Admin, { foreignKey: 'organizationId', as: 'admins' });
-Admin.belongsTo(Organization, { foreignKey: 'organizationId', as: 'organization' });
+Direction.hasMany(Teacher, { foreignKey: 'directionId', as: 'teachers' });
+Teacher.belongsTo(Direction, { foreignKey: 'directionId', as: 'direction' });
+
+Direction.hasMany(Admin, { foreignKey: 'directionId', as: 'admins' });
+Admin.belongsTo(Direction, { foreignKey: 'directionId', as: 'direction' });
 
 // Course связи
 Teacher.hasMany(Course, { foreignKey: 'teacherId', as: 'courses' });
@@ -45,14 +50,27 @@ Submission.belongsTo(Assignment, { foreignKey: 'assignmentId', as: 'assignment' 
 Student.hasMany(Submission, { foreignKey: 'studentId', as: 'submissions' });
 Submission.belongsTo(Student, { foreignKey: 'studentId', as: 'student' });
 
+// Enrollment связи (many-to-many между Student и Course)
+Course.hasMany(Enrollment, { foreignKey: 'courseId', as: 'enrollments' });
+Enrollment.belongsTo(Course, { foreignKey: 'courseId', as: 'course' });
+
+Student.hasMany(Enrollment, { foreignKey: 'studentId', as: 'enrollments' });
+Enrollment.belongsTo(Student, { foreignKey: 'studentId', as: 'student' });
+
+// Many-to-many через Enrollment
+Course.belongsToMany(Student, { through: Enrollment, foreignKey: 'courseId', otherKey: 'studentId', as: 'students' });
+Student.belongsToMany(Course, { through: Enrollment, foreignKey: 'studentId', otherKey: 'courseId', as: 'courses' });
+
 module.exports = {
   User,
-  Organization,
+  Direction,
   Student,
   Teacher,
   Admin,
+  SuperAdmin,
   Course,
   Material,
   Assignment,
-  Submission
+  Submission,
+  Enrollment
 };

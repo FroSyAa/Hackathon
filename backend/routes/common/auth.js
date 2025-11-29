@@ -8,19 +8,29 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
+    // Проверка супер-админа через .env (для совместимости)
     if (email === process.env.SUPER_ADMIN_EMAIL && password === process.env.SUPER_ADMIN_PASSWORD) {
       const jwt = require('jsonwebtoken');
+
+      // Ищем пользователя в БД
+      const existingUser = await User.findOne({ where: { email } });
+
+      if (!existingUser) {
+        return res.status(401).json({ error: 'Супер-админ не найден в БД. Запустите npm run create-superadmin' });
+      }
+
       const token = jwt.sign(
-        { email, role: 'superadmin' },
+        { id: existingUser.id, email, role: 'superadmin' },
         process.env.JWT_SECRET || 'secret_key',
         { expiresIn: process.env.JWT_EXPIRE || '7d' }
       );
 
       return res.json({
         user: {
+          id: existingUser.id,
           email,
-          firstName: 'Super',
-          lastName: 'Admin',
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
           role: 'superadmin'
         },
         token

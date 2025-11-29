@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const Student = sequelize.define('Student', {
+const SuperAdmin = sequelize.define('SuperAdmin', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -10,25 +10,20 @@ const Student = sequelize.define('Student', {
   userId: {
     type: DataTypes.UUID,
     allowNull: false,
+    unique: true,
     references: {
       model: 'Users',
       key: 'id'
     }
   },
-  directionId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: 'Directions',
-      key: 'id'
-    }
-  },
-  groupName: {
-    type: DataTypes.STRING,
-    allowNull: true
+  isMainAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    comment: 'Главный супер-админ из .env файла'
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  tableName: 'SuperAdmins'
 });
 
-module.exports = Student;
+module.exports = SuperAdmin;
