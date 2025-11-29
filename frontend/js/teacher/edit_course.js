@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
 
-  // Получить ID курса из URL
   const urlParams = new URLSearchParams(window.location.search);
   courseId = urlParams.get('id');
 
@@ -20,22 +19,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
 
-  // Отобразить имя преподавателя
   document.getElementById('teacher-name').textContent = formatShortName(user);
 
-  // Загрузить данные курса
   await loadCourseData();
   await loadMaterials();
   await loadAssignments();
 
-  // Обработчики событий
   document.getElementById('image-upload').addEventListener('change', handleImageUpload);
   document.getElementById('add-lecture-form').addEventListener('submit', handleAddLecture);
   document.getElementById('add-assignment-form').addEventListener('submit', handleAddAssignment);
   document.getElementById('upload-students-form').addEventListener('submit', handleUploadStudents);
   document.getElementById('students-file').addEventListener('change', handleStudentsFileUpload);
 
-  // Загрузить студентов курса
   await loadStudents();
 });
 
@@ -54,14 +49,18 @@ async function loadCourseData() {
     document.getElementById('course-title').textContent = course.title;
     document.getElementById('course-description').textContent = course.description || 'Нет описания';
 
-    if (course.imageUrl) {
-      document.getElementById('course-image').src = course.imageUrl;
+    const imgElement = document.getElementById('course-image');
+    if (course.imageUrl && course.imageUrl.trim() !== '') {
+      imgElement.src = course.imageUrl;
+      imgElement.style.display = 'block';
+      imgElement.onerror = function() {
+        console.error('Ошибка загрузки изображения:', course.imageUrl.substring(0, 100));
+        this.style.display = 'none';
+        this.parentElement.innerHTML = '<p style="text-align:center;color:#666;padding:2rem;">Изображение не загружено</p>';
+      };
     } else {
-      document.getElementById('course-image').alt = 'Нет изображения';
-      document.getElementById('course-image').style.display = 'flex';
-      document.getElementById('course-image').style.alignItems = 'center';
-      document.getElementById('course-image').style.justifyContent = 'center';
-      document.getElementById('course-image').textContent = 'Нет изображения';
+      imgElement.style.display = 'none';
+      imgElement.parentElement.innerHTML = '<p style="text-align:center;color:#666;padding:2rem;">Изображение не загружено</p>';
     }
   } catch (error) {
     console.error('Ошибка загрузки курса:', error);
@@ -144,28 +143,23 @@ async function handleImageUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  // Проверяем тип файла
   if (!file.type.startsWith('image/')) {
     alert('Пожалуйста, выберите изображение');
     return;
   }
 
-  // Проверяем размер файла (макс. 5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    alert('Размер файла не должен превышать 5MB');
+  if (file.size > 50 * 1024 * 1024) {
+    alert('Размер файла не должен превышать 50MB');
     return;
   }
 
   try {
-    // Читаем файл как data URL
     const reader = new FileReader();
     reader.onload = async function(e) {
       const imageUrl = e.target.result;
 
-      // Обновляем изображение в БД
       await API.teacher.updateCourseImage(courseId, imageUrl);
 
-      // Обновляем отображение
       const imgElement = document.getElementById('course-image');
       imgElement.src = imageUrl;
       imgElement.style.display = 'block';
@@ -368,7 +362,6 @@ async function handleUploadStudents(e) {
 
     resultsDiv.innerHTML = html;
 
-    // Обновляем список студентов
     await loadStudents();
 
     if (result.results.errors.length === 0) {

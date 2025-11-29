@@ -185,11 +185,19 @@ const API = {
         method: 'POST',
         body: JSON.stringify({ email, password, firstName, lastName, middleName })
       }),
+    deleteTeacher: (teacherId) =>
+      fetchAPI(`/admin/teachers/${teacherId}`, {
+        method: 'DELETE'
+      }),
     getStudents: () => fetchAPI('/admin/students'),
     createStudent: (email, password, firstName, lastName, middleName, groupName) =>
       fetchAPI('/admin/students', {
         method: 'POST',
         body: JSON.stringify({ email, password, firstName, lastName, middleName, groupName })
+      }),
+    deleteStudent: (studentId) =>
+      fetchAPI(`/admin/students/${studentId}`, {
+        method: 'DELETE'
       })
   }
 };
