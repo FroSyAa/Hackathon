@@ -1,52 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const { User, Student, Teacher, Admin } = require('../../models');
+const { User } = require('../../models');
 const { authenticateToken } = require('../../middleware/auth');
 
-// Регистрация студента
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password, firstName, lastName, organizationId } = req.body;
-
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email уже используется' });
-    }
-
-    const user = await User.create({
-      email,
-      password,
-      firstName,
-      lastName
-    });
-
-    const student = await Student.create({
-      userId: user.id,
-      organizationId: organizationId || null
-    });
-
-    const token = user.generateToken();
-
-    res.status(201).json({
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: 'student',
-        studentId: student.id
-      },
-      token
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Вход в систему
+// Вход в систему с выбором роли
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
+
+    if (email === process.env.SUPER_ADMIN_EMAIL && password === process.env.SUPER_ADMIN_PASSWORD) {
+      const jwt = require('jsonwebtoken');
+      const token = jwt.sign(
+        { email, role: 'superadmin' },
+        process.env.JWT_SECRET || 'secret_key',
+        { expiresIn: process.env.JWT_EXPIRE || '7d' }
+      );
+
+      return res.json({
+        user: {
+          email,
+          firstName: 'Super',
+          lastName: 'Admin',
+          role: 'superadmin'
+        },
+        token
+      });
+    }
 
     const user = await User.findOne({
       where: { email },
@@ -66,24 +45,20 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
 
-    let role = null;
+    let userRole = null;
     let roleId = null;
 
-    if (user.email === process.env.SUPER_ADMIN_EMAIL) {
-      role = 'superadmin';
-    } else if (user.studentProfile) {
-      role = 'student';
+    if (role === 'student' && user.studentProfile) {
+      userRole = 'student';
       roleId = user.studentProfile.id;
-    } else if (user.teacherProfile) {
-      role = 'teacher';
+    } else if (role === 'teacher' && user.teacherProfile) {
+      userRole = 'teacher';
       roleId = user.teacherProfile.id;
-    } else if (user.adminProfile) {
-      role = 'admin';
+    } else if (role === 'admin' && user.adminProfile) {
+      userRole = 'admin';
       roleId = user.adminProfile.id;
-    }
-
-    if (!role) {
-      return res.status(403).json({ error: 'Роль пользователя не определена' });
+    } else {
+      return res.status(403).json({ error: 'У вас нет доступа с выбранной ролью' });
     }
 
     const token = user.generateToken();
@@ -94,47 +69,11 @@ router.post('/login', async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role,
+        role: userRole,
         roleId
       },
       token
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Вход только для суперадмина
-router.post('/superadmin-login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (
-      email === process.env.SUPER_ADMIN_EMAIL &&
-      password === process.env.SUPER_ADMIN_PASSWORD
-    ) {
-      // Генерируем токен вручную
-      const jwt = require('jsonwebtoken');
-      const token = jwt.sign(
-        {
-          email,
-          role: 'superadmin',
-          firstName: 'Super',
-          lastName: 'Admin'
-        },
-        process.env.JWT_SECRET || 'secret_key',
-        { expiresIn: process.env.JWT_EXPIRE || '7d' }
-      );
-      return res.json({
-        user: {
-          email,
-          role: 'superadmin',
-          firstName: 'Super',
-          lastName: 'Admin'
-        },
-        token
-      });
-    }
-    return res.status(401).json({ error: 'Unauthorized' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

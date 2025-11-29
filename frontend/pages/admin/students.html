@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Управление преподавателями</title>
+  <title>Управление студентами</title>
   <link rel="stylesheet" href="../../styles/main.css">
   <link rel="stylesheet" href="../../styles/main_teacher.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -30,53 +30,68 @@
     <main class="teacher-main">
       <section class="courses-section">
         <div class="section-header">
-          <h2>Преподаватели</h2>
-          <button id="add-teacher-btn" class="btn btn-primary">+ Добавить преподавателя</button>
+          <h2>Студенты</h2>
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div class="filter-group">
+              <label for="group-filter" style="font-weight:600;color:#004C97;margin-right:0.5rem;">
+                <i class="fas fa-filter"></i> Группа:
+              </label>
+              <select id="group-filter" style="padding:0.5rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;">
+                <option value="">Все группы</option>
+              </select>
+            </div>
+            <button id="add-student-btn" class="btn btn-primary">+ Добавить студента</button>
+          </div>
         </div>
 
-        <div id="teachers-list" class="table-container">
+        <div id="students-list" class="table-container">
           <table class="teachers-table">
             <thead>
               <tr>
                 <th>ФИО</th>
                 <th>Email</th>
+                <th>Группа</th>
                 <th>Пароль</th>
                 <th>Дата создания</th>
               </tr>
             </thead>
-            <tbody id="teachers-tbody"></tbody>
+            <tbody id="students-tbody"></tbody>
           </table>
         </div>
       </section>
     </main>
   </div>
 
-  <div id="add-teacher-modal" class="modal" style="display:none;">
+  <div id="add-student-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 style="color:#004C97;font-size:1.8rem;font-weight:700;"><i class="fas fa-chalkboard-teacher"></i> Добавить преподавателя</h2>
+        <h2 style="color:#004C97;font-size:1.8rem;font-weight:700;"><i class="fas fa-user-graduate"></i> Добавить студента</h2>
         <button class="modal-close" onclick="closeModal()" aria-label="Закрыть" style="font-size:2rem;color:#666;background:none;border:none;cursor:pointer;">&times;</button>
       </div>
-      <form id="add-teacher-form">
+      <form id="add-student-form">
         <div class="form-group">
-          <label for="teacher-email" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-envelope"></i> Email</label>
-          <input type="email" id="teacher-email" name="email" required placeholder="email@example.com" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+          <label for="student-email" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="student-email" name="email" required placeholder="student@example.com" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
         </div>
         <div class="form-group">
-          <label for="teacher-password" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-lock"></i> Пароль</label>
-          <input type="text" id="teacher-password" name="password" required value="" placeholder="Введите пароль" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+          <label for="student-password" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-lock"></i> Пароль</label>
+          <input type="text" id="student-password" name="password" required value="" placeholder="Введите пароль" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
         </div>
         <div class="form-group">
-          <label for="teacher-lastName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Фамилия</label>
-          <input type="text" id="teacher-lastName" name="lastName" required placeholder="Иванов" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+          <label for="student-lastName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Фамилия</label>
+          <input type="text" id="student-lastName" name="lastName" required placeholder="Иванов" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
         </div>
         <div class="form-group">
-          <label for="teacher-firstName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Имя</label>
-          <input type="text" id="teacher-firstName" name="firstName" required placeholder="Иван" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+          <label for="student-firstName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Имя</label>
+          <input type="text" id="student-firstName" name="firstName" required placeholder="Иван" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
         </div>
         <div class="form-group">
-          <label for="teacher-middleName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Отчество</label>
-          <input type="text" id="teacher-middleName" name="middleName" placeholder="Иванович" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+          <label for="student-middleName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-user"></i> Отчество</label>
+          <input type="text" id="student-middleName" name="middleName" placeholder="Иванович" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
+        </div>
+        <div class="form-group">
+          <label for="student-groupName" style="font-weight:600;font-size:1rem;color:#004C97;"><i class="fas fa-users"></i> Группа</label>
+          <input type="text" id="student-groupName" name="groupName" placeholder="ИВТ-21" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #004C97;border-radius:6px;font-size:1rem;margin-bottom:1rem;">
         </div>
         <div class="modal-footer" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1.5rem;">
           <button type="button" class="btn btn-outline" onclick="closeModal()" style="padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;border:2px solid #004C97;color:#004C97;background:white;cursor:pointer;">Отмена</button>
@@ -160,9 +175,13 @@
       font-family: monospace;
       color: #666;
     }
+    .filter-group {
+      display: flex;
+      align-items: center;
+    }
   </style>
 
   <script src="../../js/common/api.js"></script>
-  <script src="../../js/admin/teachers.js"></script>
+  <script src="../../js/admin/students.js"></script>
 </body>
 </html>
