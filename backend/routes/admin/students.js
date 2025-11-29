@@ -23,7 +23,7 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
 
     const student = await Student.create({
       userId: user.id,
-      organizationId: req.admin.organizationId,
+      directionId: req.admin.directionId,
       groupName
     });
 
@@ -45,11 +45,11 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   }
 });
 
-// Получить всех студентов организации
+// Получить всех студентов направления
 router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const students = await Student.findAll({
-      where: { organizationId: req.admin.organizationId },
+      where: { directionId: req.admin.directionId },
       include: [{ association: 'user', attributes: { exclude: ['password'] } }]
     });
 

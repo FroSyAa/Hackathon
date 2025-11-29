@@ -15,6 +15,11 @@ const Course = sequelize.define('Course', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'URL изображения курса'
+  },
   teacherId: {
     type: DataTypes.UUID,
     allowNull: false,

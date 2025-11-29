@@ -1,34 +1,39 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const Student = sequelize.define('Student', {
+const Enrollment = sequelize.define('Enrollment', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  userId: {
+  studentId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: 'Students',
       key: 'id'
-    }
+    },
+    onDelete: 'CASCADE'
   },
-  directionId: {
+  courseId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Directions',
+      model: 'Courses',
       key: 'id'
-    }
-  },
-  groupName: {
-    type: DataTypes.STRING,
-    allowNull: true
+    },
+    onDelete: 'CASCADE'
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  tableName: 'Enrollments',
+  indexes: [
+    {
+      unique: true,
+      fields: ['studentId', 'courseId']
+    }
+  ]
 });
 
-module.exports = Student;
+module.exports = Enrollment;

@@ -12,11 +12,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', require('./routes/common/auth'));
-app.use('/api/superadmin/organizations', require('./routes/superadmin/organizations'));
+app.use('/api/superadmin/directions', require('./routes/superadmin/directions'));
 app.use('/api/admin/teachers', require('./routes/admin/teachers'));
 app.use('/api/admin/students', require('./routes/admin/students'));
 app.use('/api/teacher/courses', require('./routes/teacher/courses'));
 app.use('/api/teacher/materials', require('./routes/teacher/materials'));
+app.use('/api/teacher/students', require('./routes/teacher/students'));
 app.use('/api/teacher', require('./routes/teacher/grading'));
 app.use('/api/student/courses', require('./routes/student/courses'));
 app.use('/api/student/assignments', require('./routes/student/assignments'));

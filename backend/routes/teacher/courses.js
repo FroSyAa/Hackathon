@@ -173,6 +173,29 @@ router.get('/statistics', authenticateToken, authorizeTeacher, async (req, res) 
   }
 });
 
+// Обновить изображение курса
+router.patch('/:courseId/image', authenticateToken, authorizeTeacher, async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { imageUrl } = req.body;
+
+    const course = await Course.findByPk(courseId);
+    if (!course) {
+      return res.status(404).json({ error: 'Курс не найден' });
+    }
+
+    if (course.teacherId !== req.teacher.id) {
+      return res.status(403).json({ error: 'Это не ваш курс' });
+    }
+
+    await course.update({ imageUrl });
+
+    res.json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Создать задание
 router.post('/:courseId/assignments', authenticateToken, authorizeTeacher, async (req, res) => {
   try {

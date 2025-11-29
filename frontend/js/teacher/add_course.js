@@ -206,9 +206,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // call backend
         API.teacher.createCourse(title, description)
             .then(resp => {
-                alert('✅ Курс успешно создан!');
-                // После создания редиректим на панель преподавателя
-                window.location.href = '/pages/teacher/main_teacher.html';
+                alert('✅ Курс успешно создан! Перенаправляю на редактирование...');
+                // После создания редиректим на редактирование курса
+                window.location.href = `/pages/teacher/edit_course.html?id=${resp.course.id}`;
             })
             .catch(err => {
                 console.error('Ошибка создания курса:', err);
