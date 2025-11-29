@@ -6,11 +6,11 @@ const { authenticateToken, authorizeSuperAdmin } = require('../../middleware/aut
 // Создать организацию
 router.post('/', authenticateToken, authorizeSuperAdmin, async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, city } = req.body;
 
     const organization = await Organization.create({
       name,
-      description
+      city
     });
 
     res.status(201).json({ organization });
@@ -29,11 +29,27 @@ router.get('/', authenticateToken, authorizeSuperAdmin, async (req, res) => {
   }
 });
 
+// Получить админов организации
+router.get('/:orgId/admins', authenticateToken, authorizeSuperAdmin, async (req, res) => {
+  try {
+    const { orgId } = req.params;
+
+    const admins = await Admin.findAll({
+      where: { organizationId: orgId },
+      include: [{ association: 'user', attributes: { exclude: ['password'] } }]
+    });
+
+    res.json({ admins });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Создать админа для организации
 router.post('/:orgId/admins', authenticateToken, authorizeSuperAdmin, async (req, res) => {
   try {
     const { orgId } = req.params;
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, middleName } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -43,8 +59,9 @@ router.post('/:orgId/admins', authenticateToken, authorizeSuperAdmin, async (req
     const user = await User.create({
       email,
       password,
-      firstName,
-      lastName
+      firstName: firstName || '',
+      lastName: lastName || '',
+      middleName: middleName || ''
     });
 
     const admin = await Admin.create({

@@ -4,98 +4,197 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Образовательная платформа</title>
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Временные стили для главной страницы */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #004C97 0%, #0066CC 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
     .landing {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 20px;
-      text-align: center;
+      padding: 60px 20px;
     }
+
     .hero {
-      margin-bottom: 60px;
+      text-align: center;
+      margin-bottom: 80px;
+      color: white;
     }
-    .hero h1 {
-      font-size: 48px;
+
+    .hero-icon {
+      font-size: 80px;
       margin-bottom: 20px;
-      color: var(--primary-color);
+      opacity: 0.95;
     }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
     .hero p {
-      font-size: 20px;
-      color: var(--text-light);
+      font-size: 1.3rem;
       margin-bottom: 40px;
+      opacity: 0.9;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
-    .buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-    .btn {
-      padding: 15px 40px;
+
+    .login-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 50px;
+      background: white;
+      color: #004C97;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
       cursor: pointer;
       text-decoration: none;
-      display: inline-block;
-      transition: transform 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .btn:hover {
-      transform: translateY(-2px);
+
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 30px rgba(0,0,0,0.3);
     }
-    .btn-primary {
-      background: var(--primary-color);
-      color: white;
-    }
-    .btn-secondary {
-      background: var(--secondary-color);
-      color: white;
-    }
+
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 30px;
       margin-top: 60px;
     }
+
     .feature-card {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
     }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      color: #004C97;
+      margin-bottom: 20px;
+    }
+
     .feature-card h3 {
-      color: var(--primary-color);
+      color: #004C97;
+      font-size: 1.5rem;
       margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 20px;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-list li:before {
+      content: "✓";
+      color: #004C97;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="landing">
     <div class="hero">
+      <div class="hero-icon">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
       <h1>Образовательная платформа</h1>
       <p>Единое пространство для обучения, где материалы, задания и коммуникация работают как единая экосистема</p>
 
-      <div class="buttons">
-        <a href="pages/student/dashboard.html" class="btn btn-primary">Войти как студент</a>
-        <a href="pages/teacher/dashboard.html" class="btn btn-secondary">Войти как преподаватель</a>
-      </div>
+      <a href="pages/common/login.html" class="login-btn">
+        <i class="fas fa-sign-in-alt"></i>
+        Войти в систему
+      </a>
     </div>
 
     <div class="features">
       <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-user-graduate"></i>
+        </div>
         <h3>Для студентов</h3>
-        <ul style="text-align: left;">
+        <p>Удобный доступ к учебным материалам и отслеживание прогресса</p>
+        <ul class="feature-list">
           <li>Просмотр материалов курса</li>
           <li>Загрузка домашних заданий</li>
-          <li>Отслеживание прогресса</li>
-          <li>Чат с преподавателем</li>
+          <li>Отслеживание оценок</li>
+          <li>Получение обратной связи</li>
         </ul>
       </div>
 
       <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
         <h3>Для преподавателей</h3>
-        <ul style="text-align: left;">
+        <p>Эффективные инструменты для управления учебным процессом</p>
+        <ul class="feature-list">
           <li>Загрузка материалов</li>
           <li>Проверка работ студентов</li>
           <li>Выставление оценок</li>
@@ -104,14 +203,22 @@
       </div>
 
       <div class="feature-card">
-        <h3>Удобная навигация</h3>
-        <ul style="text-align: left;">
-          <li>Простой интерфейс</li>
-          <li>Быстрый доступ к материалам</li>
-          <li>Уведомления о дедлайнах</li>
-          <li>Оперативная обратная связь</li>
+        <div class="feature-icon">
+          <i class="fas fa-building"></i>
+        </div>
+        <h3>Для учебных заведений</h3>
+        <p>Централизованное управление образовательным процессом</p>
+        <ul class="feature-list">
+          <li>Управление преподавателями</li>
+          <li>Управление студентами</li>
+          <li>Статистика и аналитика</li>
+          <li>Контроль качества обучения</li>
         </ul>
       </div>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 Образовательная платформа. Все права защищены.</p>
     </div>
   </div>
 </body>

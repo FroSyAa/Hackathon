@@ -46,10 +46,11 @@ async function loadTeachers() {
       const user = teacher.user;
       const password = teacherPasswords[teacher.id] || '••••••••';
       const createdAt = new Date(teacher.createdAt).toLocaleDateString('ru-RU');
+      const fullName = `${user.lastName} ${user.firstName}${user.middleName ? ' ' + user.middleName : ''}`;
 
       return `
         <tr>
-          <td>${user.firstName} ${user.lastName}</td>
+          <td>${fullName}</td>
           <td>${user.email}</td>
           <td class="password-cell">${password}</td>
           <td>${createdAt}</td>
@@ -82,13 +83,15 @@ async function handleAddTeacher(e) {
   const password = document.getElementById('teacher-password').value;
   const firstName = document.getElementById('teacher-firstName').value;
   const lastName = document.getElementById('teacher-lastName').value;
+  const middleName = document.getElementById('teacher-middleName').value;
 
   try {
-    const data = await API.admin.createTeacher(email, password, firstName, lastName);
+    const data = await API.admin.createTeacher(email, password, firstName, lastName, middleName);
 
     teacherPasswords[data.user.teacherId] = password;
 
-    const credentials = `ФИО: ${firstName} ${lastName}\nEmail: ${email}\nПароль: ${password}`;
+    const fullName = `${lastName} ${firstName}${middleName ? ' ' + middleName : ''}`;
+    const credentials = `ФИО: ${fullName}\nEmail: ${email}\nПароль: ${password}`;
     alert(`Преподаватель создан!\n\n${credentials}\n\nСкопируйте эти данные и передайте преподавателю.`);
 
     closeModal();

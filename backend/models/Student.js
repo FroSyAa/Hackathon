@@ -17,11 +17,15 @@ const Student = sequelize.define('Student', {
   },
   organizationId: {
     type: DataTypes.UUID,
-    allowNull: true,
+    allowNull: false,
     references: {
       model: 'Organizations',
       key: 'id'
     }
+  },
+  groupName: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   timestamps: true

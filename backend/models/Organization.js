@@ -11,9 +11,9 @@ const Organization = sequelize.define('Organization', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 }, {
   timestamps: true
