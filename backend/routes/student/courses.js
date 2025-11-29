@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Course, Material, Assignment, Submission, User } = require('../../models');
+const { Course, Material, Assignment, Submission, Teacher, User } = require('../../models');
 const { authenticateToken, authorizeStudent } = require('../../middleware/auth');
 
 // Получить список всех курсов студента
@@ -8,7 +8,13 @@ router.get('/', authenticateToken, authorizeStudent, async (req, res) => {
   try {
     const courses = await Course.findAll({
       include: [
-        { model: User, as: 'teacher', attributes: ['id', 'firstName', 'lastName'] }
+        {
+          model: Teacher,
+          as: 'teacher',
+          include: [
+            { model: User, as: 'user', attributes: ['id', 'firstName', 'lastName'] }
+          ]
+        }
       ]
     });
 

@@ -104,6 +104,42 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Вход только для суперадмина
+router.post('/superadmin-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (
+      email === process.env.SUPER_ADMIN_EMAIL &&
+      password === process.env.SUPER_ADMIN_PASSWORD
+    ) {
+      // Генерируем токен вручную
+      const jwt = require('jsonwebtoken');
+      const token = jwt.sign(
+        {
+          email,
+          role: 'superadmin',
+          firstName: 'Super',
+          lastName: 'Admin'
+        },
+        process.env.JWT_SECRET || 'secret_key',
+        { expiresIn: process.env.JWT_EXPIRE || '7d' }
+      );
+      return res.json({
+        user: {
+          email,
+          role: 'superadmin',
+          firstName: 'Super',
+          lastName: 'Admin'
+        },
+        token
+      });
+    }
+    return res.status(401).json({ error: 'Unauthorized' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Получить профиль текущего пользователя
 router.get('/me', authenticateToken, async (req, res) => {
   try {
