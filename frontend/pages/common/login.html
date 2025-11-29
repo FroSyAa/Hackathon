@@ -19,6 +19,19 @@
 
       <form id="login-form" class="auth-form">
         <div class="form-group">
+          <label for="role">
+            <i class="fas fa-user-tag"></i>
+            Войти как
+          </label>
+          <select id="role" name="role" required>
+            <option value="">Выберите роль</option>
+            <option value="student">Студент</option>
+            <option value="teacher">Преподаватель</option>
+            <option value="admin">Администратор ВУЗа</option>
+          </select>
+        </div>
+
+        <div class="form-group">
           <label for="email">
             <i class="fas fa-envelope"></i>
             Email
@@ -39,10 +52,6 @@
           Войти
         </button>
       </form>
-
-      <div class="auth-footer">
-        <p>Еще нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
-      </div>
     </div>
   </div>
 

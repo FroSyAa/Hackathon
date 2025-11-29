@@ -74,16 +74,10 @@ async function fetchAPI(endpoint, options = {}) {
 // API методы
 const API = {
   auth: {
-    login: (email, password) =>
+    login: (email, password, role) =>
       fetchAPI('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password })
-      }),
-
-    register: (email, password, role, firstName, lastName) =>
-      fetchAPI('/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, role, firstName, lastName })
+        body: JSON.stringify({ email, password, role })
       }),
 
     getProfile: () => fetchAPI('/auth/me')
@@ -119,7 +113,9 @@ const API = {
         body: JSON.stringify({ score, feedback, status })
       }),
 
-    getProgress: (courseId) => fetchAPI(`/teacher/progress/${courseId}`)
+    getProgress: (courseId) => fetchAPI(`/teacher/progress/${courseId}`),
+
+    getStatistics: () => fetchAPI('/teacher/courses/statistics')
   },
 
   student: {
@@ -137,11 +133,12 @@ const API = {
 
   superadmin: {
     getOrganizations: () => fetchAPI('/superadmin/organizations'),
-    createOrganization: (name, description) =>
+    createOrganization: (name, city) =>
       fetchAPI('/superadmin/organizations', {
         method: 'POST',
-        body: JSON.stringify({ name, description })
+        body: JSON.stringify({ name, city })
       }),
+    getOrgAdmins: (orgId) => fetchAPI(`/superadmin/organizations/${orgId}/admins`),
     createOrgAdmin: (orgId, email, password, firstName, lastName) =>
       fetchAPI(`/superadmin/organizations/${orgId}/admins`, {
         method: 'POST',
@@ -151,10 +148,16 @@ const API = {
 
   admin: {
     getTeachers: () => fetchAPI('/admin/teachers'),
-    createTeacher: (email, password, firstName, lastName) =>
+    createTeacher: (email, password, firstName, lastName, middleName) =>
       fetchAPI('/admin/teachers', {
         method: 'POST',
-        body: JSON.stringify({ email, password, firstName, lastName })
+        body: JSON.stringify({ email, password, firstName, lastName, middleName })
+      }),
+    getStudents: () => fetchAPI('/admin/students'),
+    createStudent: (email, password, firstName, lastName, middleName, groupName) =>
+      fetchAPI('/admin/students', {
+        method: 'POST',
+        body: JSON.stringify({ email, password, firstName, lastName, middleName, groupName })
       })
   }
 };

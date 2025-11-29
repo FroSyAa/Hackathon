@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { User, Teacher } = require('../../models');
+const { User, Student } = require('../../models');
 const { authenticateToken, authorizeAdmin } = require('../../middleware/auth');
 
-// Создать преподавателя
+// Создать студента
 router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const { email, password, firstName, lastName, middleName } = req.body;
+    const { email, password, firstName, lastName, middleName, groupName } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -21,9 +21,10 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
       middleName
     });
 
-    const teacher = await Teacher.create({
+    const student = await Student.create({
       userId: user.id,
-      organizationId: req.admin.organizationId
+      organizationId: req.admin.organizationId,
+      groupName
     });
 
     const token = user.generateToken();
@@ -34,8 +35,8 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: 'teacher',
-        teacherId: teacher.id
+        role: 'student',
+        studentId: student.id
       },
       token
     });
@@ -44,15 +45,15 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   }
 });
 
-// Получить всех преподавателей организации
+// Получить всех студентов организации
 router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const teachers = await Teacher.findAll({
+    const students = await Student.findAll({
       where: { organizationId: req.admin.organizationId },
       include: [{ association: 'user', attributes: { exclude: ['password'] } }]
     });
 
-    res.json({ teachers });
+    res.json({ students });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
