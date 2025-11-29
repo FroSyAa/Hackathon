@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
+    // ✅ 1. Проверяем авторизацию
     checkAuth();
     const user = getUser();
 
@@ -7,20 +8,24 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
+    // ✅ 2. Устанавливаем имя преподавателя
     document.querySelector('.user-info span').textContent = formatShortName(user);
 
+    // ✅ 3. Загружаем данные
     await loadStatistics();
     await loadCourses();
     await loadPendingSubmissions();
 
+    // ✅ 4. Период статистики
     const periodBtns = document.querySelectorAll('.period-btn');
     periodBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             periodBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
     });
 
+    // ✅ 5. Анимация карточек
     const statCards = document.querySelectorAll('.stat-card');
     setTimeout(() => {
         statCards.forEach((card, index) => {
@@ -28,7 +33,49 @@ document.addEventListener('DOMContentLoaded', async function() {
             card.classList.add('fade-in');
         });
     }, 500);
+
+    // ✅ 6. МЕНЮ ПРОФИЛЯ ПРЕПОДАВАТЕЛЯ (БЫЛО ОТДЕЛЬНО)
+    initProfileMenu();
 });
+
+function initProfileMenu() {
+    const userInfo = document.getElementById('userInfo');
+    const profileMenu = document.getElementById('profileMenu');
+
+    if (userInfo && profileMenu) {
+        // Клик по имени/аватару
+        userInfo.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleProfileMenu();
+        });
+
+        // Закрытие при клике вне меню
+        document.addEventListener('click', function () {
+            profileMenu.classList.remove('show');
+            userInfo.classList.remove('clicking');
+        });
+
+        // Закрытие при клике на пункт меню
+        profileMenu.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function () {
+                profileMenu.classList.remove('show');
+                userInfo.classList.remove('clicking');
+            });
+        });
+    }
+
+    function toggleProfileMenu() {
+        const isVisible = profileMenu.classList.contains('show');
+        profileMenu.classList.toggle('show', !isVisible);
+        userInfo.classList.add('clicking');
+
+        // Закрытие через 5 сек
+        setTimeout(() => {
+            profileMenu.classList.remove('show');
+            userInfo.classList.remove('clicking');
+        }, 5000);
+    }
+}
 
 let courseStatistics = {};
 
@@ -68,12 +115,11 @@ async function loadCourses() {
 
         coursesGrid.innerHTML = data.courses.map(course => {
             const stats = courseStatistics[course.id] || { studentCount: 0, assignmentCount: 0, progress: 0 };
-            const placeholderImage = course.imageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23004C97"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white"%3ECourse%3C/text%3E%3C/svg%3E';
 
             return `
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="${placeholderImage}" alt="${course.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23004C97%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22%3ECourse%3C/text%3E%3C/svg%3E'">
+                        <img src="../../assets/course_placeholder.jpg" alt="${course.title}">
                         <div class="course-progress">
                             <span>${stats.progress}%</span>
                         </div>
@@ -154,4 +200,90 @@ function formatShortName(user) {
     const f = first ? first.charAt(0) + '.' : '';
     const m = middle ? middle.charAt(0) + '.' : '';
     return `${last} ${f}${m}`.trim();
+}
+
+// ✅ ИНИЦИАЛИЗАЦИЯ УВЕДОМЛЕНИЙ
+function initNotifications() {
+    const bell = document.getElementById('notificationBell');
+    const panel = document.getElementById('notificationPanel');
+
+    if (!bell || !panel) return;
+
+    // Клик по колокольчику
+    bell.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleNotifications();
+    });
+
+    // Закрытие при клике вне панели
+    document.addEventListener('click', function (e) {
+        if (!notificationContainer.contains(e.target)) {
+            hideNotifications();
+        }
+    });
+}
+
+function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    panel.classList.toggle('show');
+}
+
+function hideNotifications() {
+    document.getElementById('notificationPanel').classList.remove('show');
+}
+
+// ✅ Загрузка уведомлений
+async function loadNotifications() {
+    // Пример уведомлений
+    const notifications = [
+        {
+            id: 1,
+            avatar: '../../assets/student.png',
+            title: 'Иван Иванов',
+            message: 'Отправил работу по заданию "Алгоритмы" на проверку',
+            time: '2 мин назад',
+            unread: true
+        },
+        {
+            id: 2,
+            avatar: '../../assets/student.png',
+            title: 'Мария Петрова',
+            message: 'Задала вопрос по курсу "Веб-разработка"',
+            time: '15 мин назад',
+            unread: true
+        },
+        {
+            id: 3,
+            avatar: '../../assets/student.png',
+            title: 'Система',
+            message: 'Новый студент записался на курс "Python"',
+            time: '1 час назад',
+            unread: false
+        }
+    ];
+
+    const list = document.getElementById('notificationList');
+    const badge = document.getElementById('notificationBadge');
+    const panelCount = document.getElementById('panelCount');
+
+    list.innerHTML = notifications.map(notif => `
+        <div class="notification-item ${notif.unread ? 'unread' : ''}" onclick="markAsRead(${notif.id})">
+            <img src="${notif.avatar}" alt="Аватар" class="notification-avatar">
+            <div class="notification-content">
+                <div class="notification-title">${notif.title}</div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${notif.time}</div>
+            </div>
+        </div>
+    `).join('');
+
+    // Обновляем счетчики
+    const unreadCount = notifications.filter(n => n.unread).length;
+    badge.textContent = unreadCount;
+    panelCount.textContent = `${unreadCount} новых`;
+}
+
+function markAsRead(id) {
+    // TODO: API пометить как прочитанное
+    showNotification('Уведомление отмечено как прочитанное', 'success');
 }
