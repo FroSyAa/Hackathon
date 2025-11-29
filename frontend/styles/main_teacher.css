@@ -6,7 +6,7 @@
 .teacher-header {
   background: white;
   padding: 1.5rem 2rem;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -93,7 +93,7 @@
 .teacher-nav {
   background: white;
   padding: 1rem 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
@@ -112,7 +112,8 @@
   white-space: nowrap;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
   background: linear-gradient(135deg, #004C97, #0066cc);
   color: white;
 }
@@ -129,7 +130,7 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
@@ -154,7 +155,8 @@
   transition: all 0.3s;
 }
 
-.period-btn.active, .period-btn:hover {
+.period-btn.active,
+.period-btn:hover {
   background: #004C97;
   color: white;
   border-color: #004C97;
@@ -178,7 +180,7 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card.warning {
@@ -225,7 +227,7 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .section-header {
@@ -257,7 +259,7 @@
 .course-card:hover {
   border-color: #004C97;
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,76,151,0.15);
+  box-shadow: 0 20px 40px rgba(0, 76, 151, 0.15);
 }
 
 .course-image {
@@ -276,7 +278,7 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(40,167,69,0.9);
+  background: rgba(40, 167, 69, 0.9);
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
@@ -319,7 +321,7 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .section-header .badge {
@@ -456,7 +458,7 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,76,151,0.3);
+  box-shadow: 0 6px 20px rgba(0, 76, 151, 0.3);
 }
 
 .btn-outline {
@@ -482,217 +484,214 @@
 }
 
 .user-info {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
 .teacher-name {
-    font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
 }
 
 .profile-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    border: 1px solid #e0e0e0;
-    min-width: 180px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    overflow: hidden;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  overflow: hidden;
 }
 
 .profile-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    color: #333;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-    white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .menu-item:hover {
-    background: #f8f9fa;
-    color: #1976d2;
+  background: #f8f9fa;
+  color: #1976d2;
 }
 
 .menu-item.logout {
-    border-top: 1px solid #eee;
-    color: #dc3545;
+  border-top: 1px solid #eee;
+  color: #dc3545;
 }
 
 .menu-item.logout:hover {
-    background: #fff5f5;
-    color: #c82333;
+  background: #fff5f5;
+  color: #c82333;
 }
 
-/* Анимация аватара при клике */
 .user-info.clicking .avatar {
-    transform: scale(0.95);
-    transition: transform 0.2s;
+  transform: scale(0.95);
+  transition: transform 0.2s;
 }
 
-/* ✅ УВЕДОМЛЕНИЯ */
 .notifications {
-    position: relative;
+  position: relative;
 }
 
 .notification-bell {
-    background: none;
-    border: none;
-    color: #666;
-    font-size: 1.2rem;
-    cursor: pointer;
-    position: relative;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
 }
 
 .notification-bell:hover {
-    background: #f8f9fa;
-    color: #1976d2;
-    transform: scale(1.1);
+  background: #f8f9fa;
+  color: #004C97;
+  transform: scale(1.1);
 }
 
-/* ✅ ПАНЕЛЬ УВЕДОМЛЕНИЙ */
 .notification-panel {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 360px;
-    max-width: 90vw;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    border: 1px solid #e0e0e0;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    overflow: hidden;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 360px;
+  max-width: 90vw;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e0e0e0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  overflow: hidden;
 }
 
 .notification-panel.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .notification-header {
-    padding: 20px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .notification-header h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .notification-count {
-    background: linear-gradient(135deg, #1976d2, #1565c0);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
+  background: #004C97;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .notification-list {
-    max-height: 400px;
-    overflow-y: auto;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .notification-item {
-    padding: 16px 20px;
-    border-bottom: 1px solid #f8f9fa;
-    display: flex;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f8f9fa;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
 }
 
 .notification-item:hover {
-    background: #f8f9fa;
+  background: #f8f9fa;
 }
 
 .notification-item.unread {
-    background: linear-gradient(90deg, rgba(25,118,210,0.05), transparent);
+  background: linear-gradient(90deg, rgba(25, 118, 210, 0.05), transparent);
 }
 
 .notification-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .notification-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .notification-content {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .notification-title {
-    font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
-    margin-bottom: 4px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
 }
 
 .notification-message {
-    color: #666;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-    line-height: 1.4;
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .notification-time {
-    font-size: 0.75rem;
-    color: #999;
+  font-size: 0.75rem;
+  color: #999;
 }
 
 .notification-footer {
-    padding: 20px;
-    border-top: 1px solid #f0f0f0;
+  padding: 20px;
+  border-top: 1px solid #f0f0f0;
 }
 
 .btn-full {
-    width: 100%;
-    justify-content: center;
-    padding: 12px;
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
 }
