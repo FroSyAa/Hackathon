@@ -37,11 +37,13 @@ router.post('/login', async (req, res) => {
     });
 
     if (!user) {
+      console.warn(`Ошибка, пользователя с таким email нет=${email}`);
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
 
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
+      console.warn(`Ошибка, введён неверный пароль=${user.id} email=${email}`);
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
 
@@ -58,6 +60,7 @@ router.post('/login', async (req, res) => {
       userRole = 'admin';
       roleId = user.adminProfile.id;
     } else {
+      console.warn(`Ошибка, роль не соответствует для пользователя id=${user.id} email=${email} запрошеннаяРоль=${role}`);
       return res.status(403).json({ error: 'У вас нет доступа с выбранной ролью' });
     }
 

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    document.querySelector('.user-info span').textContent = `${user.firstName} ${user.lastName}`;
+    document.querySelector('.user-info span').textContent = formatShortName(user);
 
     await loadStatistics();
     await loadCourses();
@@ -78,14 +78,15 @@ async function loadCourses() {
                         </div>
                     </div>
                     <div class="course-info">
-                        <h3>${course.title}</h3>
+                            <h3>${course.title}</h3>
+                            <p class="course-short-description">${course.description || ''}</p>
                         <div class="course-meta">
                             <span class="students"><i class="fas fa-users"></i> ${stats.studentCount} студентов</span>
                             <span class="tasks"><i class="fas fa-tasks"></i> ${stats.assignmentCount} заданий</span>
                         </div>
                     </div>
                     <div class="course-actions">
-                        <a href="course_detail.html?id=${course.id}" class="btn btn-primary btn-small">Перейти</a>
+                            <a href="view_course.html?id=${course.id}" class="btn btn-primary btn-small">Перейти</a>
                         <a href="#" class="btn btn-outline btn-small">Статистика</a>
                     </div>
                 </div>
@@ -141,4 +142,15 @@ async function loadPendingSubmissions() {
     } catch (error) {
         console.error('Ошибка загрузки работ:', error);
     }
+}
+
+// Форматирует имя в строку `Фамилия И.О.`
+function formatShortName(user) {
+    if (!user) return '';
+    const last = user.lastName || '';
+    const first = user.firstName || '';
+    const middle = user.middleName || '';
+    const f = first ? first.charAt(0) + '.' : '';
+    const m = middle ? middle.charAt(0) + '.' : '';
+    return `${last} ${f}${m}`.trim();
 }

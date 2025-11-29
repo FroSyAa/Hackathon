@@ -1,0 +1,13 @@
+.deadlines-block { background: linear-gradient(180deg, #ffffff, #fbfdff); padding: 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(12,38,70,0.04); }
+.deadline-filter { font-size: 0.9rem; color: var(--color-text-secondary); margin-bottom: 8px; }
+.deadline-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(15,23,42,0.06); }
+.deadline-item:last-child { border-bottom: none; }
+.deadline-info { flex-grow: 1; margin-right: 12px; }
+.deadline-title { font-weight: 600; font-size: 0.975rem; color: var(--primary-dark-blue); }
+.deadline-course { font-size: 0.85rem; color: var(--color-text-secondary); }
+.deadline-date-block { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.deadline-date { font-weight: 700; color: var(--primary-blue); font-size: 0.95rem; }
+
+@media (max-width: 768px) {
+    .deadlines-block { padding: 14px; }
+}

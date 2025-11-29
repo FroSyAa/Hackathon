@@ -1,35 +1,190 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Панель студента</title>
-  <link rel="stylesheet" href="../../styles/main.css">
-  <link rel="stylesheet" href="../../styles/student.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд | Панель студента</title>
+
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/student/vars.css">
+    <link rel="stylesheet" href="../../styles/student/header.css">
+    <link rel="stylesheet" href="../../styles/student/stats.css">
+    <link rel="stylesheet" href="../../styles/student/courses.css">
+    <link rel="stylesheet" href="../../styles/student/deadlines.css">
 </head>
 <body>
-  <!-- Главная страница студента -->
+    <header class="main-header">
+        <div class="top-nav-bar">
+            <div class="logo-area">
+                <a href="dashboard.html">Панель студента</a>
+            </div>
 
-  <!-- Навигация -->
-  <nav>
-    <!-- Меню: Мои курсы, Задания, Чат, Профиль -->
-  </nav>
+            <div class="user-menu-container">
+                <div class="user-area" id="userDropdownToggle">
+                        <div class="user-avatar">ИИ</div>
+                        <span></span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
 
-  <!-- Список активных курсов -->
-  <section id="courses-list">
-    <!-- Карточки курсов с прогрессом изучения -->
-  </section>
+                <div class="dropdown-menu" id="userDropdownMenu">
+                    <a href="profile.html">👤 Профиль</a>
+                    <a href="#">⚙️ Настройки</a>
+                    <div class="menu-divider"></div>
+                    <a href="../common/login.html" style="color: var(--color-danger);">🚪 Выход</a>
+                </div>
+            </div>
+        </div>
 
-  <!-- Ближайшие дедлайны -->
-  <section id="upcoming-deadlines">
-    <!-- Список заданий с ближайшими дедлайнами -->
-  </section>
+        <div class="sub-nav-bar-wrapper">
+            <nav class="sub-nav-bar">
+                <a href="dashboard.html" class="nav-tab active">🏠 Дашборд</a>
+                <a href="courses.html" class="nav-tab">📚 Мои курсы</a>
+                <a href="grades.html" class="nav-tab">💯 Оценки</a>
+                <a href="../common/chat.html" class="nav-tab">💬 Чат</a>
+                <a href="profile.html" class="nav-tab">👤 Профиль</a>
+            </nav>
+        </div>
+    </header>
 
-  <!-- Уведомления -->
-  <section id="notifications">
-    <!-- Новые оценки, комментарии от преподавателя, новые материалы -->
-  </section>
+    <main class="dashboard-container">
+        <div class="breadcrumbs">
+            <a href="dashboard.html">Главная</a> <span>/</span> Дашборд
+        </div>
 
-  <script src="../../js/student/dashboard.js"></script>
+        <div class="stats-header">
+            <h3>Мой прогресс</h3>
+            <div class="time-filter">
+                <button class="btn active">Неделя</button>
+                <button class="btn">Месяц</button>
+                <button class="btn">Семестр</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card progress">
+                <div class="stat-icon">
+                    <img src="https://via.placeholder.com/50/28a745/ffffff?text=✔" alt="Общий прогресс">
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Общий прогресс</div>
+                </div>
+            </div>
+            <div class="stat-card courses">
+                <div class="stat-icon">
+                    <img src="https://via.placeholder.com/50/9c27b0/ffffff?text=📖" alt="Активных курсов">
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Активных курсов</div>
+                </div>
+            </div>
+            <div class="stat-card deadline">
+                <div class="stat-icon">
+                    <img src="https://via.placeholder.com/50/ffc107/ffffff?text=⏰" alt="Ближайших дедлайна">
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Ближайших дедлайна</div>
+                </div>
+            </div>
+            <div class="stat-card grade">
+                <div class="stat-icon">
+                    <img src="https://via.placeholder.com/50/007bff/ffffff?text=⭐" alt="Средний балл">
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">4.5 / 5</div>
+                    <div class="stat-label">Средний балл</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="main-column">
+                <div class="section-header">
+                    <h3>Мои курсы</h3>
+                    <button class="btn btn-success">+ Записаться</button>
+                </div>
+                <div class="my-courses-grid">
+                    <div class="course-card-small active-bg-1">
+                        <span class="course-badge badge-progress">40%</span>
+                        <h4>Алгоритмы и структуры данных</h4>
+                        <div class="meta">Преподаватель: Иванова Е.С. | Прогресс: 2/5 модулей</div>
+                        <div class="actions">
+                            <a href="course.html?id=1" class="btn btn-primary">Продолжить</a>
+                            <a href="course.html?id=1&details" class="btn btn-secondary">Детали</a>
+                        </div>
+                    </div>
+                    <div class="course-card-small active-bg-2">
+                        <span class="course-badge badge-progress">80%</span>
+                        <h4>Веб-разработка на Python</h4>
+                        <div class="meta">Преподаватель: Петров А.И. | Прогресс: 6/8 модулей</div>
+                        <div class="actions">
+                            <a href="course.html?id=2" class="btn btn-primary">Продолжить</a>
+                            <a href="course.html?id=2&details" class="btn btn-secondary">Детали</a>
+                        </div>
+                    </div>
+                    <div class="course-card-small completed-bg" style="grid-column: span 2; max-width: 50%;">
+                        <span class="course-badge badge-completed">Завершен</span>
+                        <h4>Базы данных и SQL</h4>
+                        <div class="meta">Преподаватель: Смирнов Р.О. | Прогресс: Завершен (100%)</div>
+                        <div class="actions">
+                            <a href="course.html?id=3&repeat" class="btn btn-secondary">Повторить</a>
+                            <a href="course.html?id=3&cert" class="btn btn-primary">Сертификат</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deadlines-column">
+                <div class="deadlines-block">
+                    <div class="section-header">
+                        <h3>Ближайшие дедлайны</h3>
+                        <div class="deadline-filter">По дате ▼</div>
+                    </div>
+
+                    <div class="deadline-item">
+                        <div class="deadline-info">
+                            <div class="deadline-title">Задание 3: Хеш-таблицы</div>
+                            <div class="deadline-course">Алгоритмы и СД</div>
+                        </div>
+                        <div class="deadline-date-block">
+                            <span class="btn-today">СЕГОДНЯ</span>
+                            <button class="btn btn-primary">Сдать</button>
+                        </div>
+                    </div>
+
+                    <div class="deadline-item">
+                        <div class="deadline-info">
+                            <div class="deadline-title">Проект 1: Forms</div>
+                            <div class="deadline-course">Веб-разработка Python</div>
+                        </div>
+                        <div class="deadline-date-block">
+                            <div class="deadline-date">02.12</div>
+                            <button class="btn btn-primary">Сдать</button>
+                        </div>
+                    </div>
+
+                    <div class="deadline-item">
+                        <div class="deadline-info">
+                            <div class="deadline-title">Тест 4: Динамическое прог.</div>
+                            <div class="deadline-course">Алгоритмы и СД</div>
+                        </div>
+                        <div class="deadline-date-block">
+                            <div class="deadline-date">05.12</div>
+                            <button class="btn btn-primary">Пройти</button>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 15px;">
+                        <a href="deadlines.html" class="btn-link">Посмотреть все →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common/api.js"></script>
+    <script src="../../js/student/dashboard.js"></script>
 </body>
 </html>
