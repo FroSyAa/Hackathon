@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(docker exec education_db psql -U admin -d education_platform -c \"DROP SCHEMA public CASCADE; CREATE SCHEMA public;\")"
-    ],
-    "deny": [],
-    "ask": []
-  }
-}
