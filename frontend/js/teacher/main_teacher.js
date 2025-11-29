@@ -37,7 +37,6 @@ async function loadStatistics() {
     try {
         const data = await API.teacher.getStatistics();
 
-        // Обновить статистические карточки
         const statCards = document.querySelectorAll('.stat-card');
         if (statCards.length >= 4) {
             statCards[0].querySelector('.stat-number').textContent = data.totalStudents;
@@ -46,7 +45,6 @@ async function loadStatistics() {
             statCards[3].querySelector('.stat-number').textContent = data.successRate + '%';
         }
 
-        // Сохранить статистику по курсам для использования в loadCourses
         data.courseStats.forEach(stat => {
             courseStatistics[stat.id] = stat;
         });
@@ -68,12 +66,18 @@ async function loadCourses() {
 
         coursesGrid.innerHTML = data.courses.map(course => {
             const stats = courseStatistics[course.id] || { studentCount: 0, assignmentCount: 0, progress: 0 };
-            const placeholderImage = course.imageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23004C97"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white"%3ECourse%3C/text%3E%3C/svg%3E';
+            
+            let imageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23004C97"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white"%3ECourse%3C/text%3E%3C/svg%3E';
+            if (course.imageUrl && course.imageUrl.trim() !== '') {
+                imageUrl = course.imageUrl;
+            }
+
+            const fallbackImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23004C97%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22%3ECourse%3C/text%3E%3C/svg%3E';
 
             return `
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="${placeholderImage}" alt="${course.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23004C97%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22%3ECourse%3C/text%3E%3C/svg%3E'">
+                        <img src="${imageUrl}" alt="${course.title}" onerror="this.src='${fallbackImage}'">
                         <div class="course-progress">
                             <span>${stats.progress}%</span>
                         </div>
@@ -87,8 +91,8 @@ async function loadCourses() {
                         </div>
                     </div>
                     <div class="course-actions">
-                            <a href="view_course.html?id=${course.id}" class="btn btn-primary btn-small">Перейти</a>
-                        <a href="#" class="btn btn-outline btn-small">Статистика</a>
+                        <a href="view_course.html?id=${course.id}" class="btn btn-primary btn-small">Перейти</a>
+                        <a href="edit_course.html?id=${course.id}" class="btn btn-outline btn-small">Редактировать</a>
                     </div>
                 </div>
             `;
