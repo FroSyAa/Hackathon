@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="../../styles/view_course.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
   <div class="teacher-dashboard">
     <!-- Header -->
@@ -21,13 +23,37 @@
         </div>
       </div>
       <div class="header-right">
-        <div class="notifications">
-          <i class="fas fa-bell"></i>
-          <span class="badge">3</span>
+        <div class="notifications" id="notificationContainer">
+          <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="notificationBadge">3</span>
+          </button>
+          <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+              <h4><i class="fas fa-bell"></i> Уведомления</h4>
+              <span class="notification-count" id="panelCount">2 новых</span>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- Уведомления будут здесь -->
+            </div>
+            <div class="notification-footer">
+              <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                <i class="fas fa-comments"></i> Перейти в чаты
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="user-info">
+        <div class="user-info" id="userInfo">
           <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
-          <span></span>
+          <span id="teacherName" class="teacher-name"></span>
+          <div class="profile-menu" id="profileMenu">
+            <a href="teacher_profile.html" class="menu-item">
+              <i class="fas fa-user"></i> Профиль
+            </a>
+            <a href="../../pages/common/login.html" class="menu-item logout">
+              <i class="fas fa-sign-out-alt"></i> Выйти
+            </a>
+          </div>
         </div>
       </div>
     </header>
@@ -218,7 +244,9 @@
   </div>
 
   <script src="../../js/common/api.js"></script>
+  <script src="../../js/teacher/main_teacher.js"></script>
   <script src="../../js/teacher/view_course.js"></script>
   <script src="./script.js"></script>
 </body>
+
 </html>
