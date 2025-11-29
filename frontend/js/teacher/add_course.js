@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Правильные селекторы для кнопок
     const form = document.getElementById('courseForm');
     const steps = document.querySelectorAll('.form-step');
     const stepItems = document.querySelectorAll('.step-item');
@@ -11,21 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let theoryTopics = [];
     let practiceTopics = [];
     
-    console.log('Кнопки найдены:', { nextBtn, prevBtn, submitBtn }); // DEBUG
+    console.log('Кнопки найдены:', { nextBtn, prevBtn, submitBtn });
     
-    // Инициализация
+    
     initImagePreview();
     initDragAndDrop();
     initTopicButtons();
     updateStep();
-    
-    // Навигация - ПРЯМАЯ привязка
+    const user = getUser();
+    if (user) {
+        const nameSpan = document.querySelector('.user-info span');
+        if (nameSpan) nameSpan.textContent = formatShortName(user);
+    }
     if (nextBtn) nextBtn.addEventListener('click', nextStep);
     if (prevBtn) prevBtn.addEventListener('click', prevStep);
     if (form) form.addEventListener('submit', handleSubmit);
     
     function nextStep() {
-        console.log('Next clicked, currentStep:', currentStep); // DEBUG
+        console.log('Next clicked, currentStep:', currentStep);
         if (validateCurrentStep()) {
             currentStep++;
             updateStep();
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateStep() {
-        console.log('Updating step to:', currentStep); // DEBUG
+        console.log('Updating step to:', currentStep);
         
         // Обновляем видимость шагов
         steps.forEach((step, index) => {
@@ -67,11 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function validateCurrentStep() {
-        console.log('Validating step:', currentStep); // DEBUG
+        console.log('Validating step:', currentStep);
         
         if (currentStep === 1) {
             const titleInput = form.querySelector('[name="courseTitle"]');
-            console.log('Title input:', titleInput, titleInput?.value); // DEBUG
+            console.log('Title input:', titleInput, titleInput?.value);
             if (titleInput && titleInput.value.trim()) {
                 return true;
             }
@@ -197,17 +199,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleSubmit(e) {
         e.preventDefault();
-        
         const formData = new FormData(form);
-        const courseData = {
-            title: formData.get('courseTitle'),
-            category: formData.get('courseCategory'),
-            groups: Array.from(formData.getAll('group')),
-            theoryTopics: theoryTopics,
-            practiceTopics: practiceTopics
-        };
-        
-        console.log('Создан курс:', courseData);
-        alert('✅ Курс успешно создан!\n\n' + JSON.stringify(courseData, null, 2));
+        const title = formData.get('courseTitle');
+        const description = formData.get('courseDescription') || '';
+
+        // call backend
+        API.teacher.createCourse(title, description)
+            .then(resp => {
+                alert('✅ Курс успешно создан!');
+                // После создания редиректим на панель преподавателя
+                window.location.href = '/pages/teacher/main_teacher.html';
+            })
+            .catch(err => {
+                console.error('Ошибка создания курса:', err);
+                alert('Ошибка создания курса: ' + err.message);
+            });
     }
 });
+
+// Форматирует имя в строку `Фамилия И.О.`
+function formatShortName(user) {
+    if (!user) return '';
+    const last = user.lastName || '';
+    const first = user.firstName || '';
+    const middle = user.middleName || '';
+    const f = first ? first.charAt(0) + '.' : '';
+    const m = middle ? middle.charAt(0) + '.' : '';
+    return `${last} ${f}${m}`.trim();
+}

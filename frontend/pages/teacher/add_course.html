@@ -19,14 +19,14 @@
           <span>/ Добавить курс</span>
         </div>
       </div>
-      <div class="header-right">
+        <div class="header-right">
         <div class="notifications">
           <i class="fas fa-bell"></i>
           <span class="badge">3</span>
         </div>
         <div class="user-info">
           <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
-          <span>Иванов И.И.</span>
+          <span></span>
         </div>
       </div>
     </header>
@@ -69,14 +69,8 @@
               <img class="course-image-preview" id="imagePreview" alt="Предпросмотр">
             </div>
             <div class="form-group">
-              <label class="form-label">Категория</label>
-              <select class="form-input" name="courseCategory">
-                <option>Выберите категорию</option>
-                <option>Алгоритмы</option>
-                <option>Веб-разработка</option>
-                <option>Базы данных</option>
-                <option>Машинное обучение</option>
-              </select>
+              <label class="form-label">Описание курса</label>
+              <textarea class="form-input" name="courseDescription" rows="4" placeholder="Краткое описание курса"></textarea>
             </div>
           </div>
         </div>
@@ -155,6 +149,7 @@
     </main>
   </div>
 
+  <script src="../../js/common/api.js"></script>
   <script src="../../js/teacher/add_course.js"></script>
   <script src="./script.js"></script>
 </body>

@@ -23,7 +23,7 @@ function renderHeader() {
         <h1>Панель управления</h1>
         ${user.role === 'teacher' ? teacherNav : studentNav}
         <div class="user-info">
-          <span>${user.firstName} ${user.lastName}</span>
+          <span>${formatShortName(user)}</span>
           <button onclick="logout()">Выйти</button>
         </div>
       </div>
@@ -38,3 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     headerContainer.innerHTML = renderHeader();
   }
 });
+
+function formatShortName(user) {
+  if (!user) return '';
+  const last = user.lastName || '';
+  const first = user.firstName || '';
+  const middle = user.middleName || '';
+  const f = first ? first.charAt(0) + '.' : '';
+  const m = middle ? middle.charAt(0) + '.' : '';
+  return `${last} ${f}${m}`.trim();
+}

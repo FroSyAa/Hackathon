@@ -56,16 +56,27 @@ async function fetchAPI(endpoint, options = {}) {
     headers
   });
 
-  if (response.status === 401 || response.status === 403) {
-    clearAuth();
-    window.location.href = '/pages/common/login.html';
-    throw new Error('Unauthorized');
+  let data = null;
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = null;
+    }
   }
 
-  const data = await response.json();
+  if (response.status === 401 || response.status === 403) {
+    clearAuth();
+    const msg = data && data.error ? data.error : 'Unauthorized';
+    if (!window.location.pathname.endsWith('/pages/common/login.html')) {
+      window.location.href = '/pages/common/login.html';
+    }
+    throw new Error(msg);
+  }
 
   if (!response.ok) {
-    throw new Error(data.error || 'Ошибка сервера');
+    throw new Error((data && data.error) || 'Ошибка сервера');
   }
 
   return data;
@@ -104,6 +115,7 @@ const API = {
       }),
 
     getMaterials: (courseId) => fetchAPI(`/teacher/materials/${courseId}`),
+    getCourseAssignments: (courseId) => fetchAPI(`/teacher/courses/${courseId}/assignments`),
 
     getPendingSubmissions: () => fetchAPI('/teacher/assignments/pending'),
 
