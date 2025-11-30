@@ -16,23 +16,50 @@ document.addEventListener('DOMContentLoaded', function() {
     initImagePreview();
     initDragAndDrop();
     initTopicButtons();
+    loadGroups();
     updateStep();
     const user = getUser();
     if (user) {
         const nameSpan = document.querySelector('.user-info span');
         if (nameSpan) nameSpan.textContent = formatShortName(user);
     }
+
+    // Подгрузка групп из БД
+    async function loadGroups() {
+        try {
+            const token = localStorage.getItem('token');
+            const resp = await fetch('/api/common/groups', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const container = document.querySelector('.groups-container');
+            if (!container) return;
+            if (!data.groups || data.groups.length === 0) {
+                container.innerHTML = '<p>Группы не найдены.</p>';
+                return;
+            }
+            container.innerHTML = data.groups.map(g => `
+                <div class="group-item">
+                  <label class="group-checkbox">
+                    <input type="checkbox" name="group" value="${g}">
+                    <span>${g}</span>
+                  </label>
+                </div>
+            `).join('');
+        } catch (e) {
+            console.error('Ошибка загрузки групп:', e);
+        }
+    }
     if (nextBtn) nextBtn.addEventListener('click', nextStep);
     if (prevBtn) prevBtn.addEventListener('click', prevStep);
     if (form) form.addEventListener('submit', handleSubmit);
     
     function nextStep() {
-        console.log('Next clicked, currentStep:', currentStep);
+        console.log('function nextStep', currentStep);
         if (validateCurrentStep()) {
             currentStep++;
             updateStep();
         } else {
-            console.log('Validation failed'); // DEBUG
+            console.log('function nextStep failed'); 
         }
     }
     
@@ -44,12 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStep() {
         console.log('Updating step to:', currentStep);
         
-        // Обновляем видимость шагов
         steps.forEach((step, index) => {
             step.classList.toggle('active', index + 1 === currentStep);
         });
         
-        // Обновляем индикатор шагов
         stepItems.forEach((item, index) => {
             item.classList.remove('active', 'completed');
             if (index + 1 < currentStep) {
@@ -59,17 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Обновляем кнопки
         if (prevBtn) prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
         if (nextBtn) nextBtn.style.display = currentStep < 3 ? 'inline-flex' : 'none';
         if (submitBtn) submitBtn.style.display = currentStep === 3 ? 'inline-flex' : 'none';
-        
-        // Прокрутка к верху
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
     function validateCurrentStep() {
-        console.log('Validating step:', currentStep);
+        console.log('function validateCurrentStep:', currentStep);
         
         if (currentStep === 1) {
             const titleInput = form.querySelector('[name="courseTitle"]');
@@ -83,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (currentStep === 2) {
-            // Для шага 2 можно не проверять, если темы необязательны
             return true;
         }
         
@@ -99,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
     
-    // Предпросмотр изображения
     function initImagePreview() {
         const fileInput = form.querySelector('[name="courseImage"]');
         const preview = document.getElementById('imagePreview');
@@ -119,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Инициализация кнопок добавления тем
     function initTopicButtons() {
         document.querySelectorAll('.add-topic-btn').forEach(btn => {
             btn.addEventListener('click', addTopic);
@@ -199,20 +219,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleSubmit(e) {
         e.preventDefault();
-        const formData = new FormData(form);
-        const title = formData.get('courseTitle');
-        const description = formData.get('courseDescription') || '';
+        const fd = new FormData();
+        const title = form.querySelector('[name="courseTitle"]').value;
+        const description = form.querySelector('[name="courseDescription"]').value || '';
+        fd.append('title', title);
+        fd.append('description', description);
 
-        // call backend
-        API.teacher.createCourse(title, description)
+        const fileInput = form.querySelector('[name="courseImage"]');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            fd.append('image', fileInput.files[0]);
+        }
+
+        const groups = Array.from(form.querySelectorAll('input[name="group"]:checked')).map(i => i.value);
+        fd.append('groups', JSON.stringify(groups));
+
+        fd.append('theoryTopics', JSON.stringify(theoryTopics));
+        fd.append('practiceTopics', JSON.stringify(practiceTopics));
+
+        API.teacher.createCourse(fd)
             .then(resp => {
                 alert('✅ Курс успешно создан! Перенаправляю на редактирование...');
-                // После создания редиректим на редактирование курса
                 window.location.href = `/pages/teacher/edit_course.html?id=${resp.course.id}`;
             })
             .catch(err => {
                 console.error('Ошибка создания курса:', err);
-                alert('Ошибка создания курса: ' + err.message);
+                alert('Ошибка создания курса: ' + (err.message || err));
             });
     }
 });

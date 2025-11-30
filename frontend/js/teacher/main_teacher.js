@@ -60,16 +60,26 @@ async function loadCourses() {
         const coursesGrid = document.querySelector('.courses-grid');
 
         if (!data.courses || data.courses.length === 0) {
-            coursesGrid.innerHTML = '<p>Нет курсов. Создайте свой первый курс!</p>';
+            if (coursesGrid) coursesGrid.innerHTML = '<p>Нет курсов.</p>';
             return;
         }
+
+        if (!coursesGrid) return;
 
         coursesGrid.innerHTML = data.courses.map(course => {
             const stats = courseStatistics[course.id] || { studentCount: 0, assignmentCount: 0, progress: 0 };
             
             let imageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23004C97"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white"%3ECourse%3C/text%3E%3C/svg%3E';
             if (course.imageUrl && course.imageUrl.trim() !== '') {
-                imageUrl = course.imageUrl;
+                const raw = course.imageUrl.trim();
+                if (raw.startsWith('http')) {
+                    imageUrl = raw;
+                } else if (raw.startsWith('/uploads') || raw.startsWith('uploads')) {
+                    const host = API_URL.replace(/\/api\/?$/, '');
+                    imageUrl = host + (raw.startsWith('/') ? raw : '/' + raw);
+                } else {
+                    imageUrl = raw;
+                }
             }
 
             const fallbackImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23004C97%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22%3ECourse%3C/text%3E%3C/svg%3E';
@@ -107,14 +117,16 @@ async function loadPendingSubmissions() {
     try {
         const data = await API.teacher.getPendingSubmissions();
         const pendingList = document.querySelector('.pending-list');
+        const badgeUrgent = document.querySelector('.badge.urgent');
 
         if (!data.submissions || data.submissions.length === 0) {
-            pendingList.innerHTML = '<p>Нет работ на проверке</p>';
-            document.querySelector('.badge.urgent').textContent = '0';
+            if (pendingList) pendingList.innerHTML = '<p>Нет работ на проверке</p>';
+            if (badgeUrgent) badgeUrgent.textContent = '0';
             return;
         }
 
-        document.querySelector('.badge.urgent').textContent = data.submissions.length;
+        if (badgeUrgent) badgeUrgent.textContent = String(data.submissions.length);
+        if (!pendingList) return;
 
         pendingList.innerHTML = data.submissions.map(submission => {
             const deadline = new Date(submission.assignment.deadline);

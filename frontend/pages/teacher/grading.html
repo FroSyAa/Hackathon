@@ -36,7 +36,7 @@
       <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Студенты</span></a>
       <a href="grading.html" class="nav-item active"><i class="fas fa-clipboard-check"></i><span>Проверка
           работ</span></a>
-      <a href="../pages/common/chat.html" class="nav-item"><i class="fas fa-comments"></i><span>Чат</span></a>
+      <a href="../common/chat.html" class="nav-item"><i class="fas fa-comments"></i><span>Чат</span></a>
     </nav>
 
     <main class="grading-content">
@@ -45,16 +45,16 @@
       </div>
 
       <div class="filters-row">
-        <input type="text" id="searchStudent" class="filter-input" placeholder="🔍 Поиск по фамилии...">
-        <input type="text" id="searchGroup" class="filter-input" placeholder="👥 Группа...">
+        <input type="text" id="searchStudent" class="filter-input" placeholder="Поиск по фамилии...">
+        <input type="text" id="searchGroup" class="filter-input" placeholder="Группа...">
         <select id="filterStatus" class="filter-select">
           <option value="">Все статусы</option>
-          <option value="сдано">✅ Сдано</option>
-          <option value="проверка">⏳ Проверка</option>
-          <option value="не сдано">❌ Не сдано</option>
+          <option value="сдано">Сдано</option>
+          <option value="проверка">Проверка</option>
+          <option value="не сдано">Не сдано</option>
         </select>
-        <button id="searchBtn" class="btn btn-primary">🔍 Поиск</button>
-        <button id="clearBtn" class="btn btn-secondary">🧹 Очистить</button>
+        <button id="searchBtn" class="btn btn-primary">Поиск</button>
+        <button id="clearBtn" class="btn btn-secondary">Очистить</button>
         <div class="stats">
           <span>Всего: <span id="totalCount">0</span></span>
           <span>Сдано: <span id="doneCount">0</span></span>
@@ -68,7 +68,7 @@
   </div>
 
   <script src="../../js/common/api.js"></script>
-  <script src="../../js/teacher/grading.js"></script>
+  <script src="../../js/teacher/grading_2.js"></script>
 </body>
 
 </html>

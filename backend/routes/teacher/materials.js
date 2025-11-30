@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { Material, Course } = require('../../models');
+const { Material, Course, Assignment } = require('../../models');
 const { authenticateToken, authorizeTeacher } = require('../../middleware/auth');
 
 const storage = multer.diskStorage({
@@ -16,10 +16,20 @@ const upload = multer({
   limits: { fileSize: 100 * 1024 * 1024 }
 });
 
-// Загрузка нового учебного материала
-router.post('/', authenticateToken, authorizeTeacher, upload.single('file'), async (req, res) => {
+const recentUploads = new Map();
+
+// Загрузка нового учебного материала или добавление файлов к существующему материалу (parentId)
+router.post('/', authenticateToken, authorizeTeacher, upload.any(), async (req, res) => {
   try {
-    const { courseId, title, description, type } = req.body;
+    const { courseId, title, description, type, parentId, assignmentId } = req.body;
+
+    console.debug('[materials] upload request:', {
+      courseId,
+      parentId,
+      assignmentId,
+      filesCount: req.files ? req.files.length : 0,
+      type
+    });
 
     const course = await Course.findByPk(courseId);
     if (!course) {
@@ -30,16 +40,107 @@ router.post('/', authenticateToken, authorizeTeacher, upload.single('file'), asy
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
-    const material = await Material.create({
-      courseId,
-      title,
-      description,
-      type,
-      fileUrl: req.file ? req.file.path : null,
-      version: 1
-    });
+    if (parentId) {
+      const parentMaterial = await Material.findByPk(parentId);
+      if (!parentMaterial) {
+        return res.status(400).json({ error: 'Родительский материал не найден' });
+      }
+      if (String(parentMaterial.courseId) !== String(courseId)) {
+        return res.status(400).json({ error: 'Родительский материал принадлежит другому курсу' });
+      }
+    }
 
-    res.status(201).json({ material });
+    if (assignmentId) {
+      const assignment = await Assignment.findByPk(assignmentId);
+      if (!assignment) {
+        return res.status(400).json({ error: 'Задание (assignment) не найдено' });
+      }
+      if (String(assignment.courseId) !== String(courseId)) {
+        return res.status(400).json({ error: 'Задание принадлежит другому курсу' });
+      }
+    }
+
+    try {
+      const filePart = (req.files || []).map(f => `${f.originalname}:${f.size}`).join('|');
+      const fp = `${req.teacher && req.teacher.id ? req.teacher.id : 'anon'}|${courseId}|${parentId||''}|${assignmentId||''}|${filePart}`;
+      if (recentUploads.has(fp)) {
+        console.warn('[materials] duplicate upload suppressed by server cache', fp);
+        return res.status(200).json({ duplicate: true });
+      }
+      recentUploads.set(fp, Date.now());
+      setTimeout(() => recentUploads.delete(fp), 5000);
+    } catch (e) {
+      console.warn('Failed to compute upload fingerprint', e);
+    }
+
+    if (req.files && req.files.length > 0 && parentId) {
+      const created = [];
+      for (const file of req.files) {
+        const mat = await Material.create({
+          courseId,
+          title: file.originalname || title || 'Файл',
+          description: description || null,
+          type: type || 'pdf',
+          fileUrl: file.path,
+          parentId: parentId,
+          version: 1
+        });
+        created.push(mat);
+      }
+      return res.status(201).json({ materials: created });
+    }
+
+    if (req.files && req.files.length > 0 && assignmentId) {
+      const created = [];
+      for (const file of req.files) {
+        const mat = await Material.create({
+          courseId,
+          title: file.originalname || title || 'Файл',
+          description: description || null,
+          type: type || 'pdf',
+          fileUrl: file.path,
+          assignmentId: assignmentId,
+          version: 1
+        });
+        created.push(mat);
+      }
+      return res.status(201).json({ materials: created });
+    }
+
+    if (req.files && req.files.length > 0) {
+      const created = [];
+      for (const file of req.files) {
+        const mat = await Material.create({
+          courseId,
+          title: file.originalname || title || 'Файл',
+          description: description || null,
+          type: type || 'pdf',
+          fileUrl: file.path,
+          version: 1
+        });
+        created.push(mat);
+      }
+      return res.status(201).json({ materials: created });
+    }
+
+    // If no files were uploaded, only create a text material when explicitly requested
+    if ((!req.files || req.files.length === 0)) {
+      if (type === 'text') {
+        const materialData = {
+          courseId,
+          title: title || 'Без названия',
+          description: description || null,
+          type: 'text',
+          fileUrl: null,
+          parentId: parentId || null,
+          assignmentId: assignmentId || null,
+          version: 1
+        };
+        const material = await Material.create(materialData);
+        return res.status(201).json({ material });
+      }
+      return res.status(400).json({ error: 'Нет файлов для загрузки и не указано создание текстового материала' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

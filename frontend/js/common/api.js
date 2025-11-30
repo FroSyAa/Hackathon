@@ -86,64 +86,44 @@ async function fetchAPI(endpoint, options = {}) {
 const API = {
   auth: {
     login: (email, password, role) =>
-      fetchAPI('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, role })
-      }),
-
+      fetchAPI('/auth/login', { method: 'POST', body: JSON.stringify({ email, password, role }) }),
     getProfile: () => fetchAPI('/auth/me')
   },
 
   teacher: {
     getCourses: () => fetchAPI('/teacher/courses'),
-    createCourse: (title, description) =>
-      fetchAPI('/teacher/courses', {
-        method: 'POST',
-        body: JSON.stringify({ title, description })
-      }),
-
-    updateCourseImage: (courseId, imageUrl) =>
-      fetchAPI(`/teacher/courses/${courseId}/image`, {
-        method: 'PATCH',
-        body: JSON.stringify({ imageUrl })
-      }),
-
-    createAssignment: (courseId, data) =>
-      fetchAPI(`/teacher/courses/${courseId}/assignments`, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      }),
-
+    createCourse: (titleOrForm, description) => {
+      if (titleOrForm instanceof FormData) return fetchAPI('/teacher/courses', { method: 'POST', body: titleOrForm });
+      return fetchAPI('/teacher/courses', { method: 'POST', body: JSON.stringify({ title: titleOrForm, description }) });
+    },
+    updateCourseImage: (courseId, imageUrl) => fetchAPI(`/teacher/courses/${courseId}/image`, { method: 'PATCH', body: JSON.stringify({ imageUrl }) }),
+    uploadCourseImage: (courseId, formData) => fetchAPI(`/teacher/courses/${courseId}/image/upload`, { method: 'POST', body: formData }),
+    updateCourse: (courseId, data) => fetchAPI(`/teacher/courses/${courseId}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    createAssignment: (courseId, data) => fetchAPI(`/teacher/courses/${courseId}/assignments`, { method: 'POST', body: JSON.stringify(data) }),
     getAssignments: (courseId) => fetchAPI(`/teacher/courses/${courseId}/assignments`),
-
-    uploadMaterial: (formData) =>
-      fetchAPI('/teacher/materials', {
-        method: 'POST',
-        body: formData
-      }),
-
+    uploadMaterial: (formData) => fetchAPI('/teacher/materials', { method: 'POST', body: formData }),
     getMaterials: (courseId) => fetchAPI(`/teacher/materials/${courseId}`),
     getCourseAssignments: (courseId) => fetchAPI(`/teacher/courses/${courseId}/assignments`),
-
     getPendingSubmissions: () => fetchAPI('/teacher/assignments/pending'),
-
-    gradeSubmission: (submissionId, score, feedback, status) =>
-      fetchAPI(`/teacher/grade/${submissionId}`, {
-        method: 'POST',
-        body: JSON.stringify({ score, feedback, status })
-      }),
-
+    gradeSubmission: (submissionId, score, feedback, status) => fetchAPI(`/teacher/grade/${submissionId}`, { method: 'POST', body: JSON.stringify({ score, feedback, status }) }),
     getProgress: (courseId) => fetchAPI(`/teacher/progress/${courseId}`),
-
     getStatistics: () => fetchAPI('/teacher/courses/statistics'),
+    bulkUploadStudents: (courseId, students) => fetchAPI('/teacher/students/bulk-upload', { method: 'POST', body: JSON.stringify({ courseId, students }) }),
+    addStudent: (courseId, student) => fetchAPI('/teacher/students/add', { method: 'POST', body: JSON.stringify({ courseId, ...student }) }),
+    getCourseStudents: (courseId) => fetchAPI(`/teacher/students/course/${courseId}`),
+    deleteMaterial: (materialId) => fetchAPI(`/teacher/materials/${materialId}`, { method: 'DELETE' }),
+    deleteAssignment: (courseId, assignmentId) => fetchAPI(`/teacher/courses/${courseId}/assignments/${assignmentId}`, { method: 'DELETE' })
+  },
 
-    bulkUploadStudents: (courseId, students) =>
-      fetchAPI('/teacher/students/bulk-upload', {
-        method: 'POST',
-        body: JSON.stringify({ courseId, students })
-      }),
-
-    getCourseStudents: (courseId) => fetchAPI(`/teacher/students/course/${courseId}`)
+  common: {
+    // Chats
+    getChats: () => fetchAPI('/common/chats'),
+    createChat: (title) => fetchAPI('/common/chats', { method: 'POST', body: JSON.stringify({ title }) }),
+    getChatMessages: (chatId) => fetchAPI(`/common/chats/${chatId}/messages`),
+    postChatMessage: (chatId, content) => fetchAPI(`/common/chats/${chatId}/messages`, { method: 'POST', body: JSON.stringify({ content }) }),
+    // Notifications
+    getNotifications: (limit = 3) => fetchAPI(`/common/notifications?limit=${limit}`),
+    createNotification: (userId, title, body) => fetchAPI('/common/notifications', { method: 'POST', body: JSON.stringify({ userId, title, body }) })
   },
 
   student: {
@@ -151,53 +131,24 @@ const API = {
     getMaterials: (courseId) => fetchAPI(`/student/courses/${courseId}/materials`),
     getStats: (courseId) => fetchAPI(`/student/courses/${courseId}/stats`),
     getAssignments: () => fetchAPI('/student/assignments'),
-    submitAssignment: (assignmentId, formData) =>
-      fetchAPI(`/student/assignments/${assignmentId}/submit`, {
-        method: 'POST',
-        body: formData
-      }),
+    submitAssignment: (assignmentId, formData) => fetchAPI(`/student/assignments/${assignmentId}/submit`, { method: 'POST', body: formData }),
     getFeedback: (assignmentId) => fetchAPI(`/student/assignments/${assignmentId}/feedback`)
   },
 
   superadmin: {
     getDirections: () => fetchAPI('/superadmin/directions'),
-    createDirection: (name) =>
-      fetchAPI('/superadmin/directions', {
-        method: 'POST',
-        body: JSON.stringify({ name })
-      }),
-    deleteDirection: (directionId) =>
-      fetchAPI(`/superadmin/directions/${directionId}`, {
-        method: 'DELETE'
-      }),
+    createDirection: (name) => fetchAPI('/superadmin/directions', { method: 'POST', body: JSON.stringify({ name }) }),
+    deleteDirection: (directionId) => fetchAPI(`/superadmin/directions/${directionId}`, { method: 'DELETE' }),
     getDirectionAdmins: (directionId) => fetchAPI(`/superadmin/directions/${directionId}/admins`),
-    createDirectionAdmin: (directionId, email, password, firstName, lastName, middleName) =>
-      fetchAPI(`/superadmin/directions/${directionId}/admins`, {
-        method: 'POST',
-        body: JSON.stringify({ email, password, firstName, lastName, middleName })
-      })
+    createDirectionAdmin: (directionId, email, password, firstName, lastName, middleName) => fetchAPI(`/superadmin/directions/${directionId}/admins`, { method: 'POST', body: JSON.stringify({ email, password, firstName, lastName, middleName }) })
   },
 
   admin: {
     getTeachers: () => fetchAPI('/admin/teachers'),
-    createTeacher: (email, password, firstName, lastName, middleName) =>
-      fetchAPI('/admin/teachers', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, firstName, lastName, middleName })
-      }),
-    deleteTeacher: (teacherId) =>
-      fetchAPI(`/admin/teachers/${teacherId}`, {
-        method: 'DELETE'
-      }),
+    createTeacher: (email, password, firstName, lastName, middleName) => fetchAPI('/admin/teachers', { method: 'POST', body: JSON.stringify({ email, password, firstName, lastName, middleName }) }),
+    deleteTeacher: (teacherId) => fetchAPI(`/admin/teachers/${teacherId}`, { method: 'DELETE' }),
     getStudents: () => fetchAPI('/admin/students'),
-    createStudent: (email, password, firstName, lastName, middleName, groupName) =>
-      fetchAPI('/admin/students', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, firstName, lastName, middleName, groupName })
-      }),
-    deleteStudent: (studentId) =>
-      fetchAPI(`/admin/students/${studentId}`, {
-        method: 'DELETE'
-      })
+    createStudent: (email, password, firstName, lastName, middleName, groupName) => fetchAPI('/admin/students', { method: 'POST', body: JSON.stringify({ email, password, firstName, lastName, middleName, groupName }) }),
+    deleteStudent: (studentId) => fetchAPI(`/admin/students/${studentId}`, { method: 'DELETE' })
   }
 };
