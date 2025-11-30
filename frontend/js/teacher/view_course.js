@@ -224,7 +224,6 @@ function initCourseActions() {
                     }
                     break;
                 case 'Статистика':
-                    alert('Открытие статистики курса...');
                     break;
             }
         });
@@ -391,3 +390,4 @@ async function loadCourseFromApi() {
         console.error('Ошибка загрузки курса:', err);
     }
 }
+
