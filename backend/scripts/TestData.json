@@ -1,0 +1,22 @@
+{
+  "users": [
+    { "email": "teacher1@test.local", "password": "passTeacher1", "firstName": "Иван", "lastName": "Петров", "role": "teacher", "direction": "Backend", "avatarIndex": 0 },
+    { "email": "teacher2@test.local", "password": "passTeacher2", "firstName": "Пётр", "lastName": "Шипунов", "role": "teacher", "direction": "Frontend", "avatarIndex": 1 },
+    { "email": "teacher3@test.local", "password": "passTeacher3", "firstName": "Ольга", "lastName": "Кузнецова", "role": "teacher", "direction": "Backend", "avatarIndex": 2 },
+    { "email": "teacher4@test.local", "password": "passTeacher4", "firstName": "Анна", "lastName": "Смирнова", "role": "teacher", "direction": "Frontend", "avatarIndex": 3 },
+    { "email": "teacher5@test.local", "password": "passTeacher5", "firstName": "Сергей", "lastName": "Иванов", "role": "teacher", "direction": "Backend", "avatarIndex": 0 },
+
+    { "email": "student1@test.local", "password": "passStudent1", "firstName": "Алексей", "lastName": "Попов", "role": "student", "direction": "Backend", "avatarIndex": 1 },
+    { "email": "student2@test.local", "password": "passStudent2", "firstName": "Мария", "lastName": "Волкова", "role": "student", "direction": "Frontend", "avatarIndex": 2 },
+    { "email": "student3@test.local", "password": "passStudent3", "firstName": "Дмитрий", "lastName": "Ковалев", "role": "student", "direction": "Backend", "avatarIndex": 3 },
+    { "email": "student4@test.local", "password": "passStudent4", "firstName": "Елена", "lastName": "Михайлова", "role": "student", "direction": "Frontend", "avatarIndex": 0 },
+    { "email": "student5@test.local", "password": "passStudent5", "firstName": "Николай", "lastName": "Фёдоров", "role": "student", "direction": "Backend", "avatarIndex": 1 }
+  ],
+  "courses": [
+    { "title": "Веб-разработка на Python", "description": "Курс по веб-разработке", "teacherEmail": "teacher1@test.local", "imageIndex": 0 },
+    { "title": "Алгоритмы и структуры данных", "description": "Классические алгоритмы", "teacherEmail": "teacher2@test.local", "imageIndex": 1 },
+    { "title": "Базы данных и SQL", "description": "Практика по SQL", "teacherEmail": "teacher3@test.local", "imageIndex": 2 },
+    { "title": "Frontend мастерская", "description": "Современные фронтенд-технологии", "teacherEmail": "teacher4@test.local", "imageIndex": 3 },
+    { "title": "DevOps основы", "description": "Введение в DevOps", "teacherEmail": "teacher5@test.local", "imageIndex": 4 }
+  ]
+}
