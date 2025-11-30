@@ -1,7 +1,7 @@
 let mockChats = [];
 let currentChatId = 0;
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     await loadChats();
     bindChatEvents();
     showNoChatSelected();
@@ -23,21 +23,21 @@ function showNoChatSelected() {
 
 function bindChatEvents() {
     document.querySelectorAll('.chat-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             if (e.target.classList.contains('delete-chat-btn')) return;
             switchChat(this.dataset.chat);
         });
     });
 
     document.querySelectorAll('.delete-chat-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             deleteChat(this.dataset.chat);
         });
     });
 
     document.getElementById('sendBtn').onclick = sendMessage;
-    document.getElementById('messageInput').onkeypress = function(e) {
+    document.getElementById('messageInput').onkeypress = function (e) {
         if (e.key === 'Enter' && currentChatId > 0) {
             sendMessage();
             return false;
@@ -54,7 +54,7 @@ function bindChatEvents() {
     }
 }
 
-function createNewChat() {
+async function createNewChat() {
     const name = prompt('Введите имя участника чата:');
     if (!name || name.trim() === '') {
         alert('Введите имя для чата!');
@@ -96,11 +96,11 @@ function updateChatDataAttributes() {
     chatItems.forEach((item, index) => {
         item.dataset.chat = index + 1;
         const delBtn = item.querySelector('.delete-chat-btn');
-        if(delBtn) delBtn.dataset.chat = index + 1;
+        if (delBtn) delBtn.dataset.chat = index + 1;
     });
 }
 
-function switchChat(chatId) {
+async function switchChat(chatId) {
     currentChatId = parseInt(chatId);
     document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
     const el = document.querySelector(`[data-chat="${chatId}"]`);
@@ -110,7 +110,7 @@ function switchChat(chatId) {
         const title = el ? (el.querySelector('.chat-name')?.textContent || 'Чат') : 'Чат';
         document.getElementById('chatTitle').textContent = title;
         document.getElementById('chatStatus').textContent = 'В сети';
-        loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), text: m.content })));
+        loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), text: m.content })));
     } catch (err) {
         console.warn('Failed to load messages from server, falling back to local', err);
         const chat = mockChats.find(c => String(c.id) === String(chatId)) || { messages: [] };
@@ -160,7 +160,7 @@ function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const div = document.createElement('div');
     div.className = 'message sent';
     div.innerHTML = `
@@ -180,17 +180,17 @@ function sendMessage() {
         try {
             await API.common.postChatMessage(currentChatId, text);
             const data = await API.common.getChatMessages(currentChatId);
-            loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), text: m.content })));
+            loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), text: m.content })));
         } catch (err) {
             console.warn('Failed to send message, fallback to local echo', err);
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const replyDiv = document.createElement('div');
             replyDiv.className = 'message received';
             replyDiv.innerHTML = `
                 <img src="../../assets/student.png" class="msg-avatar" alt="Ответ">
                 <div class="msg-bubble">
                     <div class="msg-header">
-                        <span class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                        <span class="msg-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                     <p>Понял! Отличная работа 🚀</p>
                 </div>
@@ -209,7 +209,7 @@ async function loadChats() {
     } catch (err) {
         console.warn('Failed to load chats from server, using mock', err);
         if (!mockChats || mockChats.length === 0) {
-            mockChats = [ { id: 1, name: 'Иванов И.И.', avatar: '../../assets/student.png', messages: [] } ];
+            mockChats = [{ id: 1, name: 'Иванов И.И.', avatar: '../../assets/student.png', messages: [] }];
         }
         renderChats();
     }
