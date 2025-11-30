@@ -87,7 +87,11 @@ const API = {
   auth: {
     login: (email, password, role) =>
       fetchAPI('/auth/login', { method: 'POST', body: JSON.stringify({ email, password, role }) }),
-    getProfile: () => fetchAPI('/auth/me')
+    getProfile: () => fetchAPI('/auth/me'),
+    changePassword: (currentPassword, newPassword) => fetchAPI('/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) }),
+    updateProfile: (data) => fetchAPI('/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
+    uploadAvatar: (formData) => fetchAPI('/auth/me/avatar', { method: 'POST', body: formData }),
+    deleteProfile: () => fetchAPI('/auth/me', { method: 'DELETE' })
   },
 
   teacher: {
@@ -116,12 +120,11 @@ const API = {
   },
 
   common: {
-    // Chats
-    getChats: () => fetchAPI('/common/chats'),
-    createChat: (title) => fetchAPI('/common/chats', { method: 'POST', body: JSON.stringify({ title }) }),
-    getChatMessages: (chatId) => fetchAPI(`/common/chats/${chatId}/messages`),
-    postChatMessage: (chatId, content) => fetchAPI(`/common/chats/${chatId}/messages`, { method: 'POST', body: JSON.stringify({ content }) }),
-    // Notifications
+    getChats: () => fetchAPI('/chats'),
+    createChat: (title) => fetchAPI('/chats', { method: 'POST', body: JSON.stringify({ title }) }),
+    deleteChat: (chatId) => fetchAPI(`/chats/${chatId}`, { method: 'DELETE' }),
+    getChatMessages: (chatId) => fetchAPI(`/chats/${chatId}/messages`),
+    postChatMessage: (chatId, content) => fetchAPI(`/chats/${chatId}/messages`, { method: 'POST', body: JSON.stringify({ content }) }),
     getNotifications: (limit = 3) => fetchAPI(`/common/notifications?limit=${limit}`),
     createNotification: (userId, title, body) => fetchAPI('/common/notifications', { method: 'POST', body: JSON.stringify({ userId, title, body }) })
   },

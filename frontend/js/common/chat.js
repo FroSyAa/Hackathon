@@ -1,5 +1,5 @@
 let mockChats = [];
-let currentChatId = 0;
+let currentChatId = null; 
 
 document.addEventListener('DOMContentLoaded', async function () {
     await loadChats();
@@ -36,17 +36,27 @@ function bindChatEvents() {
         });
     });
 
-    document.getElementById('sendBtn').onclick = sendMessage;
-    document.getElementById('messageInput').onkeypress = function (e) {
-        if (e.key === 'Enter' && currentChatId > 0) {
-            sendMessage();
-            return false;
-        }
-    };
 
-    document.getElementById('sidebarToggle').onclick = () => {
-        document.getElementById('chatSidebar').classList.toggle('open');
-    };
+    const sendBtnEl = document.getElementById('sendBtn');
+    if (sendBtnEl) sendBtnEl.onclick = sendMessage;
+    const messageInputEl = document.getElementById('messageInput');
+    if (messageInputEl) {
+        messageInputEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && currentChatId) {
+                e.preventDefault();
+                sendMessage();
+                return false;
+            }
+        });
+    }
+
+    const sidebarToggleEl = document.getElementById('sidebarToggle');
+    if (sidebarToggleEl) {
+        sidebarToggleEl.onclick = () => {
+            const sidebar = document.getElementById('chatSidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+        };
+    }
 
     const newChatBtn = document.querySelector('.new-chat-btn');
     if (newChatBtn) {
@@ -55,22 +65,17 @@ function bindChatEvents() {
 }
 
 async function createNewChat() {
-    const name = prompt('Введите имя участника чата:');
-    if (!name || name.trim() === '') {
-        alert('Введите имя для чата!');
-        return;
-    }
     try {
-        const data = await API.common.createChat(name.trim());
+        const data = await API.common.createChat(); 
         await loadChats();
-        const chatId = data.chat && data.chat.id;
+        const chatId = data && data.chat && data.chat.id;
         if (chatId) switchChat(chatId.toString());
     } catch (err) {
         console.warn('Create chat failed, falling back to local mock', err);
         const newChatId = mockChats.length + 1;
         const newChat = {
             id: newChatId,
-            name: name.trim(),
+            name: 'Чат с ботом',
             avatar: '../../assets/student.png',
             messages: []
         };
@@ -82,26 +87,30 @@ async function createNewChat() {
 
 function deleteChat(chatId) {
     if (!confirm('Удалить чат?')) return;
-    try {
-        mockChats = mockChats.filter(c => String(c.id) !== String(chatId));
-        renderChats();
-        if (currentChatId == chatId) { currentChatId = 0; showNoChatSelected(); }
-    } catch (e) {
-        console.warn('Failed to delete chat locally', e);
-    }
+    (async () => {
+        try {
+            await API.common.deleteChat(chatId);
+            await loadChats();
+                    if (String(currentChatId) === String(chatId)) { currentChatId = null; showNoChatSelected(); }
+        } catch (err) {
+            console.warn('Failed to delete chat on server, fallback to local', err);
+            try {
+                mockChats = mockChats.filter(c => String(c.id) !== String(chatId));
+                renderChats();
+                if (String(currentChatId) === String(chatId)) { currentChatId = null; showNoChatSelected(); }
+            } catch (e) {
+                console.warn('Failed to delete chat locally', e);
+            }
+        }
+    })();
 }
 
 function updateChatDataAttributes() {
-    const chatItems = document.querySelectorAll('.chat-item');
-    chatItems.forEach((item, index) => {
-        item.dataset.chat = index + 1;
-        const delBtn = item.querySelector('.delete-chat-btn');
-        if (delBtn) delBtn.dataset.chat = index + 1;
-    });
+    return;
 }
 
 async function switchChat(chatId) {
-    currentChatId = parseInt(chatId);
+    currentChatId = String(chatId);
     document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
     const el = document.querySelector(`[data-chat="${chatId}"]`);
     if (el) el.classList.add('active');
@@ -152,7 +161,7 @@ function loadMessages(messages) {
 }
 
 function sendMessage() {
-    if (currentChatId === 0) {
+    if (!currentChatId) {
         alert('Сначала выберите чат!');
         return;
     }

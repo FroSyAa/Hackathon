@@ -10,6 +10,29 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (teacherNameEl) {
         teacherNameEl.textContent = formatShortName(user);
     }
+    try {
+        const avatars = document.querySelectorAll('.avatar');
+        if (avatars && avatars.length > 0) {
+            let avatarUrl = '../../assets/avatar_teacher.jpg';
+            if (user && user.avatar) {
+                const raw = String(user.avatar).trim();
+                if (raw.startsWith('http')) {
+                    avatarUrl = raw;
+                } else if (raw.startsWith('/uploads') || raw.startsWith('uploads')) {
+                    const host = (typeof API_URL !== 'undefined') ? API_URL.replace(/\/api\/?$/, '') : '';
+                    avatarUrl = host + (raw.startsWith('/') ? raw : '/' + raw);
+                } else {
+                    avatarUrl = raw;
+                }
+            }
+            avatars.forEach(img => {
+                img.src = avatarUrl;
+                img.onerror = function () { this.src = '../../assets/avatar_teacher.jpg'; };
+            });
+        }
+    } catch (e) {
+        console.warn('Failed to set header avatar:', e);
+    }
     initProfileMenu();
     initNotifications();  
     await loadStatistics();
@@ -196,7 +219,6 @@ async function loadCourses() {
         }
 
         if (!coursesGrid) return;
-        // Build course cards with image URL resolution and fallback
         coursesGrid.innerHTML = data.courses.map(course => {
             const stats = courseStatistics[course.id] || { studentCount: 0, assignmentCount: 0, progress: 0 };
 
