@@ -22,7 +22,6 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { title, body, userId } = req.body;
-    // Только админы/сервисы должны вызывать это; здесь разрешаем авторизованным
     const not = await Notification.create({ userId: userId || req.user.id, title, body });
     res.status(201).json({ notification: not });
   } catch (e) {

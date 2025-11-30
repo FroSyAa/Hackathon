@@ -31,12 +31,13 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/:chatId/messages', authenticateToken, async (req, res) => {
   try {
     const { chatId } = req.params;
-    const chat = await Chat.findByPk(chatId, { include: [{ model: Message, as: 'messages' }] });
+    const chat = await Chat.findByPk(chatId);
     if (!chat) return res.status(404).json({ error: 'Чат не найден' });
     if (String(chat.ownerId) !== String(req.user.id)) {
       return res.status(403).json({ error: 'Доступ запрещен' });
     }
-    res.json({ messages: chat.messages });
+    const messages = await Message.findAll({ where: { chatId }, order: [['createdAt', 'ASC']] });
+    res.json({ messages });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -54,10 +55,32 @@ router.post('/:chatId/messages', authenticateToken, async (req, res) => {
     }
 
     const msg = await Message.create({ chatId, senderId: req.user.id, senderType: 'user', content });
+    // touch chat to update ordering
+    await chat.update({});
 
     const botReply = await Message.create({ chatId, senderId: null, senderType: 'bot', content: 'Ответ бота (пока-заглушка)' });
+    await chat.update({});
 
     res.status(201).json({ message: msg, botReply });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удалить чат и связанные сообщения
+router.delete('/:chatId', authenticateToken, async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    const chat = await Chat.findByPk(chatId);
+    if (!chat) return res.status(404).json({ error: 'Чат не найден' });
+    if (String(chat.ownerId) !== String(req.user.id)) return res.status(403).json({ error: 'Доступ запрещен' });
+
+    await Chat.sequelize.transaction(async (t) => {
+      await Message.destroy({ where: { chatId }, transaction: t });
+      await Chat.destroy({ where: { id: chatId }, transaction: t });
+    });
+
+    res.json({ message: 'Чат удалён' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../models');
+const { User, Student, Teacher, Admin, SuperAdmin } = require('../../models');
 const { authenticateToken } = require('../../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+const { sequelize } = require('../../config/database');
 
 // Вход в систему с выбором роли
 router.post('/login', async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
-    // Проверка супер-админа через .env (для совместимости)
     if (email === process.env.SUPER_ADMIN_EMAIL && password === process.env.SUPER_ADMIN_PASSWORD) {
       const jwt = require('jsonwebtoken');
 
-      // Ищем пользователя в БД
       const existingUser = await User.findOne({ where: { email } });
 
       if (!existingUser) {
@@ -120,6 +121,95 @@ router.get('/me', authenticateToken, async (req, res) => {
     }
 
     res.json({ user: { ...user.toJSON(), role } });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Изменить пароль текущего пользователя
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Требуются оба пароля' });
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+
+    const ok = await user.comparePassword(currentPassword);
+    if (!ok) return res.status(400).json({ error: 'Текущий пароль неверен' });
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Пароль успешно изменён' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Обновить профиль текущего пользователя
+router.patch('/me', authenticateToken, async (req, res) => {
+  try {
+    const { firstName, lastName, middleName } = req.body;
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (middleName !== undefined) user.middleName = middleName;
+
+    await user.save();
+
+    res.json({ user: { ...user.toJSON() } });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Загрузка аватара текущего пользователя
+const avatarStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '..', '..', 'uploads', 'avatars'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, `${req.user.id}${ext}`);
+  }
+});
+const avatarUpload = multer({ storage: avatarStorage });
+
+router.post('/me/avatar', authenticateToken, avatarUpload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'Файл не загружен' });
+    const avatarPath = `/uploads/avatars/${req.file.filename}`.replace(/\\/g, '/');
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+    user.avatar = avatarPath;
+    await user.save();
+    res.json({ user: { ...user.toJSON() } });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удалить текущего пользователя
+router.delete('/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+
+    await sequelize.transaction(async (t) => {
+      // удаляем профиль преподавателя/студента/админа если есть
+      await Student.destroy({ where: { userId: req.user.id }, transaction: t });
+      await Teacher.destroy({ where: { userId: req.user.id }, transaction: t });
+      await Admin.destroy({ where: { userId: req.user.id }, transaction: t });
+      await SuperAdmin.destroy({ where: { userId: req.user.id }, transaction: t });
+
+      // затем удаляем пользователя
+      await User.destroy({ where: { id: req.user.id }, transaction: t });
+    });
+
+    res.json({ message: 'Пользователь удалён' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
