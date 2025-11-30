@@ -1,13 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const { Material, Course, Assignment } = require('../../models');
 const { authenticateToken, authorizeTeacher } = require('../../middleware/auth');
 
+const uploadDir = path.join(__dirname, '..', '..', 'uploads', 'materials');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
 const storage = multer.diskStorage({
-  destination: './uploads/materials/',
+  destination: (req, file, cb) => {
+    // Ensure upload directory exists
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    cb(null, uploadDir);
+  },
   filename: (_req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_'));
   }
 });
 
@@ -36,7 +45,7 @@ router.post('/', authenticateToken, authorizeTeacher, upload.any(), async (req, 
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -76,12 +85,14 @@ router.post('/', authenticateToken, authorizeTeacher, upload.any(), async (req, 
     if (req.files && req.files.length > 0 && parentId) {
       const created = [];
       for (const file of req.files) {
+        const filename = file.filename || path.basename(file.path);
+        const fileUrl = `/uploads/materials/${filename}`;
         const mat = await Material.create({
           courseId,
           title: file.originalname || title || 'Файл',
           description: description || null,
           type: type || 'pdf',
-          fileUrl: file.path,
+          fileUrl,
           parentId: parentId,
           version: 1
         });
@@ -93,12 +104,14 @@ router.post('/', authenticateToken, authorizeTeacher, upload.any(), async (req, 
     if (req.files && req.files.length > 0 && assignmentId) {
       const created = [];
       for (const file of req.files) {
+        const filename = file.filename || path.basename(file.path);
+        const fileUrl = `/uploads/materials/${filename}`;
         const mat = await Material.create({
           courseId,
           title: file.originalname || title || 'Файл',
           description: description || null,
           type: type || 'pdf',
-          fileUrl: file.path,
+          fileUrl,
           assignmentId: assignmentId,
           version: 1
         });
@@ -110,12 +123,14 @@ router.post('/', authenticateToken, authorizeTeacher, upload.any(), async (req, 
     if (req.files && req.files.length > 0) {
       const created = [];
       for (const file of req.files) {
+        const filename = file.filename || path.basename(file.path);
+        const fileUrl = `/uploads/materials/${filename}`;
         const mat = await Material.create({
           courseId,
           title: file.originalname || title || 'Файл',
           description: description || null,
           type: type || 'pdf',
-          fileUrl: file.path,
+          fileUrl,
           version: 1
         });
         created.push(mat);
@@ -156,7 +171,7 @@ router.get('/:courseId', authenticateToken, authorizeTeacher, async (req, res) =
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -185,7 +200,7 @@ router.put('/:id', authenticateToken, authorizeTeacher, async (req, res) => {
       return res.status(404).json({ error: 'Материал не найден' });
     }
 
-    if (material.course.teacherId !== req.teacher.id) {
+    if (String(material.course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш материал' });
     }
 
@@ -210,7 +225,7 @@ router.delete('/:id', authenticateToken, authorizeTeacher, async (req, res) => {
       return res.status(404).json({ error: 'Материал не найден' });
     }
 
-    if (material.course.teacherId !== req.teacher.id) {
+    if (String(material.course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш материал' });
     }
 

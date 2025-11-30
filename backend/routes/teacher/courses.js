@@ -71,7 +71,7 @@ router.get('/:courseId/assignments', authenticateToken, authorizeTeacher, async 
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -210,7 +210,7 @@ router.patch('/:courseId/image', authenticateToken, authorizeTeacher, async (req
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -230,7 +230,7 @@ router.patch('/:courseId', authenticateToken, authorizeTeacher, async (req, res)
 
     const course = await Course.findByPk(courseId);
     if (!course) return res.status(404).json({ error: 'Курс не найден' });
-    if (course.teacherId !== req.teacher.id) return res.status(403).json({ error: 'Это не ваш курс' });
+    if (String(course.teacherId) !== String(req.teacher.id)) return res.status(403).json({ error: 'Это не ваш курс' });
 
     await course.update({ title: title || course.title, description: description || course.description });
 
@@ -250,7 +250,7 @@ router.post('/:courseId/image/upload', authenticateToken, authorizeTeacher, uplo
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -288,7 +288,7 @@ router.post('/:courseId/assignments', authenticateToken, authorizeTeacher, async
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -313,7 +313,7 @@ router.delete('/:courseId/assignments/:assignmentId', authenticateToken, authori
 
     const course = await Course.findByPk(courseId);
     if (!course) return res.status(404).json({ error: 'Курс не найден' });
-    if (course.teacherId !== req.teacher.id) return res.status(403).json({ error: 'Это не ваш курс' });
+    if (String(course.teacherId) !== String(req.teacher.id)) return res.status(403).json({ error: 'Это не ваш курс' });
 
     const assignment = await Assignment.findByPk(assignmentId);
     if (!assignment) return res.status(404).json({ error: 'Задание не найдено' });

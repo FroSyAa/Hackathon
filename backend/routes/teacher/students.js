@@ -14,7 +14,7 @@ router.get('/course/:courseId', authenticateToken, authorizeTeacher, async (req,
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
@@ -80,7 +80,7 @@ router.post('/add', authenticateToken, authorizeTeacher, async (req, res) => {
     if (courseId) {
       const course = await Course.findByPk(courseId);
       if (!course) return res.status(404).json({ error: 'Курс не найден' });
-      if (course.teacherId !== req.teacher.id) return res.status(403).json({ error: 'Это не ваш курс' });
+      if (String(course.teacherId) !== String(req.teacher.id)) return res.status(403).json({ error: 'Это не ваш курс' });
 
       const existingEnrollment = await Enrollment.findOne({ where: { studentId: student.id, courseId } });
       if (!existingEnrollment) {
@@ -109,7 +109,7 @@ router.post('/bulk-upload', authenticateToken, authorizeTeacher, async (req, res
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 

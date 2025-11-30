@@ -44,7 +44,7 @@ router.get('/assignments/:assignmentId/submissions', authenticateToken, authoriz
       return res.status(404).json({ error: 'Задание не найдено' });
     }
 
-    if (assignment.course.teacherId !== req.teacher.id) {
+    if (String(assignment.course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваше задание' });
     }
 
@@ -86,7 +86,7 @@ router.post('/grade/:submissionId', authenticateToken, authorizeTeacher, async (
       return res.status(404).json({ error: 'Работа не найдена' });
     }
 
-    if (submission.assignment.course.teacherId !== req.teacher.id) {
+    if (String(submission.assignment.course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваша работа для проверки' });
     }
 
@@ -112,7 +112,7 @@ router.get('/progress/:courseId', authenticateToken, authorizeTeacher, async (re
       return res.status(404).json({ error: 'Курс не найден' });
     }
 
-    if (course.teacherId !== req.teacher.id) {
+    if (String(course.teacherId) !== String(req.teacher.id)) {
       return res.status(403).json({ error: 'Это не ваш курс' });
     }
 
