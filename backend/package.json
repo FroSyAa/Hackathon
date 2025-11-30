@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "create-superadmin": "node scripts/createSuperAdmin.js",
     "test": "echo \"Тесты будут добавлены позже\" && exit 0"
   },
   "keywords": [

@@ -23,7 +23,7 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
 
     const student = await Student.create({
       userId: user.id,
-      organizationId: req.admin.organizationId,
+      directionId: req.admin.directionId,
       groupName
     });
 
@@ -45,15 +45,36 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   }
 });
 
-// Получить всех студентов организации
+// Получить всех студентов направления
 router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const students = await Student.findAll({
-      where: { organizationId: req.admin.organizationId },
+      where: { directionId: req.admin.directionId },
       include: [{ association: 'user', attributes: { exclude: ['password'] } }]
     });
 
     res.json({ students });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удалить студента
+router.delete('/:studentId', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    const student = await Student.findByPk(studentId);
+    if (!student) {
+      return res.status(404).json({ error: 'Студент не найден' });
+    }
+    if (student.directionId !== req.admin.directionId) {
+      return res.status(403).json({ error: 'Нет доступа к этому студенту' });
+    }
+    
+    await User.destroy({ where: { id: student.userId } });
+
+    res.json({ message: 'Студент удалён успешно' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

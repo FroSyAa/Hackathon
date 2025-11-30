@@ -27,9 +27,25 @@ const Material = sequelize.define('Material', {
     type: DataTypes.ENUM('video', 'text', 'pdf', 'presentation'),
     allowNull: false
   },
+  parentId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'Materials',
+      key: 'id'
+    }
+  },
+  assignmentId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'Assignments',
+      key: 'id'
+    }
+  },
   fileUrl: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   version: {
     type: DataTypes.INTEGER,

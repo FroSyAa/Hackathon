@@ -47,12 +47,11 @@
       const password = document.getElementById('password').value;
 
       try {
-        // Используем общий эндпоинт с role='superadmin'
         const data = await API.auth.login(email, password, 'superadmin');
         saveAuth(data.token, data.user);
 
         if (data.user.role === 'superadmin') {
-          window.location.href = '/pages/superadmin/organizations.html';
+          window.location.href = '/pages/superadmin/directions.html';
         } else {
           alert('Доступ запрещен. Только для супер-администраторов.');
         }

@@ -39,7 +39,7 @@ function renderStudents(students) {
 }
 
 function getStatusIcon(status) {
-    return { 'сдано': '✅', 'проверка': '⏳', 'не сдано': '❌' }[status] || '';
+    return { 'сдано': '', 'проверка': '', 'не сдано': '' }[status] || '';
 }
 
 function updateStats(students) {

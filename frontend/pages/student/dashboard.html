@@ -1,35 +1,464 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Панель студента</title>
-  <link rel="stylesheet" href="../../styles/main.css">
-  <link rel="stylesheet" href="../../styles/student.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд | Панель студента</title>
+
+    <style>
+        :root {
+            --primary-blue: #0359b5;
+            --primary-dark-blue: #024082;
+            --color-bg-light: #f8f9fa;
+            --color-bg-page: #f4f7f9;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-warning: #ffc107;
+            --color-info: #17a2b8;
+            --color-text-secondary: #6c757d;
+            --border-color: #eee;
+            --box-shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --border-radius-base: 8px;
+            --border-radius-pill: 20px;
+            --header-height: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.2s, box-shadow 0.3s, transform 0.3s, color 0.2s, border-color 0.3s;
+        }
+
+        body {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #c7d3e0; 
+            background-attachment: fixed;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-blue);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: var(--border-radius-pill);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                transform: translateY(-1px);
+            }
+
+        .main-header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: var(--header-height);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-title a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: var(--border-radius-base);
+        }
+
+            .user-info:hover {
+                background-color: var(--color-bg-light);
+            }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .notification-badge {
+            background-color: var(--color-danger);
+            color: white;
+            font-size: 0.7em;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+        }
+
+        .nav-tabs-wrapper {
+            background-color: transparent;
+            border: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            padding: 7px 15px;
+            font-weight: 500;
+            border-radius: var(--border-radius-pill);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            color: var(--primary-dark-blue);
+            background-color: transparent;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .nav-tab.active {
+                color: white;
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                font-weight: 600;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .nav-tab:hover:not(.active) {
+                color: white;
+                background-color: var(--primary-blue);
+                border-color: var(--primary-blue);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+        .page-content-wrapper {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .combined-stats-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow-medium);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+        }
+
+            .combined-stats-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--box-shadow-hover);
+            }
+
+        .combined-stat-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            min-width: 250px;
+            border-bottom: 1px solid var(--border-color);
+            flex-grow: 1;
+        }
+
+            .combined-stat-item:last-child {
+                border-bottom: none;
+            }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.6;
+            margin-right: 15px;
+        }
+
+        .stat-details .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            line-height: 1.2;
+            color: var(--primary-blue);
+        }
+
+        .stat-details .label {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow-medium);
+            transition: box-shadow 0.3s ease-out;
+        }
+
+            .card:hover {
+                box-shadow: var(--box-shadow-hover);
+            }
+
+        .card-header {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: var(--primary-dark-blue);
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+
+        .activity-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .activity-info .course {
+                font-weight: 500;
+                color: #333;
+            }
+
+            .activity-info .details {
+                font-size: 0.85em;
+                color: var(--color-text-secondary);
+            }
+
+        .activity-badge {
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-pill);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-new {
+            background-color: var(--color-info);
+            color: white;
+        }
+
+        .badge-graded {
+            background-color: var(--color-success);
+            color: white;
+        }
+
+        .badge-view {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .reminder-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .reminder-item:last-child {
+                border-bottom: none;
+            }
+
+            .reminder-item strong {
+                display: block;
+                margin-bottom: 3px;
+            }
+
+        .reminder-date {
+            font-size: 0.8em;
+            color: var(--color-danger);
+            font-weight: 500;
+        }
+
+        .reminder-course {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+        }
+    </style>
 </head>
 <body>
-  <!-- Главная страница студента -->
+    <header class="main-header">
+        <div class="header-top">
+            <div class="header-title">
+                <a href="dashboard.html">Панель студента</a>
+            </div>
+            <div class="user-info">
+                <span class="notification-badge">3</span>
+                <div class="user-avatar">ИИ</div>
+                <span class="user-name">Иванов И.И.</span>
+            </div>
+        </div>
 
-  <!-- Навигация -->
-  <nav>
-    <!-- Меню: Мои курсы, Задания, Чат, Профиль -->
-  </nav>
+        <nav class="nav-tabs-wrapper">
+            <div class="nav-tabs">
+                <a href="dashboard.html" class="nav-tab active"> Дашборд</a>
+                <a href="courses.html" class="nav-tab"> Мои курсы</a>
+                <a href="grades.html" class="nav-tab"> Оценки</a>
+                <a href="../common/chat.html" class="nav-tab"> Чат</a>
+                <a href="profile.html" class="nav-tab"> Профиль</a>
+            </div>
+        </nav>
+    </header>
 
-  <!-- Список активных курсов -->
-  <section id="courses-list">
-    <!-- Карточки курсов с прогрессом изучения -->
-  </section>
+    <main class="page-content-wrapper">
+        <div class="combined-stats-card">
 
-  <!-- Ближайшие дедлайны -->
-  <section id="upcoming-deadlines">
-    <!-- Список заданий с ближайшими дедлайнами -->
-  </section>
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--primary-blue);"></span>
+                <div class="stat-details">
+                    <span class="value">3</span>
+                    <span class="label">Активных курсов</span>
+                </div>
+            </div>
 
-  <!-- Уведомления -->
-  <section id="notifications">
-    <!-- Новые оценки, комментарии от преподавателя, новые материалы -->
-  </section>
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-success);"></span>
+                <div class="stat-details">
+                    <span class="value">95%</span>
+                    <span class="label">Средний балл</span>
+                </div>
+            </div>
 
-  <script src="../../js/student/dashboard.js"></script>
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-danger);"></span>
+                <div class="stat-details">
+                    <span class="value">2</span>
+                    <span class="label">Предстоящих дедлайна</span>
+                </div>
+            </div>
+
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-info);"></span>
+                <div class="stat-details">
+                    <span class="value">1</span>
+                    <span class="label">Новое сообщение в чате</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="dashboard-grid">
+
+            <div class="card recent-activity">
+                <div class="card-header">
+                    Последняя активность
+                </div>
+
+                <div class="activity-list">
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Веб-разработка на Python</span>
+                            <span class="details">Модуль 6: Загрузка файлов</span>
+                        </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-new">Продолжить</a>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Алгоритмы и структуры данных</span>
+                            <span class="details">Получена оценка за домашнюю работу #3</span>
+                        </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-graded">Оценка: 5/5</a>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Базы данных и SQL</span>
+                            <span class="details">Просмотрен урок: Нормализация</span>
+                        </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-view">Посмотреть</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card reminders">
+                <div class="card-header">
+                    Напоминания
+                </div>
+
+                <div class="reminder-list">
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Дедлайн: 30 ноября</span>
+                        <span class="reminder-course">Алгоритмы: Тест по Модулю 4</span>
+                    </div>
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Дедлайн: 5 декабря</span>
+                        <span class="reminder-course">Веб-разработка: Проект 'ToDo App'</span>
+                    </div>
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Новое сообщение</span>
+                        <span class="reminder-course">Чат: Вопрос от преподавателя</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 </body>
 </html>

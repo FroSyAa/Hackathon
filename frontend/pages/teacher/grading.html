@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../../styles/main.css">
   <link rel="stylesheet" href="../../styles/main_teacher.css">
   <link rel="stylesheet" href="../../styles/grading.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -21,22 +22,60 @@
         </div>
       </div>
       <div class="header-right">
-        <div class="notifications">
-          <i class="fas fa-bell"></i><span class="badge">3</span>
+        <div class="notifications" id="notificationContainer">
+          <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="notificationBadge">3</span>
+          </button>
+          <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+              <h4><i class="fas fa-bell"></i> Уведомления</h4>
+              <span class="notification-count" id="panelCount">3 новых</span>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- Уведомления будут здесь -->
+            </div>
+            <div class="notification-footer">
+              <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                <i class="fas fa-comments"></i> Перейти в чаты
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="user-info">
+        <div class="user-info" id="userInfo">
           <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
-          <span>Иванов И.И.</span>
+          <span id="teacherName" class="teacher-name"></span>
+          <div class="profile-menu" id="profileMenu">
+            <a href="teacher_profile.html" class="menu-item">
+              <i class="fas fa-user"></i> Профиль
+            </a>
+            <a href="../../pages/common/login.html" class="menu-item logout">
+              <i class="fas fa-sign-out-alt"></i> Выйти
+            </a>
+          </div>
         </div>
       </div>
     </header>
 
+
     <nav class="teacher-nav">
-      <a href="main_teacher.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Дашборд</span></a>
-      <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Студенты</span></a>
-      <a href="grading.html" class="nav-item active"><i class="fas fa-clipboard-check"></i><span>Проверка
-          работ</span></a>
-      <a href="../pages/common/chat.html" class="nav-item"><i class="fas fa-comments"></i><span>Чат</span></a>
+      <a href="main_teacher.html" class="nav-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Дашборд</span>
+      </a>
+      <a href="students.html" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Студенты</span>
+      </a>
+      <a href="grading.html" class="nav-item active">
+        <i class="fas fa-clipboard-check"></i><span>Проверка
+          работ</span>
+        </a>
+      <a href="../common/chat.html" class="nav-item">
+        <i class="fas fa-comments">
+          
+        </i><span>Чат</span>
+      </a>
     </nav>
 
     <main class="grading-content">
@@ -45,16 +84,16 @@
       </div>
 
       <div class="filters-row">
-        <input type="text" id="searchStudent" class="filter-input" placeholder="🔍 Поиск по фамилии...">
-        <input type="text" id="searchGroup" class="filter-input" placeholder="👥 Группа...">
+        <input type="text" id="searchStudent" class="filter-input" placeholder="Поиск по фамилии...">
+        <input type="text" id="searchGroup" class="filter-input" placeholder="Группа...">
         <select id="filterStatus" class="filter-select">
           <option value="">Все статусы</option>
-          <option value="сдано">✅ Сдано</option>
-          <option value="проверка">⏳ Проверка</option>
-          <option value="не сдано">❌ Не сдано</option>
+          <option value="сдано">Сдано</option>
+          <option value="проверка">Проверка</option>
+          <option value="не сдано">Не сдано</option>
         </select>
-        <button id="searchBtn" class="btn btn-primary">🔍 Поиск</button>
-        <button id="clearBtn" class="btn btn-secondary">🧹 Очистить</button>
+        <button id="searchBtn" class="btn btn-primary">Поиск</button>
+        <button id="clearBtn" class="btn btn-secondary">Очистить</button>
         <div class="stats">
           <span>Всего: <span id="totalCount">0</span></span>
           <span>Сдано: <span id="doneCount">0</span></span>
@@ -67,7 +106,9 @@
     </main>
   </div>
 
-  <script src="../../js/teacher/grading_2.js"></script>
+  <script src="../../js/common/api.js"></script>
+  <script src="../../js/teacher/main_teacher.js"></script>
+  <script src="../../js/teacher/grading.js"></script>
 </body>
 
 </html>

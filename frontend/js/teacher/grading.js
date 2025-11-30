@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
+    // Формат имени пользователя в шапке 
+    if (user) {
+        const nameSpan = document.querySelector('.user-info span');
+        if (nameSpan) nameSpan.textContent = formatShortName(user);
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const submissionId = urlParams.get('id');
 
@@ -22,23 +28,27 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function loadAllSubmissions() {
     try {
         const data = await API.teacher.getPendingSubmissions();
-        const submissionsList = document.getElementById('submissions-list');
+            const submissionsList = document.getElementById('submissions-list');
 
-        if (!data.submissions || data.submissions.length === 0) {
-            submissionsList.innerHTML = '<p>Нет работ на проверке</p>';
-            return;
-        }
+            if (!submissionsList) return;
 
-        submissionsList.innerHTML = data.submissions.map(submission => {
-            const deadline = new Date(submission.Assignment.deadline);
-            const submittedAt = new Date(submission.submittedAt);
+            if (!data.submissions || data.submissions.length === 0) {
+                submissionsList.innerHTML = '<p>Нет работ на проверке</p>';
+                return;
+            }
+
+            submissionsList.innerHTML = data.submissions.map(submission => {
+            const assignment = submission.assignment || submission.Assignment || {};
+            const deadline = assignment.deadline ? new Date(assignment.deadline) : new Date();
+            const submittedAt = submission.submittedAt ? new Date(submission.submittedAt) : new Date();
+            const student = submission.student && submission.student.user ? submission.student.user : (submission.User || {});
 
             return `
                 <div class="submission-card">
                     <div class="submission-info">
-                        <h3>${submission.User.firstName} ${submission.User.lastName}</h3>
-                        <p><strong>Задание:</strong> ${submission.Assignment.title}</p>
-                        <p><strong>Курс:</strong> ${submission.Assignment.Course?.title || 'Не указан'}</p>
+                        <h3>${student.lastName ? student.lastName + ' ' + (student.firstName ? student.firstName : '') : (student.firstName || '')}</h3>
+                        <p><strong>Задание:</strong> ${assignment.title || ''}</p>
+                        <p><strong>Курс:</strong> ${assignment.courseId || 'Не указан'}</p>
                         <p><strong>Сдано:</strong> ${submittedAt.toLocaleString('ru-RU')}</p>
                         <p><strong>Дедлайн:</strong> ${deadline.toLocaleString('ru-RU')}</p>
                     </div>
@@ -57,9 +67,9 @@ async function loadAllSubmissions() {
 // Загрузка детальной информации о работе
 async function loadSubmissionDetail(submissionId) {
     try {
-        const data = await API.teacher.getSubmissionDetail?.(submissionId);
-
-        if (!data) {
+        const data = await API.teacher.getPendingSubmissions();
+        const found = data.submissions.find(s => String(s.id) === String(submissionId));
+        if (!found) {
             alert('Не удалось загрузить детали работы');
             return;
         }
@@ -67,15 +77,17 @@ async function loadSubmissionDetail(submissionId) {
         const detailContainer = document.getElementById('submission-detail');
         if (!detailContainer) return;
 
-        const submission = data.submission;
-        const submittedAt = new Date(submission.submittedAt);
+        const submission = found;
+        const submittedAt = submission.submittedAt ? new Date(submission.submittedAt) : new Date();
+        const student = submission.student && submission.student.user ? submission.student.user : (submission.User || {});
+        const assignment = submission.assignment || submission.Assignment || {};
 
         detailContainer.innerHTML = `
-            <h2>Работа студента: ${submission.User.firstName} ${submission.User.lastName}</h2>
+            <h2>Работа студента: ${student.lastName ? student.lastName + ' ' + (student.firstName || '') : (student.firstName || '')}</h2>
             <div class="detail-info">
-                <p><strong>Задание:</strong> ${submission.Assignment.title}</p>
-                <p><strong>Описание задания:</strong> ${submission.Assignment.description}</p>
-                <p><strong>Максимальный балл:</strong> ${submission.Assignment.maxScore}</p>
+                <p><strong>Задание:</strong> ${assignment.title || ''}</p>
+                <p><strong>Описание задания:</strong> ${assignment.description || ''}</p>
+                <p><strong>Максимальный балл:</strong> ${assignment.maxScore || ''}</p>
                 <p><strong>Сдано:</strong> ${submittedAt.toLocaleString('ru-RU')}</p>
                 ${submission.comment ? `<p><strong>Комментарий студента:</strong> ${submission.comment}</p>` : ''}
                 ${submission.fileUrl ? `<p><a href="${submission.fileUrl}" target="_blank" class="btn btn-outline">Скачать файл</a></p>` : ''}
@@ -106,4 +118,15 @@ function setupGradingForm(submissionId) {
             alert('Ошибка при выставлении оценки: ' + error.message);
         }
     });
+}
+
+// Форматирует имя в строку `Фамилия И.О.`
+function formatShortName(user) {
+    if (!user) return '';
+    const last = user.lastName || '';
+    const first = user.firstName || '';
+    const middle = user.middleName || '';
+    const f = first ? first.charAt(0) + '.' : '';
+    const m = middle ? middle.charAt(0) + '.' : '';
+    return `${last} ${f}${m}`.trim();
 }

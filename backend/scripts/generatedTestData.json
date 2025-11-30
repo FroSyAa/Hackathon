@@ -1,0 +1,382 @@
+{
+  "superAdmin": {
+    "id": "ae7d3154-7286-4295-8481-806285b4784e",
+    "userId": "8f194269-96a3-4c74-bf8e-ba76b5ac3ace",
+    "email": "123@123.ru",
+    "isMainAdmin": true
+  },
+  "directions": [
+    {
+      "id": "30c42af0-32f2-4209-84c0-b035f7e4e0b3",
+      "name": "Frontend"
+    },
+    {
+      "id": "b608189d-fc4b-4809-b6da-92e81c591b50",
+      "name": "Backend"
+    }
+  ],
+  "users": [
+    {
+      "id": "56dc8e65-397c-4de3-9a29-58e6f9c12472",
+      "email": "teacher1@test.local",
+      "firstName": "Ivan",
+      "lastName": "Petrov",
+      "avatar": "avatars/teacher1_test_local-placeholder.png",
+      "password": "passTeacher1"
+    },
+    {
+      "id": "a5fa5f25-13af-4788-b9a5-32b4a5cd3297",
+      "email": "teacher2@test.local",
+      "firstName": "Petr",
+      "lastName": "Sidorov",
+      "avatar": "avatars/teacher2_test_local-placeholder.png",
+      "password": "passTeacher2"
+    },
+    {
+      "id": "368bb250-ed25-4d02-8aee-a717df0259de",
+      "email": "teacher3@test.local",
+      "firstName": "Olga",
+      "lastName": "Kuznetsova",
+      "avatar": "avatars/teacher3_test_local-placeholder.png",
+      "password": "passTeacher3"
+    },
+    {
+      "id": "d7a7db28-3440-4b3e-ad95-c6fd31aa9623",
+      "email": "teacher4@test.local",
+      "firstName": "Anna",
+      "lastName": "Smirnova",
+      "avatar": "avatars/teacher4_test_local-placeholder.png",
+      "password": "passTeacher4"
+    },
+    {
+      "id": "3de85f9e-9004-45c7-805a-f5ab78ad47c1",
+      "email": "teacher5@test.local",
+      "firstName": "Sergey",
+      "lastName": "Ivanov",
+      "avatar": "avatars/teacher5_test_local-placeholder.png",
+      "password": "passTeacher5"
+    },
+    {
+      "id": "370afa36-c45e-4e58-9715-078b1a3a1253",
+      "email": "student1@test.local",
+      "firstName": "Alexey",
+      "lastName": "Popov",
+      "avatar": "avatars/student1_test_local-placeholder.png",
+      "password": "passStudent1"
+    },
+    {
+      "id": "673167a8-3f02-4601-bfba-9a8bac274acc",
+      "email": "student2@test.local",
+      "firstName": "Maria",
+      "lastName": "Volkova",
+      "avatar": "avatars/student2_test_local-placeholder.png",
+      "password": "passStudent2"
+    },
+    {
+      "id": "7df24ae3-241d-46bd-95ff-529c3a2cd53e",
+      "email": "student3@test.local",
+      "firstName": "Dmitry",
+      "lastName": "Kovalev",
+      "avatar": "avatars/student3_test_local-placeholder.png",
+      "password": "passStudent3"
+    },
+    {
+      "id": "0eef2356-6e80-4f98-9322-a20c577ae6b1",
+      "email": "student4@test.local",
+      "firstName": "Elena",
+      "lastName": "Mikhailova",
+      "avatar": "avatars/student4_test_local-placeholder.png",
+      "password": "passStudent4"
+    },
+    {
+      "id": "167f0efc-170c-407a-9888-71bd13929489",
+      "email": "student5@test.local",
+      "firstName": "Nikolay",
+      "lastName": "Fedorov",
+      "avatar": "avatars/student5_test_local-placeholder.png",
+      "password": "passStudent5"
+    }
+  ],
+  "teachers": [
+    {
+      "id": "56c85526-09a4-4a47-99c8-6cdaf9920d5c",
+      "userId": "56dc8e65-397c-4de3-9a29-58e6f9c12472",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3"
+    },
+    {
+      "id": "d88e6222-f219-4fc5-b0f6-c81720e906e4",
+      "userId": "a5fa5f25-13af-4788-b9a5-32b4a5cd3297",
+      "directionId": "b608189d-fc4b-4809-b6da-92e81c591b50"
+    },
+    {
+      "id": "483830ba-c853-485a-948d-8115ac47d3a5",
+      "userId": "368bb250-ed25-4d02-8aee-a717df0259de",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3"
+    },
+    {
+      "id": "2f8c0026-f926-4a7c-9fcc-1499888192af",
+      "userId": "d7a7db28-3440-4b3e-ad95-c6fd31aa9623",
+      "directionId": "b608189d-fc4b-4809-b6da-92e81c591b50"
+    },
+    {
+      "id": "4551f342-26ac-4609-98bd-50730dfbb059",
+      "userId": "3de85f9e-9004-45c7-805a-f5ab78ad47c1",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3"
+    }
+  ],
+  "students": [
+    {
+      "id": "2c973750-74a5-4c2c-8445-8b633c704ef0",
+      "userId": "370afa36-c45e-4e58-9715-078b1a3a1253",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3",
+      "groupName": "G1"
+    },
+    {
+      "id": "b45a475a-2265-4ca4-8c3f-cab4b23a13eb",
+      "userId": "673167a8-3f02-4601-bfba-9a8bac274acc",
+      "directionId": "b608189d-fc4b-4809-b6da-92e81c591b50",
+      "groupName": "G2"
+    },
+    {
+      "id": "df5700c2-e03a-455e-983a-b80a2908b602",
+      "userId": "7df24ae3-241d-46bd-95ff-529c3a2cd53e",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3",
+      "groupName": "G3"
+    },
+    {
+      "id": "f74fbd1d-bbda-4e11-9123-386366f27dcb",
+      "userId": "0eef2356-6e80-4f98-9322-a20c577ae6b1",
+      "directionId": "b608189d-fc4b-4809-b6da-92e81c591b50",
+      "groupName": "G4"
+    },
+    {
+      "id": "830241f8-f794-4c8e-b2b3-e215c20fa7a2",
+      "userId": "167f0efc-170c-407a-9888-71bd13929489",
+      "directionId": "30c42af0-32f2-4209-84c0-b035f7e4e0b3",
+      "groupName": "G5"
+    }
+  ],
+  "courses": [
+    {
+      "id": "b1275084-3c1c-4c95-8b2e-19e32eddb120",
+      "title": "Веб-разработка на Python",
+      "description": "Курс по веб-разработке",
+      "imageUrl": "courses/___-______________Python-placeholder.png",
+      "teacherId": "56c85526-09a4-4a47-99c8-6cdaf9920d5c"
+    },
+    {
+      "id": "4d3c79c5-2de1-4359-9027-cc8ad29720dd",
+      "title": "Алгоритмы и структуры данных",
+      "description": "Классические алгоритмы",
+      "imageUrl": "courses/____________________________-placeholder.png",
+      "teacherId": "d88e6222-f219-4fc5-b0f6-c81720e906e4"
+    },
+    {
+      "id": "277f9951-bffb-4830-b454-2ba48ebf90d9",
+      "title": "Базы данных и SQL",
+      "description": "Практика по SQL",
+      "imageUrl": "courses/______________SQL-placeholder.png",
+      "teacherId": "483830ba-c853-485a-948d-8115ac47d3a5"
+    },
+    {
+      "id": "a199494b-509e-4eb2-9899-b07b523d852f",
+      "title": "Frontend мастерская",
+      "description": "Современные фронтенд-технологии",
+      "imageUrl": "courses/Frontend___________-placeholder.png",
+      "teacherId": "2f8c0026-f926-4a7c-9fcc-1499888192af"
+    },
+    {
+      "id": "8ac676c7-8101-4cba-b05d-6234a3634172",
+      "title": "DevOps основы",
+      "description": "Введение в DevOps",
+      "imageUrl": "courses/DevOps_______-placeholder.png",
+      "teacherId": "4551f342-26ac-4609-98bd-50730dfbb059"
+    }
+  ],
+  "materials": [
+    {
+      "id": "1f13093f-3046-4803-8453-9d5d1562a13d",
+      "courseId": "b1275084-3c1c-4c95-8b2e-19e32eddb120",
+      "title": "Material 1 for Веб-разработка на Python",
+      "fileUrl": "materials/___-______________Python-material-0-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "3d4e17f0-6805-465f-b515-a07090560eb8",
+      "courseId": "b1275084-3c1c-4c95-8b2e-19e32eddb120",
+      "title": "Material 2 for Веб-разработка на Python",
+      "fileUrl": "materials/___-______________Python-material-1-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "490c297e-3da1-46f1-babb-2d60e8a3a691",
+      "courseId": "4d3c79c5-2de1-4359-9027-cc8ad29720dd",
+      "title": "Material 1 for Алгоритмы и структуры данных",
+      "fileUrl": "materials/____________________________-material-0-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "73c5304d-219f-4592-a2f3-4c177e299986",
+      "courseId": "4d3c79c5-2de1-4359-9027-cc8ad29720dd",
+      "title": "Material 2 for Алгоритмы и структуры данных",
+      "fileUrl": "materials/____________________________-material-1-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "62e2c9ab-a3e8-46e3-bb6b-1f8a15bfa734",
+      "courseId": "277f9951-bffb-4830-b454-2ba48ebf90d9",
+      "title": "Material 1 for Базы данных и SQL",
+      "fileUrl": "materials/______________SQL-material-0-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "fbcff70b-208b-423f-a198-c1de67ce4118",
+      "courseId": "277f9951-bffb-4830-b454-2ba48ebf90d9",
+      "title": "Material 2 for Базы данных и SQL",
+      "fileUrl": "materials/______________SQL-material-1-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "c83050b3-2ca3-4120-877a-3709907f5806",
+      "courseId": "a199494b-509e-4eb2-9899-b07b523d852f",
+      "title": "Material 1 for Frontend мастерская",
+      "fileUrl": "materials/Frontend___________-material-0-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "4e0f3213-e44e-408a-b100-22823695963f",
+      "courseId": "a199494b-509e-4eb2-9899-b07b523d852f",
+      "title": "Material 2 for Frontend мастерская",
+      "fileUrl": "materials/Frontend___________-material-1-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "13edaacf-c77d-43bf-8456-6bd8780893f6",
+      "courseId": "8ac676c7-8101-4cba-b05d-6234a3634172",
+      "title": "Material 1 for DevOps основы",
+      "fileUrl": "materials/DevOps_______-material-0-placeholder.png",
+      "type": "pdf"
+    },
+    {
+      "id": "1aadd713-92cc-4a47-b95d-48df5035c387",
+      "courseId": "8ac676c7-8101-4cba-b05d-6234a3634172",
+      "title": "Material 2 for DevOps основы",
+      "fileUrl": "materials/DevOps_______-material-1-placeholder.png",
+      "type": "pdf"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "courseId": "b1275084-3c1c-4c95-8b2e-19e32eddb120",
+      "title": "Assignment for Веб-разработка на Python",
+      "attachments": [
+        "assignments/___-______________Python-assignment-attach-placeholder.png"
+      ]
+    },
+    {
+      "id": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "courseId": "4d3c79c5-2de1-4359-9027-cc8ad29720dd",
+      "title": "Assignment for Алгоритмы и структуры данных",
+      "attachments": [
+        "assignments/____________________________-assignment-attach-placeholder.png"
+      ]
+    },
+    {
+      "id": "4b4cfa4f-9160-4908-a090-d9ca7efc0b02",
+      "courseId": "277f9951-bffb-4830-b454-2ba48ebf90d9",
+      "title": "Assignment for Базы данных и SQL",
+      "attachments": [
+        "assignments/______________SQL-assignment-attach-placeholder.png"
+      ]
+    },
+    {
+      "id": "cc54ddc1-cac9-4356-b865-686b693bd411",
+      "courseId": "a199494b-509e-4eb2-9899-b07b523d852f",
+      "title": "Assignment for Frontend мастерская",
+      "attachments": [
+        "assignments/Frontend___________-assignment-attach-placeholder.png"
+      ]
+    },
+    {
+      "id": "248520e1-7077-446e-867c-bee669973535",
+      "courseId": "8ac676c7-8101-4cba-b05d-6234a3634172",
+      "title": "Assignment for DevOps основы",
+      "attachments": [
+        "assignments/DevOps_______-assignment-attach-placeholder.png"
+      ]
+    }
+  ],
+  "submissions": [
+    {
+      "id": "9c9b6eac-91fc-4ef4-addb-95991434c19d",
+      "assignmentId": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "studentId": "2c973750-74a5-4c2c-8445-8b633c704ef0",
+      "fileUrl": "assignments/dummy-1764488868030-0-0.txt",
+      "status": "pending"
+    },
+    {
+      "id": "f9380f47-31bf-49a4-9e1a-a8b520448a88",
+      "assignmentId": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "studentId": "2c973750-74a5-4c2c-8445-8b633c704ef0",
+      "fileUrl": "assignments/dummy-1764488868041-0-1.txt",
+      "status": "pending"
+    },
+    {
+      "id": "2c302e3f-5c3f-4e61-909c-5dc521c19bea",
+      "assignmentId": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "studentId": "b45a475a-2265-4ca4-8c3f-cab4b23a13eb",
+      "fileUrl": "assignments/dummy-1764488868049-1-0.txt",
+      "status": "pending"
+    },
+    {
+      "id": "e0bcb718-2290-415c-a2fe-d03c01f69812",
+      "assignmentId": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "studentId": "b45a475a-2265-4ca4-8c3f-cab4b23a13eb",
+      "fileUrl": "assignments/dummy-1764488868058-1-1.txt",
+      "status": "pending"
+    },
+    {
+      "id": "bb592e13-eed1-4722-bff0-ba1d247d0173",
+      "assignmentId": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "studentId": "df5700c2-e03a-455e-983a-b80a2908b602",
+      "fileUrl": "assignments/dummy-1764488868067-2-0.txt",
+      "status": "pending"
+    },
+    {
+      "id": "3fb862ca-ea98-41cd-b434-bbe5b9c650d6",
+      "assignmentId": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "studentId": "df5700c2-e03a-455e-983a-b80a2908b602",
+      "fileUrl": "assignments/dummy-1764488868077-2-1.txt",
+      "status": "pending"
+    },
+    {
+      "id": "b92e66eb-676a-4a44-8a91-cc5b6e1b62b5",
+      "assignmentId": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "studentId": "f74fbd1d-bbda-4e11-9123-386366f27dcb",
+      "fileUrl": "assignments/dummy-1764488868088-3-0.txt",
+      "status": "pending"
+    },
+    {
+      "id": "4dca12e9-d874-453f-9771-59e99c5f45e0",
+      "assignmentId": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "studentId": "f74fbd1d-bbda-4e11-9123-386366f27dcb",
+      "fileUrl": "assignments/dummy-1764488868098-3-1.txt",
+      "status": "pending"
+    },
+    {
+      "id": "35dfe36e-e04f-41d7-9a9b-2158a82862ae",
+      "assignmentId": "8edadc16-7cbd-47e0-9d5c-55ee4fb12302",
+      "studentId": "830241f8-f794-4c8e-b2b3-e215c20fa7a2",
+      "fileUrl": "assignments/dummy-1764488868108-4-0.txt",
+      "status": "pending"
+    },
+    {
+      "id": "2f985ea4-6b78-406d-b00b-4c4297ad6c30",
+      "assignmentId": "bf2dc72b-59f4-45fd-bac2-144e6ff14a5c",
+      "studentId": "830241f8-f794-4c8e-b2b3-e215c20fa7a2",
+      "fileUrl": "assignments/dummy-1764488868117-4-1.txt",
+      "status": "pending"
+    }
+  ]
+}

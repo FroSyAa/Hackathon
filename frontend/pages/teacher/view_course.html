@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,28 @@
   <link rel="stylesheet" href="../../styles/view_course.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<style>
+  .teacher-dashboard {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 100px;
+  }
+
+  .teacher-header {
+    background: white;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+</style>
+
 <body>
   <div class="teacher-dashboard">
     <!-- Header -->
@@ -21,13 +44,37 @@
         </div>
       </div>
       <div class="header-right">
-        <div class="notifications">
-          <i class="fas fa-bell"></i>
-          <span class="badge">3</span>
+        <div class="notifications" id="notificationContainer">
+          <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="notificationBadge">3</span>
+          </button>
+          <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+              <h4><i class="fas fa-bell"></i> Уведомления</h4>
+              <span class="notification-count" id="panelCount">2 новых</span>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- Уведомления будут здесь -->
+            </div>
+            <div class="notification-footer">
+              <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                <i class="fas fa-comments"></i> Перейти в чаты
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="user-info">
+        <div class="user-info" id="userInfo">
           <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
-          <span>Иванов И.И.</span>
+          <span id="teacherName" class="teacher-name"></span>
+          <div class="profile-menu" id="profileMenu">
+            <a href="teacher_profile.html" class="menu-item">
+              <i class="fas fa-user"></i> Профиль
+            </a>
+            <a href="../../pages/common/login.html" class="menu-item logout">
+              <i class="fas fa-sign-out-alt"></i> Выйти
+            </a>
+          </div>
         </div>
       </div>
     </header>
@@ -49,7 +96,7 @@
             Изучаем фундаментальные алгоритмы сортировки, поиска, графовые алгоритмы и структуры данных.
           </p>
           <div class="course-actions">
-            <a href="#" class="btn btn-primary">Редактировать курс</a>
+            <a href="edit_course.html" class="btn btn-primary">Редактировать курс</a>
             <a href="#" class="btn btn-outline">Статистика</a>
           </div>
         </div>
@@ -217,7 +264,10 @@
     </div>
   </div>
 
+  <script src="../../js/common/api.js"></script>
+  <script src="../../js/teacher/main_teacher.js"></script>
   <script src="../../js/teacher/view_course.js"></script>
   <script src="./script.js"></script>
 </body>
+
 </html>

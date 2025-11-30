@@ -23,7 +23,7 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
 
     const teacher = await Teacher.create({
       userId: user.id,
-      organizationId: req.admin.organizationId
+      directionId: req.admin.directionId
     });
 
     const token = user.generateToken();
@@ -44,15 +44,37 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   }
 });
 
-// Получить всех преподавателей организации
+// Получить всех преподавателей направления
 router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const teachers = await Teacher.findAll({
-      where: { organizationId: req.admin.organizationId },
+      where: { directionId: req.admin.directionId },
       include: [{ association: 'user', attributes: { exclude: ['password'] } }]
     });
 
     res.json({ teachers });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удалить преподавателя
+router.delete('/:teacherId', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+
+    const teacher = await Teacher.findByPk(teacherId);
+    if (!teacher) {
+      return res.status(404).json({ error: 'Преподаватель не найден' });
+    }
+
+    if (teacher.directionId !== req.admin.directionId) {
+      return res.status(403).json({ error: 'Нет доступа к этому преподавателю' });
+    }
+
+    await User.destroy({ where: { id: teacher.userId } });
+
+    res.json({ message: 'Преподаватель удалён успешно' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
