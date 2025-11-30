@@ -5,186 +5,460 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дашборд | Панель студента</title>
 
-    <link rel="stylesheet" href="../../styles/main.css">
-    <link rel="stylesheet" href="../../styles/student/vars.css">
-    <link rel="stylesheet" href="../../styles/student/header.css">
-    <link rel="stylesheet" href="../../styles/student/stats.css">
-    <link rel="stylesheet" href="../../styles/student/courses.css">
-    <link rel="stylesheet" href="../../styles/student/deadlines.css">
+    <style>
+        :root {
+            --primary-blue: #0359b5;
+            --primary-dark-blue: #024082;
+            --color-bg-light: #f8f9fa;
+            --color-bg-page: #f4f7f9;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-warning: #ffc107;
+            --color-info: #17a2b8;
+            --color-text-secondary: #6c757d;
+            --border-color: #eee;
+            --box-shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --border-radius-base: 8px;
+            --border-radius-pill: 20px;
+            --header-height: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.2s, box-shadow 0.3s, transform 0.3s, color 0.2s, border-color 0.3s;
+        }
+
+        body {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #c7d3e0; 
+            background-attachment: fixed;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-blue);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: var(--border-radius-pill);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                transform: translateY(-1px);
+            }
+
+        .main-header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: var(--header-height);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-title a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: var(--border-radius-base);
+        }
+
+            .user-info:hover {
+                background-color: var(--color-bg-light);
+            }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .notification-badge {
+            background-color: var(--color-danger);
+            color: white;
+            font-size: 0.7em;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+        }
+
+        .nav-tabs-wrapper {
+            background-color: transparent;
+            border: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            padding: 7px 15px;
+            font-weight: 500;
+            border-radius: var(--border-radius-pill);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            color: var(--primary-dark-blue);
+            background-color: transparent;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .nav-tab.active {
+                color: white;
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                font-weight: 600;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .nav-tab:hover:not(.active) {
+                color: white;
+                background-color: var(--primary-blue);
+                border-color: var(--primary-blue);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+        .page-content-wrapper {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .combined-stats-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow-medium);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+        }
+
+            .combined-stats-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--box-shadow-hover);
+            }
+
+        .combined-stat-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            min-width: 250px;
+            border-bottom: 1px solid var(--border-color);
+            flex-grow: 1;
+        }
+
+            .combined-stat-item:last-child {
+                border-bottom: none;
+            }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.6;
+            margin-right: 15px;
+        }
+
+        .stat-details .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            line-height: 1.2;
+            color: var(--primary-blue);
+        }
+
+        .stat-details .label {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow-medium);
+            transition: box-shadow 0.3s ease-out;
+        }
+
+            .card:hover {
+                box-shadow: var(--box-shadow-hover);
+            }
+
+        .card-header {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: var(--primary-dark-blue);
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+
+        .activity-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .activity-info .course {
+                font-weight: 500;
+                color: #333;
+            }
+
+            .activity-info .details {
+                font-size: 0.85em;
+                color: var(--color-text-secondary);
+            }
+
+        .activity-badge {
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-pill);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-new {
+            background-color: var(--color-info);
+            color: white;
+        }
+
+        .badge-graded {
+            background-color: var(--color-success);
+            color: white;
+        }
+
+        .badge-view {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .reminder-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .reminder-item:last-child {
+                border-bottom: none;
+            }
+
+            .reminder-item strong {
+                display: block;
+                margin-bottom: 3px;
+            }
+
+        .reminder-date {
+            font-size: 0.8em;
+            color: var(--color-danger);
+            font-weight: 500;
+        }
+
+        .reminder-course {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+        }
+    </style>
 </head>
 <body>
     <header class="main-header">
-        <div class="top-nav-bar">
-            <div class="logo-area">
+        <div class="header-top">
+            <div class="header-title">
                 <a href="dashboard.html">Панель студента</a>
             </div>
-
-            <div class="user-menu-container">
-                <div class="user-area" id="userDropdownToggle">
-                        <div class="user-avatar">ИИ</div>
-                        <span></span>
-                        <span class="dropdown-arrow">▼</span>
-                    </div>
-
-                <div class="dropdown-menu" id="userDropdownMenu">
-                    <a href="profile.html">👤 Профиль</a>
-                    <a href="#">⚙️ Настройки</a>
-                    <div class="menu-divider"></div>
-                    <a href="../common/login.html" style="color: var(--color-danger);">🚪 Выход</a>
-                </div>
+            <div class="user-info">
+                <span class="notification-badge">3</span>
+                <div class="user-avatar">ИИ</div>
+                <span class="user-name">Иванов И.И.</span>
             </div>
         </div>
 
-        <div class="sub-nav-bar-wrapper">
-            <nav class="sub-nav-bar">
-                <a href="dashboard.html" class="nav-tab active">🏠 Дашборд</a>
-                <a href="courses.html" class="nav-tab">📚 Мои курсы</a>
-                <a href="grades.html" class="nav-tab">💯 Оценки</a>
-                <a href="../common/chat.html" class="nav-tab">💬 Чат</a>
-                <a href="profile.html" class="nav-tab">👤 Профиль</a>
-            </nav>
-        </div>
+        <nav class="nav-tabs-wrapper">
+            <div class="nav-tabs">
+                <a href="dashboard.html" class="nav-tab active"> Дашборд</a>
+                <a href="courses.html" class="nav-tab"> Мои курсы</a>
+                <a href="grades.html" class="nav-tab"> Оценки</a>
+                <a href="../common/chat.html" class="nav-tab"> Чат</a>
+                <a href="profile.html" class="nav-tab"> Профиль</a>
+            </div>
+        </nav>
     </header>
 
-    <main class="dashboard-container">
-        <div class="breadcrumbs">
-            <a href="dashboard.html">Главная</a> <span>/</span> Дашборд
-        </div>
+    <main class="page-content-wrapper">
+        <div class="combined-stats-card">
 
-        <div class="stats-header">
-            <h3>Мой прогресс</h3>
-            <div class="time-filter">
-                <button class="btn active">Неделя</button>
-                <button class="btn">Месяц</button>
-                <button class="btn">Семестр</button>
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--primary-blue);"></span>
+                <div class="stat-details">
+                    <span class="value">3</span>
+                    <span class="label">Активных курсов</span>
+                </div>
             </div>
-        </div>
 
-        <div class="stats-grid">
-            <div class="stat-card progress">
-                <div class="stat-icon">
-                    <img src="https://via.placeholder.com/50/28a745/ffffff?text=✔" alt="Общий прогресс">
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value">85%</div>
-                    <div class="stat-label">Общий прогресс</div>
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-success);"></span>
+                <div class="stat-details">
+                    <span class="value">95%</span>
+                    <span class="label">Средний балл</span>
                 </div>
             </div>
-            <div class="stat-card courses">
-                <div class="stat-icon">
-                    <img src="https://via.placeholder.com/50/9c27b0/ffffff?text=📖" alt="Активных курсов">
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">Активных курсов</div>
-                </div>
-            </div>
-            <div class="stat-card deadline">
-                <div class="stat-icon">
-                    <img src="https://via.placeholder.com/50/ffc107/ffffff?text=⏰" alt="Ближайших дедлайна">
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value">2</div>
-                    <div class="stat-label">Ближайших дедлайна</div>
-                </div>
-            </div>
-            <div class="stat-card grade">
-                <div class="stat-icon">
-                    <img src="https://via.placeholder.com/50/007bff/ffffff?text=⭐" alt="Средний балл">
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value">4.5 / 5</div>
-                    <div class="stat-label">Средний балл</div>
-                </div>
-            </div>
-        </div>
 
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-danger);"></span>
+                <div class="stat-details">
+                    <span class="value">2</span>
+                    <span class="label">Предстоящих дедлайна</span>
+                </div>
+            </div>
+
+            <div class="combined-stat-item">
+                <span class="stat-icon" style="color: var(--color-info);"></span>
+                <div class="stat-details">
+                    <span class="value">1</span>
+                    <span class="label">Новое сообщение в чате</span>
+                </div>
+            </div>
+
+        </div>
         <div class="dashboard-grid">
-            <div class="main-column">
-                <div class="section-header">
-                    <h3>Мои курсы</h3>
-                    <button class="btn btn-success">+ Записаться</button>
+
+            <div class="card recent-activity">
+                <div class="card-header">
+                    Последняя активность
                 </div>
-                <div class="my-courses-grid">
-                    <div class="course-card-small active-bg-1">
-                        <span class="course-badge badge-progress">40%</span>
-                        <h4>Курс</h4>
-                        <div class="meta">Преподаватель: Иванова Е.С. | Прогресс: 2/5 модулей</div>
-                        <div class="actions">
-                            <a href="course.html?id=1" class="btn btn-primary">Продолжить</a>
-                            <a href="course.html?id=1&details" class="btn btn-secondary">Детали</a>
+
+                <div class="activity-list">
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Веб-разработка на Python</span>
+                            <span class="details">Модуль 6: Загрузка файлов</span>
                         </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-new">Продолжить</a>
                     </div>
-                    <div class="course-card-small active-bg-2">
-                        <span class="course-badge badge-progress">80%</span>
-                        <h4>Веб-разработка на Python</h4>
-                        <div class="meta">Преподаватель: Петров А.И. | Прогресс: 6/8 модулей</div>
-                        <div class="actions">
-                            <a href="course.html?id=2" class="btn btn-primary">Продолжить</a>
-                            <a href="course.html?id=2&details" class="btn btn-secondary">Детали</a>
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Алгоритмы и структуры данных</span>
+                            <span class="details">Получена оценка за домашнюю работу #3</span>
                         </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-graded">Оценка: 5/5</a>
                     </div>
-                    <div class="course-card-small completed-bg" style="grid-column: span 2; max-width: 50%;">
-                        <span class="course-badge badge-completed">Завершен</span>
-                        <h4>Базы данных и SQL</h4>
-                        <div class="meta">Преподаватель: Смирнов Р.О. | Прогресс: Завершен (100%)</div>
-                        <div class="actions">
-                            <a href="course.html?id=3&repeat" class="btn btn-secondary">Повторить</a>
-                            <a href="course.html?id=3&cert" class="btn btn-primary">Сертификат</a>
+
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="course">Базы данных и SQL</span>
+                            <span class="details">Просмотрен урок: Нормализация</span>
                         </div>
+                        <a href="#" class="btn btn-primary activity-badge badge-view">Посмотреть</a>
                     </div>
                 </div>
             </div>
 
-            <div class="deadlines-column">
-                <div class="deadlines-block">
-                    <div class="section-header">
-                        <h3>Ближайшие дедлайны</h3>
-                        <div class="deadline-filter">По дате ▼</div>
-                    </div>
 
-                    <div class="deadline-item">
-                        <div class="deadline-info">
-                            <div class="deadline-title">Задание 3: Хеш-таблицы</div>
-                            <div class="deadline-course">Курс</div>
-                        </div>
-                        <div class="deadline-date-block">
-                            <span class="btn-today">СЕГОДНЯ</span>
-                            <button class="btn btn-primary">Сдать</button>
-                        </div>
-                    </div>
+            <div class="card reminders">
+                <div class="card-header">
+                    Напоминания
+                </div>
 
-                    <div class="deadline-item">
-                        <div class="deadline-info">
-                            <div class="deadline-title">Проект 1: Forms</div>
-                            <div class="deadline-course">Веб-разработка Python</div>
-                        </div>
-                        <div class="deadline-date-block">
-                            <div class="deadline-date">02.12</div>
-                            <button class="btn btn-primary">Сдать</button>
-                        </div>
+                <div class="reminder-list">
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Дедлайн: 30 ноября</span>
+                        <span class="reminder-course">Алгоритмы: Тест по Модулю 4</span>
                     </div>
-
-                    <div class="deadline-item">
-                        <div class="deadline-info">
-                            <div class="deadline-title">Тест 4: Динамическое прог.</div>
-                            <div class="deadline-course">Курс</div>
-                        </div>
-                        <div class="deadline-date-block">
-                            <div class="deadline-date">05.12</div>
-                            <button class="btn btn-primary">Пройти</button>
-                        </div>
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Дедлайн: 5 декабря</span>
+                        <span class="reminder-course">Веб-разработка: Проект 'ToDo App'</span>
                     </div>
-
-                    <div style="text-align: right; margin-top: 15px;">
-                        <a href="deadlines.html" class="btn-link">Посмотреть все →</a>
+                    <div class="reminder-item">
+                        <span class="reminder-date"> Новое сообщение</span>
+                        <span class="reminder-course">Чат: Вопрос от преподавателя</span>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <script src="../../js/common/api.js"></script>
-    <script src="../../js/student/dashboard.js"></script>
+    </main>
 </body>
 </html>
