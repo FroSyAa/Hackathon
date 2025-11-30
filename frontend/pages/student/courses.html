@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои курсы | Панель студента</title>
+
+    <style>
+        :root {
+            --primary-blue: #0359b5;
+            --primary-dark-blue: #024082;
+            --color-bg-light: #f8f9fa;
+            --color-bg-page: #f4f7f9;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-text-secondary: #6c757d;
+            --border-color: #eee;
+            --box-shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --border-radius-base: 8px;
+            --border-radius-pill: 20px;
+            --header-height: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.2s, box-shadow 0.3s, transform 0.3s, color 0.2s, border-color 0.3s;
+        }
+
+        body {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #c7d3e0;
+            background-attachment: fixed;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-blue);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                transform: translateY(-1px);
+            }
+
+        .btn-secondary-outline {
+            background-color: white;
+            color: var(--color-text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+            .btn-secondary-outline:hover {
+                background-color: #f0f0f0;
+                border-color: #d0d0d0;
+                transform: translateY(-1px);
+            }
+
+        .main-header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: var(--header-height);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-title a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: var(--border-radius-base);
+        }
+
+            .user-info:hover {
+                background-color: var(--color-bg-light);
+            }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .notification-badge {
+            background-color: var(--color-danger);
+            color: white;
+            font-size: 0.7em;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+        }
+
+        .nav-tabs-wrapper {
+            background-color: transparent;
+            border: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            padding: 7px 15px;
+            font-weight: 500;
+            border-radius: var(--border-radius-pill);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            color: var(--primary-dark-blue);
+            background-color: transparent;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .nav-tab.active {
+                color: white;
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                font-weight: 600;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .nav-tab:hover:not(.active) {
+                color: white;
+                background-color: var(--primary-blue);
+                border-color: var(--primary-blue);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+        .page-content-wrapper {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumbs {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px 0;
+        }
+
+            .content-header h3 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #333;
+            }
+
+        .btn-enroll {
+            background-color: var(--color-success);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-pill); 
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+            .btn-enroll:hover {
+                background-color: var(--color-success);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+        .search-bar {
+            background-color: white;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow-medium);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius-pill);
+            padding: 5px 10px;
+            background-color: white;
+            flex-grow: 1;
+            min-width: 180px;
+        }
+
+            .search-input-group input, .search-input-group select {
+                border: none;
+                outline: none;
+                padding: 5px;
+                font-size: 1em;
+                color: #495057;
+                flex-grow: 1;
+                background-color: transparent;
+            }
+
+                .search-input-group input::placeholder {
+                    color: var(--color-text-secondary);
+                }
+
+            .search-input-group .icon {
+                color: var(--color-text-secondary);
+                margin-right: 8px;
+            }
+
+        .search-bar .btn {
+            border-radius: var(--border-radius-pill); 
+            padding: 7px 18px;
+        }
+
+        .search-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #6c757d;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+            .search-info span strong {
+                color: #333;
+            }
+
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding-bottom: 30px;
+        }
+
+        .course-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow-medium);
+            position: relative;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s;
+        }
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--box-shadow-hover);
+                border-color: var(--primary-blue);
+            }
+
+        .course-header-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .course-card h4 {
+            font-size: 1.2em;
+            margin: 0;
+            color: var(--primary-dark-blue);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            font-weight: 700;
+            border-radius: 4px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+        }
+
+        .badge-progress {
+            background-color: var(--primary-blue);
+        }
+
+        .badge-completed {
+            background-color: var(--color-success);
+        }
+
+        .badge-icon {
+            font-size: 1em;
+        }
+
+        .course-meta {
+            font-size: 0.85em;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .files-section {
+            background-color: #e6f9f3;
+            border: 1px solid #c8e6c9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-course {
+            padding: 6px 12px;
+            border-radius: var(--border-radius-pill);
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-continue, .btn-cert {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+            .btn-continue:hover, .btn-cert:hover {
+                background-color: var(--primary-dark-blue);
+                border-color: var(--primary-dark-blue);
+                transform: scale(1.05);
+            }
+
+        .btn-details, .btn-repeat {
+            background-color: white;
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+            .btn-details:hover, .btn-repeat:hover {
+                background-color: var(--primary-blue);
+                color: white;
+                border-color: var(--primary-blue);
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-top">
+            <div class="header-title">
+                <a href="dashboard.html">Панель студента</a>
+            </div>
+            <div class="user-info">
+                <span class="notification-badge">3</span>
+                <div class="user-avatar">ИИ</div>
+                <span class="user-name">Иванов И.И.</span>
+            </div>
+        </div>
+
+        <nav class="nav-tabs-wrapper">
+            <div class="nav-tabs">
+                <a href="dashboard.html" class="nav-tab"> Дашборд</a>
+                <a href="courses.html" class="nav-tab active"> Мои курсы</a>
+                <a href="grades.html" class="nav-tab"> Оценки</a>
+                <a href="../common/chat.html" class="nav-tab"> Чат</a>
+                <a href="profile.html" class="nav-tab"> Профиль</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-content-wrapper">
+        <div class="breadcrumbs">
+            <a href="dashboard.html">Главная</a> / Мои курсы
+        </div>
+
+        <div class="content-header">
+            <h3>Все записанные курсы</h3>
+            <button class="btn-enroll"><span style="font-size: 1.2em; margin-right: 5px;">+</span> Записаться</button>
+        </div>
+
+        <div class="search-bar">
+            <div class="search-input-group">
+                <span class="icon"></span>
+                <input type="text" placeholder="Поиск по названию...">
+            </div>
+            <div class="search-input-group">
+                <span class="icon"></span>
+                <select>
+                    <option value="">Все категории</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="data_science">Data Science</option>
+                </select>
+            </div>
+            <div class="search-input-group">
+                <span class="icon"></span>
+                <select>
+                    <option value="">Все статусы</option>
+                    <option value="active">Активные</option>
+                    <option value="completed">Завершенные</option>
+                    <option value="new">Новые</option>
+                </select>
+            </div>
+            <button class="btn btn-primary">Поиск</button>
+            <button class="btn btn-secondary-outline">Очистить</button>
+            <div class="search-info">
+                <span>Всего: <strong>3</strong></span>
+                <span>Активные: <strong>2</strong></span>
+            </div>
+        </div>
+
+        <div class="courses-grid">
+
+            <div class="course-card">
+                <div class="course-header-card">
+                    <h4>Алгоритмы и структуры данных</h4>
+                    <span class="status-badge badge-progress"><span class="badge-icon">⏳</span> 40%</span>
+                </div>
+                <div class="course-meta">Преподаватель: Иванова Е.С.</div>
+                <div class="course-meta">Прогресс: 2/5 модулей</div>
+                <div class="files-section">Файлов: 3</div>
+                <div class="actions">
+                    <a href="course.html?id=1" class="btn-course btn-continue">Продолжить</a>
+                    <a href="course.html?id=1&details" class="btn-course btn-details">Детали</a>
+                </div>
+            </div>
+
+
+            <div class="course-card">
+                <div class="course-header-card">
+                    <h4>Веб-разработка на Python</h4>
+                    <span class="status-badge badge-progress"><span class="badge-icon">⏳</span> 80%</span>
+                </div>
+                <div class="course-meta">Преподаватель: Петров А.И.</div>
+                <div class="course-meta">Прогресс: 6/8 модулей</div>
+                <div class="files-section">Файлов: 5</div>
+                <div class="actions">
+                    <a href="course.html?id=2" class="btn-course btn-continue">Продолжить</a>
+                    <a href="course.html?id=2&details" class="btn-course btn-details">Детали</a>
+                </div>
+            </div>
+
+
+            <div class="course-card">
+                <div class="course-header-card">
+                    <h4>Базы данных и SQL</h4>
+                    <span class="status-badge badge-completed"><span class="badge-icon">✅</span> Завершен</span>
+                </div>
+                <div class="course-meta">Преподаватель: Смирнов Р.О.</div>
+                <div class="course-meta">Завершено: 100%</div>
+                <div class="files-section">Файлов: 2 (сертификат)</div>
+                <div class="actions">
+                    <a href="course.html?id=3&repeat" class="btn-course btn-repeat">Повторить</a>
+                    <a href="course.html?id=3&cert" class="btn-course btn-cert">Сертификат</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

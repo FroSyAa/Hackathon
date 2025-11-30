@@ -1,0 +1,43 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Переменные окружения
+.env
+.env.local
+.env.development
+.env.production
+
+# Загруженные файлы
+backend/uploads/materials/*
+backend/uploads/assignments/*
+!backend/uploads/materials/.gitkeep
+!backend/uploads/assignments/.gitkeep
+
+# Логи
+logs/
+*.log
+
+# База данных (если используется локальная)
+*.sqlite
+*.db
+
+# Операционные системы
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Временные файлы
+tmp/
+temp/
+
+# Сборки
+dist/
+build/

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход в систему</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-header">
+        <i class="fas fa-graduation-cap"></i>
+        <h1>Образовательная платформа</h1>
+        <p>Войдите в систему для продолжения</p>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="role">
+            <i class="fas fa-user-tag"></i>
+            Войти как
+          </label>
+          <select id="role" name="role" required>
+            <option value="">Выберите роль</option>
+            <option value="student">Студент</option>
+            <option value="teacher">Преподаватель</option>
+            <option value="admin">Администратор направления</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            <i class="fas fa-envelope"></i>
+            Email
+          </label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">
+            <i class="fas fa-lock"></i>
+            Пароль
+          </label>
+          <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-sign-in-alt"></i>
+          Войти
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../js/common/api.js"></script>
+  <script src="../../js/common/auth.js"></script>
+</body>
+</html>

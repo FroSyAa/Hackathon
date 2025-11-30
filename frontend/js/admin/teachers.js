@@ -1,0 +1,122 @@
+let teacherPasswords = {};
+
+document.addEventListener('DOMContentLoaded', async function() {
+  checkAuth();
+  const user = getUser();
+
+  if (user.role !== 'admin') {
+    alert('Доступ запрещен');
+    window.location.href = '/pages/common/login.html';
+    return;
+  }
+
+  document.getElementById('admin-name').textContent = `${user.firstName} ${user.lastName}`;
+
+  await loadTeachers();
+
+  document.getElementById('add-teacher-btn').addEventListener('click', openModal);
+  document.getElementById('add-teacher-form').addEventListener('submit', handleAddTeacher);
+
+  generatePassword();
+});
+
+// Генерация случайного пароля
+function generatePassword() {
+  const length = 12;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  document.getElementById('teacher-password').value = password;
+}
+
+// Загрузка преподавателей
+async function loadTeachers() {
+  try {
+    const data = await API.admin.getTeachers();
+    const tbody = document.getElementById('teachers-tbody');
+
+    if (!data.teachers || data.teachers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4">Нет преподавателей</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.teachers.map(teacher => {
+      const user = teacher.user;
+      const password = teacherPasswords[teacher.id] || '••••••••';
+      const createdAt = new Date(teacher.createdAt).toLocaleDateString('ru-RU');
+      const fullName = `${user.lastName} ${user.firstName}${user.middleName ? ' ' + user.middleName : ''}`;
+
+      return `
+        <tr>
+          <td>${fullName}</td>
+          <td>${user.email}</td>
+          <td class="password-cell">${password}</td>
+          <td>${createdAt}</td>
+          <td>
+            <button class="btn btn-outline btn-small" onclick="deleteTeacher('${teacher.id}', '${fullName}')" style="border-color:#dc3545;color:#dc3545;">
+              <i class="fas fa-trash"></i> Удалить
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Ошибка загрузки преподавателей:', error);
+    alert('Ошибка загрузки: ' + error.message);
+  }
+}
+
+// Открыть модальное окно
+function openModal() {
+  generatePassword();
+  document.getElementById('add-teacher-modal').style.display = 'flex';
+}
+
+// Закрыть модальное окно
+function closeModal() {
+  document.getElementById('add-teacher-modal').style.display = 'none';
+  document.getElementById('add-teacher-form').reset();
+}
+
+// Создать преподавателя
+async function handleAddTeacher(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('teacher-email').value;
+  const password = document.getElementById('teacher-password').value;
+  const firstName = document.getElementById('teacher-firstName').value;
+  const lastName = document.getElementById('teacher-lastName').value;
+  const middleName = document.getElementById('teacher-middleName').value;
+
+  try {
+    const data = await API.admin.createTeacher(email, password, firstName, lastName, middleName);
+
+    teacherPasswords[data.user.teacherId] = password;
+
+    const fullName = `${lastName} ${firstName}${middleName ? ' ' + middleName : ''}`;
+    const credentials = `ФИО: ${fullName}\nEmail: ${email}\nПароль: ${password}`;
+    alert(`Преподаватель создан!\n\n${credentials}\n\nСкопируйте эти данные и передайте преподавателю.`);
+
+    closeModal();
+    await loadTeachers();
+  } catch (error) {
+    alert('Ошибка: ' + error.message);
+  }
+}
+
+// Удалить преподавателя
+async function deleteTeacher(teacherId, fullName) {
+  if (!confirm(`Вы уверены, что хотите удалить преподавателя "${fullName}"?\n\nЭто действие необратимо и удалит все курсы и материалы этого преподавателя.`)) {
+    return;
+  }
+
+  try {
+    await API.admin.deleteTeacher(teacherId);
+    alert('Преподаватель удалён');
+    await loadTeachers();
+  } catch (error) {
+    alert('Ошибка удаления: ' + error.message);
+  }
+}

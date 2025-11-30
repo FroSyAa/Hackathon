@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход супер-администратора</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-header">
+        <i class="fas fa-user-shield"></i>
+        <h1>Супер-администратор</h1>
+      </div>
+      <form id="superadmin-login-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">
+            <i class="fas fa-envelope"></i>
+            Email
+          </label>
+          <input type="email" id="email" name="email" placeholder="admin@admin.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">
+            <i class="fas fa-lock"></i>
+            Пароль
+          </label>
+          <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-sign-in-alt"></i>
+          Войти
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../js/common/api.js"></script>
+  <script>
+    document.getElementById('superadmin-login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const data = await API.auth.login(email, password, 'superadmin');
+        saveAuth(data.token, data.user);
+
+        if (data.user.role === 'superadmin') {
+          window.location.href = '/pages/superadmin/directions.html';
+        } else {
+          alert('Доступ запрещен. Только для супер-администраторов.');
+        }
+      } catch (error) {
+        alert('Ошибка входа: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+const express = require('express');
+const router = express.Router();
+const { User, Teacher } = require('../../models');
+const { authenticateToken, authorizeAdmin } = require('../../middleware/auth');
+
+// Создать преподавателя
+router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { email, password, firstName, lastName, middleName } = req.body;
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email уже используется' });
+    }
+
+    const user = await User.create({
+      email,
+      password,
+      firstName,
+      lastName,
+      middleName
+    });
+
+    const teacher = await Teacher.create({
+      userId: user.id,
+      directionId: req.admin.directionId
+    });
+
+    const token = user.generateToken();
+
+    res.status(201).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: 'teacher',
+        teacherId: teacher.id
+      },
+      token
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получить всех преподавателей направления
+router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const teachers = await Teacher.findAll({
+      where: { directionId: req.admin.directionId },
+      include: [{ association: 'user', attributes: { exclude: ['password'] } }]
+    });
+
+    res.json({ teachers });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удалить преподавателя
+router.delete('/:teacherId', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+
+    const teacher = await Teacher.findByPk(teacherId);
+    if (!teacher) {
+      return res.status(404).json({ error: 'Преподаватель не найден' });
+    }
+
+    if (teacher.directionId !== req.admin.directionId) {
+      return res.status(403).json({ error: 'Нет доступа к этому преподавателю' });
+    }
+
+    await User.destroy({ where: { id: teacher.userId } });
+
+    res.json({ message: 'Преподаватель удалён успешно' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

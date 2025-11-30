@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка работ студентов</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/main_teacher.css">
+  <link rel="stylesheet" href="../../styles/grading.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="teacher-dashboard">
+    <header class="teacher-header">
+      <div class="header-left">
+        <h1><i class="fas fa-graduation-cap"></i> Панель преподавателя</h1>
+        <div class="breadcrumbs">
+          <a href="main_teacher.html"><i class="fas fa-home"></i> Главная</a>
+          <span>/ Проверка работ</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="notifications" id="notificationContainer">
+          <button class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="notificationBadge">3</span>
+          </button>
+          <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+              <h4><i class="fas fa-bell"></i> Уведомления</h4>
+              <span class="notification-count" id="panelCount">3 новых</span>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- Уведомления будут здесь -->
+            </div>
+            <div class="notification-footer">
+              <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                <i class="fas fa-comments"></i> Перейти в чаты
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="user-info" id="userInfo">
+          <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
+          <span id="teacherName" class="teacher-name"></span>
+          <div class="profile-menu" id="profileMenu">
+            <a href="teacher_profile.html" class="menu-item">
+              <i class="fas fa-user"></i> Профиль
+            </a>
+            <a href="../../pages/common/login.html" class="menu-item logout">
+              <i class="fas fa-sign-out-alt"></i> Выйти
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+    <nav class="teacher-nav">
+      <a href="main_teacher.html" class="nav-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Дашборд</span>
+      </a>
+      <a href="students.html" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Студенты</span>
+      </a>
+      <a href="grading.html" class="nav-item active">
+        <i class="fas fa-clipboard-check"></i><span>Проверка
+          работ</span>
+        </a>
+      <a href="../common/chat.html" class="nav-item">
+        <i class="fas fa-comments">
+          
+        </i><span>Чат</span>
+      </a>
+    </nav>
+
+    <main class="grading-content">
+      <div class="page-header">
+        <h2><i class="fas fa-clipboard-check"></i> Проверка работ студентов</h2>
+      </div>
+
+      <div class="filters-row">
+        <input type="text" id="searchStudent" class="filter-input" placeholder="Поиск по фамилии...">
+        <input type="text" id="searchGroup" class="filter-input" placeholder="Группа...">
+        <select id="filterStatus" class="filter-select">
+          <option value="">Все статусы</option>
+          <option value="сдано">Сдано</option>
+          <option value="проверка">Проверка</option>
+          <option value="не сдано">Не сдано</option>
+        </select>
+        <button id="searchBtn" class="btn btn-primary">Поиск</button>
+        <button id="clearBtn" class="btn btn-secondary">Очистить</button>
+        <div class="stats">
+          <span>Всего: <span id="totalCount">0</span></span>
+          <span>Сдано: <span id="doneCount">0</span></span>
+        </div>
+      </div>
+
+      <div class="students-grid" id="studentsList">
+        <!-- JS заполнит -->
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/common/api.js"></script>
+  <script src="../../js/teacher/main_teacher.js"></script>
+  <script src="../../js/teacher/grading.js"></script>
+</body>
+
+</html>

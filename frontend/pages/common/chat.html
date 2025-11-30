@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/main_teacher.css">
+    <link rel="stylesheet" href="../../styles/chat.css">
+</head>
+<body class="chat-body">
+    <!-- Sidebar с чатами -->
+    <aside class="chat-sidebar" id="chatSidebar">
+        <div class="back-button-container">
+            <a href="../../pages/teacher/main_teacher.html" class="back-btn">← Назад</a>
+        </div>
+        <div class="sidebar-header">
+            <h3>Чаты</h3>
+            <button class="new-chat-btn" title="Новый чат">➕</button>
+        </div>
+        
+        <div class="chats-list" id="chatsList">
+            <div class="chat-item" data-chat="1">
+                <img src="../../assets/student.png" alt="Иванов И.И." class="chat-avatar">
+                <div class="chat-info">
+                    <div class="chat-name">Иванов И.И.</div>
+                    <div class="chat-preview">Отличный подход с DFS!</div>
+                    <div class="chat-time">14:37</div>
+                </div>
+                <div class="chat-unread">3</div>
+                <div class="chat-status online"></div>
+                <button class="delete-chat-btn" data-chat="1" title="Удалить">❌</button>
+            </div>
+
+            <div class="chat-item" data-chat="2">
+                <img src="../../assets/student.png" alt="Петров П.П." class="chat-avatar">
+                <div class="chat-info">
+                    <div class="chat-name">Петров П.П.</div>
+                    <div class="chat-preview">Не понял задание по графам</div>
+                    <div class="chat-time">Вчера</div>
+                </div>
+                <div class="chat-unread">1</div>
+                <div class="chat-status"></div>
+                <button class="delete-chat-btn" data-chat="2" title="Удалить">❌</button>
+            </div>
+
+            <div class="chat-item" data-chat="3">
+                <img src="../../assets/student.png" alt="Сидорова А.А." class="chat-avatar">
+                <div class="chat-info">
+                    <div class="chat-name">Сидорова А.А.</div>
+                    <div class="chat-preview">Проверьте мою работу</div>
+                    <div class="chat-time">12:15</div>
+                </div>
+                <div class="chat-status"></div>
+                <button class="delete-chat-btn" data-chat="3" title="Удалить">❌</button>
+            </div>
+
+            <div class="chat-item" data-chat="4">
+                <img src="../../assets/student.png" alt="Козлов К.К." class="chat-avatar">
+                <div class="chat-info">
+                    <div class="chat-name">Козлов К.К.</div>
+                    <div class="chat-preview">Спасибо за разъяснение!</div>
+                    <div class="chat-time">Пн</div>
+                </div>
+                <div class="chat-status online"></div>
+                <button class="delete-chat-btn" data-chat="4" title="Удалить">❌</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Основная область -->
+    <div class="chat-main">
+        <header class="chat-header">
+            <div class="chat-header-simple">
+                <h2 id="chatTitle">Чаты</h2>
+                <span class="status-text" id="chatStatus">Выберите чат</span>
+            </div>
+        </header>
+
+        <main class="chat-messages" id="messagesContainer">
+            <!-- Сообщения загружаются динамически -->
+        </main>
+
+        <footer class="chat-input-fixed">
+            <div class="chat-input">
+                <div class="input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Напишите сообщение..." autocomplete="off">
+                </div>
+                <button class="input-btn send-btn" id="sendBtn" title="Отправить">➤</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../../js/common/api.js"></script>
+    <script src="../../js/common/chat.js"></script>
+</body>
+</html>

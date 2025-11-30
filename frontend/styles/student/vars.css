@@ -1,0 +1,16 @@
+:root {
+	--primary-blue: #0b75d1;
+	--primary-light-blue: #7fc3ff;
+	--primary-dark-blue: #0056a3;
+	--primary-dark-blue-2: #003f7a;
+	--color-bg-light: #f6f9fc;
+	--color-bg-page: linear-gradient(135deg, #f5f7fa 0%, #e8f0fb 100%);
+	--color-success: #28a745;
+	--color-danger: #dc3545;
+	--color-warning: #ffc107;
+	--color-text-secondary: #6c757d;
+	--border-color: rgba(15,23,42,0.06);
+	--box-shadow-medium: 0 8px 24px rgba(12,38,70,0.04);
+	--border-radius-base: 12px;
+	--border-radius-pill: 20px;
+}
