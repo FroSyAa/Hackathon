@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель преподавателя</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/main_teacher.css">
+    <link rel="stylesheet" href="../../styles/teacher_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="teacher-dashboard">
+        <!-- Header с навигацией -->
+        <header class="teacher-header">
+            <div class="header-left">
+                <h1><i class="fas fa-graduation-cap"></i> Панель преподавателя</h1>
+                <div class="breadcrumbs">
+                    <a href="main_teacher.html"><i class="fas fa-home"></i> Главная</a>
+                    <span>/ Профль</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="notifications" id="notificationContainer">
+                    <button class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge">3</span>
+                    </button>
+                    <div class="notification-panel" id="notificationPanel">
+                        <div class="notification-header">
+                            <h4><i class="fas fa-bell"></i> Уведомления</h4>
+                            <span class="notification-count" id="panelCount">3 новых</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <!-- Уведомления будут здесь -->
+                        </div>
+                        <div class="notification-footer">
+                            <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                                <i class="fas fa-comments"></i> Перейти в чаты
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-info" id="userInfo">
+                    <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
+                    <span id="teacherName" class="teacher-name"></span>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="teacher_profile.html" class="menu-item">
+                            <i class="fas fa-user"></i> Профиль
+                        </a>
+                        <a href="../../pages/common/login.html" class="menu-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Главная навигация -->
+        <nav class="teacher-nav">
+            <a href="main_teacher.html" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Дашборд</span>
+            </a>
+            <a href="students.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Студенты</span>
+            </a>
+            <a href="grading.html" class="nav-item">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Проверка работ</span>
+            </a>
+            <a href="../../pages/common/chat.html" class="nav-item">
+                <i class="fas fa-comments"></i>
+                <span>Чат</span>
+            </a>
+        </nav>
+
+        <main class="teacher-main profile-main">
+            <div class="profile-container">
+                <!-- Основная информация -->
+                <section class="profile-main-info">
+                    <div class="profile-avatar-section">
+                        <div class="avatar-large-container">
+                            <img src="../../assets/avatar_teacher.jpg" alt="Фото профиля" class="avatar-large"
+                                id="currentAvatar">
+                            <label for="avatarInput" class="avatar-upload-btn btn-upload-style">
+                                <i class="fas fa-camera"></i>
+                                <span>Сменить фото</span>
+                            </label>
+                            <input type="file" id="avatarInput" accept="image/jpeg,image/png" style="display: none;">
+                        </div>
+                        <div class="profile-buttons">
+                            <button class="btn btn-primary" onclick="uploadAvatar()">
+                                <i class="fas fa-upload"></i> Загрузить
+                            </button>
+                            <button class="btn btn-outline" onclick="resetAvatar()">
+                                <i class="fas fa-undo"></i> Сбросить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-info">
+                        <h2 id="fullName"></h2>
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <i class="fas fa-building"></i>
+                                <div>
+                                    <label>Организация</label>
+                                    <span id="organization"></span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <label>Email</label>
+                                    <span id="email"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Смена пароля -->
+                <section class="profile-password-section">
+                    <h3><i class="fas fa-lock"></i> Сменить пароль</h3>
+                    <form id="passwordForm" class="profile-form">
+                        <div class="form-group">
+                            <label>Текущий пароль</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Новый пароль</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Подтвердите новый пароль</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-key"></i> Сменить пароль
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Действия -->
+                <section class="profile-actions">
+                    <h3><i class="fas fa-cogs"></i> Дополнительные действия</h3>
+                    <div class="actions-grid">
+                        <button class="action-card danger" onclick="deleteProfile()">
+                            <i class="fas fa-user-times"></i>
+                            <span>Удалить профиль</span>
+                        </button>
+                        <a href="../../pages/common/login.html" class="action-card logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../js/common/api.js"></script>
+    <script src="../../js/teacher/main_teacher.js"></script>
+    <script src="../../js/teacher/teacher_profile.js"></script>
+</body>
+
+</html>

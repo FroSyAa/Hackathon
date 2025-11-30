@@ -29,7 +29,7 @@
 /* Индикатор шагов */
 .steps-indicator {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 30px;
   margin-bottom: 60px;
@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  flex: 1;
   position: relative;
   z-index: 2;
 }
@@ -87,20 +87,19 @@
 }
 
 .step-line {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  right: 24px;
-  height: 4px;
-  background: #e2e8f0;
-  z-index: 1;
-  transition: background 0.4s ease;
+  height: 3px;
+  background: #e0e0e0;
+  flex: 1;
+  margin: 0 24px;
   border-radius: 2px;
+  position: relative;
+  z-index: 1;
+  transition: background 0.3s ease;
 }
 
-.steps-indicator li.active ~ li .step-line,
-.steps-indicator li.completed ~ li .step-line {
-  background: linear-gradient(90deg, #10b981, #4f46e5);
+.step-item.active+.step-line,
+.step-item.active~.step-item.active+.step-line {
+  background:  #004C97
 }
 
 /* Шаги формы */
@@ -118,6 +117,7 @@
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -173,8 +173,15 @@
 }
 
 @keyframes imageAppear {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Шаг 2 - Материалы */
@@ -395,22 +402,23 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
+
   .basic-info-grid,
   .materials-section {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .steps-indicator {
     gap: 20px;
   }
-  
+
   .step-number {
     width: 40px;
     height: 40px;
     font-size: 16px;
   }
-  
+
   .add-topic-section {
     flex-direction: column;
   }

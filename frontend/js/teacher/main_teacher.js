@@ -1,26 +1,28 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    checkAuth();
+document.addEventListener('DOMContentLoaded', async function () {
+        checkAuth();
     const user = getUser();
 
     if (user.role !== 'teacher') {
         window.location.href = '/pages/student/dashboard.html';
         return;
     }
-
-    document.querySelector('.user-info span').textContent = formatShortName(user);
-
+    const teacherNameEl = document.getElementById('teacherName') || document.querySelector('.user-info span');
+    if (teacherNameEl) {
+        teacherNameEl.textContent = formatShortName(user);
+    }
+    initProfileMenu();
+    initNotifications();  
     await loadStatistics();
     await loadCourses();
     await loadPendingSubmissions();
-
+    loadNotifications();
     const periodBtns = document.querySelectorAll('.period-btn');
     periodBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             periodBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
     });
-
     const statCards = document.querySelectorAll('.stat-card');
     setTimeout(() => {
         statCards.forEach((card, index) => {
@@ -30,9 +32,139 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 500);
 });
 
+function initProfileMenu() {
+    const userInfo = document.getElementById('userInfo');
+    const profileMenu = document.getElementById('profileMenu');
+
+    if (userInfo && profileMenu) {
+        userInfo.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleProfileMenu();
+        });
+
+        document.addEventListener('click', function () {
+            profileMenu.classList.remove('show');
+            userInfo.classList.remove('clicking');
+        });
+
+        profileMenu.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function () {
+                profileMenu.classList.remove('show');
+                userInfo.classList.remove('clicking');
+            });
+        });
+    }
+}
+
+function toggleProfileMenu() {
+    const profileMenu = document.getElementById('profileMenu');
+    const userInfo = document.getElementById('userInfo');
+
+    const isVisible = profileMenu.classList.contains('show');
+    profileMenu.classList.toggle('show', !isVisible);
+    userInfo.classList.add('clicking');
+
+    setTimeout(() => {
+        profileMenu.classList.remove('show');
+        userInfo.classList.remove('clicking');
+    }, 5000);
+}
+
+function initNotifications() {
+    const notificationContainer = document.getElementById('notificationContainer');
+    const bell = document.getElementById('notificationBell');
+    const panel = document.getElementById('notificationPanel');
+    
+    if (!notificationContainer || !bell || !panel) {
+        console.log('❌ Элементы уведомлений не найдены в DOM');
+        return;
+    }
+
+    // Клик по колокольчику
+    bell.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleNotifications();
+    });
+
+    // Закрытие при клике вне панели
+    document.addEventListener('click', function (e) {
+        if (!notificationContainer.contains(e.target)) {
+            hideNotifications();
+        }
+    });
+}
+
+function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    if (panel) {
+        panel.classList.toggle('show');
+    }
+}
+
+function hideNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    if (panel) {
+        panel.classList.remove('show');
+    }
+}
+
+async function loadNotifications() {
+    const notifications = [
+        {
+            id: 1,
+            avatar: '../../assets/student.png',
+            title: 'Иван Иванов',
+            message: 'Отправил работу по заданию "Алгоритмы" на проверку',
+            time: '2 мин назад',
+            unread: true
+        },
+        {
+            id: 2,
+            avatar: '../../assets/student.png',
+            title: 'Мария Петрова',
+            message: 'Задала вопрос по курсу "Веб-разработка"',
+            time: '15 мин назад',
+            unread: true
+        }
+    ];
+
+    const list = document.getElementById('notificationList');
+    const badge = document.getElementById('notificationBadge');
+    const panelCount = document.getElementById('panelCount');
+    if (!list || !badge || !panelCount) {
+        return;
+    }
+
+    list.innerHTML = notifications.map(notif => `
+        <div class="notification-item ${notif.unread ? 'unread' : ''}" data-notification-id="${notif.id}">
+            <img src="${notif.avatar}" alt="Аватар" class="notification-avatar">
+            <div class="notification-content">
+                <div class="notification-title">${notif.title}</div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${notif.time}</div>
+            </div>
+        </div>
+    `).join('');
+
+    // Обновляем счетчики
+    const unreadCount = notifications.filter(n => n.unread).length;
+    badge.textContent = unreadCount;
+    panelCount.textContent = unreadCount ? `${unreadCount} новых` : 'Нет новых';
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function () {
+            markAsRead(this.dataset.notificationId);
+        });
+    });
+}
+
+function markAsRead(notificationId) {
+    console.log(`✅ Отмечено как прочитанное: ${notificationId}`);
+    showNotification('Уведомление отмечено как прочитанное', 'success');
+    loadNotifications(); 
+}
+
 let courseStatistics = {};
 
-// Загрузка статистики
 async function loadStatistics() {
     try {
         const data = await API.teacher.getStatistics();
@@ -53,7 +185,6 @@ async function loadStatistics() {
     }
 }
 
-// Загрузка курсов
 async function loadCourses() {
     try {
         const data = await API.teacher.getCourses();
@@ -65,10 +196,10 @@ async function loadCourses() {
         }
 
         if (!coursesGrid) return;
-
+        // Build course cards with image URL resolution and fallback
         coursesGrid.innerHTML = data.courses.map(course => {
             const stats = courseStatistics[course.id] || { studentCount: 0, assignmentCount: 0, progress: 0 };
-            
+
             let imageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23004C97"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="white"%3ECourse%3C/text%3E%3C/svg%3E';
             if (course.imageUrl && course.imageUrl.trim() !== '') {
                 const raw = course.imageUrl.trim();
@@ -93,8 +224,8 @@ async function loadCourses() {
                         </div>
                     </div>
                     <div class="course-info">
-                            <h3>${course.title}</h3>
-                            <p class="course-short-description">${course.description || ''}</p>
+                        <h3>${course.title}</h3>
+                        <p class="course-short-description">${course.description || ''}</p>
                         <div class="course-meta">
                             <span class="students"><i class="fas fa-users"></i> ${stats.studentCount} студентов</span>
                             <span class="tasks"><i class="fas fa-tasks"></i> ${stats.assignmentCount} заданий</span>
@@ -112,7 +243,6 @@ async function loadCourses() {
     }
 }
 
-// Загрузка работ на проверке
 async function loadPendingSubmissions() {
     try {
         const data = await API.teacher.getPendingSubmissions();
@@ -161,7 +291,6 @@ async function loadPendingSubmissions() {
     }
 }
 
-// Форматирует имя в строку `Фамилия И.О.`
 function formatShortName(user) {
     if (!user) return '';
     const last = user.lastName || '';

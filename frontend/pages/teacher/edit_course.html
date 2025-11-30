@@ -1,88 +1,206 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Редактирование курса</title>
-  <link rel="stylesheet" href="../../styles/main.css">
-  <link rel="stylesheet" href="../../styles/main_teacher.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    .edit-course-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 2rem;
-    }
-    .course-header {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-    .course-image-section {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-      margin-top: 1.5rem;
-    }
-    .course-image-preview {
-      width: 300px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-      background: #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666;
-    }
-    .section-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .items-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .item-card {
-      padding: 1rem;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .item-card:hover {
-      border-color: #004C97;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование курса</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/main_teacher.css">
+    <link rel="stylesheet" href="../../styles/edit_course.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
-  <div class="teacher-dashboard">
-    <header class="teacher-header">
-      <div class="header-left">
-        <h1><i class="fas fa-graduation-cap"></i> Панель преподавателя</h1>
-        <div class="breadcrumbs">
-          <a href="main_teacher.html"><i class="fas fa-home"></i> Главная</a>
-          <span>/ Редактирование курса</span>
+    <div class="teacher-dashboard">
+        <header class="teacher-header">
+            <div class="header-left">
+                <h1><i class="fas fa-graduation-cap"></i> Панель преподавателя</h1>
+                <div class="breadcrumbs">
+                    <a href="main_teacher.html"><i class="fas fa-home"></i> Главная</a>
+                    <span>/ Редактирвоание курса</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="notifications" id="notificationContainer">
+                    <button class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge">3</span>
+                    </button>
+                    <div class="notification-panel" id="notificationPanel">
+                        <div class="notification-header">
+                            <h4><i class="fas fa-bell"></i> Уведомления</h4>
+                            <span class="notification-count" id="panelCount">2 новых</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <!-- Уведомления будут здесь -->
+                        </div>
+                        <div class="notification-footer">
+                            <a href="../../pages/common/chat.html" class="btn btn-primary btn-full">
+                                <i class="fas fa-comments"></i> Перейти в чаты
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-info" id="userInfo">
+                    <img src="../../assets/avatar_teacher.jpg" alt="Аватар" class="avatar">
+                    <span id="teacherName" class="teacher-name"></span>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="teacher_profile.html" class="menu-item">
+                            <i class="fas fa-user"></i> Профиль
+                        </a>
+                        <a href="../../pages/common/login.html" class="menu-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+<<<<<<< HEAD
+    <main class="edit-course-container">
+      <!-- Основная информация -->
+      <div class="course-header">
+        <input id="course-title" style="font-size:1.5rem; font-weight:700; border:0; outline:none; width:100%;" />
+        <textarea id="course-description" style="color: #666; margin-top: 0.5rem; width:100%; border:0; resize:vertical; min-height:48px;"></textarea>
+
+        <div class="course-image-section">
+          <div id="course-image-wrapper">
+            <img id="course-image" class="course-image-preview" src="" alt="Изображение курса">
+            <div id="course-image-placeholder" class="course-image-preview" style="display:none;">Изображение не загружено</div>
+          </div>
+          <div>
+            <label class="btn btn-primary" for="image-upload">
+              <i class="fas fa-upload"></i> Загрузить изображение
+            </label>
+            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+            <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Рекомендуемый размер: 800x400px</p>
+          </div>
         </div>
       </div>
-      <div class="header-right">
-        <div class="user-info">
-          <span id="teacher-name"></span>
+
+      <!-- Теории -->
+      <div class="section-card">
+        <div class="section-header">
+          <h3><i class="fas fa-book"></i> Теории</h3>
+          <button class="btn btn-primary" onclick="openAddLectureModal()">
+            <i class="fas fa-plus"></i> Добавить теорию
+          </button>
+        </div>
+        <div id="lectures-list" class="items-list">
+          <p style="text-align: center; color: #666;">Нет лекций</p>
         </div>
       </div>
+=======
+        <main class="edit-course-container">
+            <!-- Основная информация -->
+            <div class="course-header">
+                <h2 id="course-title">Загрузка...</h2>
+                <p id="course-description" style="color: #666; margin-top: 0.5rem;"></p>
+
+                <div class="course-image-section">
+                    <div>
+                        <img id="course-image" class="course-image-preview" src="" alt="Изображение курса">
+                    </div>
+                    <div>
+                        <label class="btn btn-primary" for="image-upload">
+                            <i class="fas fa-upload"></i> Загрузить изображение
+                        </label>
+                        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Рекомендуемый размер: 800x400px
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Лекции -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3><i class="fas fa-book"></i> Лекции</h3>
+                    <button class="btn btn-primary" onclick="openAddLectureModal()">
+                        <i class="fas fa-plus"></i> Добавить лекцию
+                    </button>
+                </div>
+                <div id="lectures-list" class="items-list">
+                    <p style="text-align: center; color: #666;">Нет лекций</p>
+                </div>
+            </div>
+>>>>>>> origin/main
+
+            <!-- Практические задания -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3><i class="fas fa-tasks"></i> Практические задания</h3>
+                    <button class="btn btn-primary" onclick="openAddAssignmentModal()">
+                        <i class="fas fa-plus"></i> Добавить задание
+                    </button>
+                </div>
+                <div id="assignments-list" class="items-list">
+                    <p style="text-align: center; color: #666;">Нет заданий</p>
+                </div>
+            </div>
+
+<<<<<<< HEAD
+      <!-- Студенты -->
+      <div class="section-card">
+        <div class="section-header">
+          <h3><i class="fas fa-users"></i> Студенты курса</h3>
+            <div>
+              <button class="btn btn-primary" onclick="openUploadStudentsModal()">
+                <i class="fas fa-upload"></i> Загрузить студентов (JSON)
+              </button>
+              <button class="btn btn-outline" onclick="openAddStudentModal()">
+                <i class="fas fa-user-plus"></i> Добавить студента
+              </button>
+            </div>
+        </div>
+        <div id="students-list" class="items-list">
+          <p style="text-align: center; color: #666;">Нет студентов</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Модальное окно добавления одного студента -->
+  <div id="add-student-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Добавить студента</h3>
+        <button class="modal-close" onclick="closeAddStudentModal()">&times;</button>
+      </div>
+      <form id="add-student-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="student-email" required>
+        </div>
+        <div class="form-group">
+          <label>Пароль</label>
+          <input type="text" id="student-password" required>
+        </div>
+        <div class="form-group">
+          <label>Фамилия</label>
+          <input type="text" id="student-lastName" required>
+        </div>
+        <div class="form-group">
+          <label>Имя</label>
+          <input type="text" id="student-firstName" required>
+        </div>
+        <div class="form-group">
+          <label>Отчество</label>
+          <input type="text" id="student-middleName">
+        </div>
+        <div class="form-group">
+          <label>Группа</label>
+          <select id="student-groupName">
+            <option value="">Выберите группу</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeAddStudentModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+      </form>
+    </div>
     </header>
 
     <main class="edit-course-container">
@@ -136,14 +254,14 @@
       <div class="section-card">
         <div class="section-header">
           <h3><i class="fas fa-users"></i> Студенты курса</h3>
-            <div>
-              <button class="btn btn-primary" onclick="openUploadStudentsModal()">
-                <i class="fas fa-upload"></i> Загрузить студентов (JSON)
-              </button>
-              <button class="btn btn-outline" onclick="openAddStudentModal()">
-                <i class="fas fa-user-plus"></i> Добавить студента
-              </button>
-            </div>
+          <div>
+            <button class="btn btn-primary" onclick="openUploadStudentsModal()">
+              <i class="fas fa-upload"></i> Загрузить студентов (JSON)
+            </button>
+            <button class="btn btn-outline" onclick="openAddStudentModal()">
+              <i class="fas fa-user-plus"></i> Добавить студента
+            </button>
+          </div>
         </div>
         <div id="students-list" class="items-list">
           <p style="text-align: center; color: #666;">Нет студентов</p>
@@ -239,10 +357,6 @@
           <textarea id="assignment-description" rows="5"></textarea>
         </div>
         <div class="form-group">
-          <label>Прикрепить файл</label>
-          <input type="file" id="assignment-file" accept="*/*">
-        </div>
-        <div class="form-group">
           <label>Дедлайн</label>
           <input type="datetime-local" id="assignment-deadline" required>
         </div>
@@ -258,112 +372,3 @@
     </div>
   </div>
 
-  <!-- Модальное окно загрузки студентов -->
-  <div id="upload-students-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Загрузить студентов (JSON)</h3>
-        <button class="modal-close" onclick="closeUploadStudentsModal()">&times;</button>
-      </div>
-      <form id="upload-students-form">
-        <div class="form-group">
-          <label>JSON данные студентов</label>
-          <textarea id="students-json" rows="15" placeholder='[
-  {
-    "email": "student1@example.com",
-    "password": "password123",
-    "firstName": "Иван",
-    "lastName": "Иванов",
-    "middleName": "Иванович",
-    "groupName": "ИС-101"
-  },
-  {
-    "email": "student2@example.com",
-    "password": "password123",
-    "firstName": "Петр",
-    "lastName": "Петров",
-    "middleName": "Петрович",
-    "groupName": "ИС-101"
-  }
-]'></textarea>
-          <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-            Формат: массив объектов с полями email, password, firstName, lastName, middleName (опционально), groupName (опционально)
-          </p>
-        </div>
-        <div class="form-group">
-          <label>Или загрузить JSON файл</label>
-          <input type="file" id="students-file" accept=".json">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" onclick="closeUploadStudentsModal()">Отмена</button>
-          <button type="submit" class="btn btn-primary">Загрузить</button>
-        </div>
-      </form>
-      <div id="upload-results" style="margin-top: 1rem; display: none;"></div>
-    </div>
-  </div>
-
-  <style>
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 600px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #666;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #004C97;
-    }
-    .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1.5px solid #004C97;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    .modal-footer {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-    }
-  </style>
-
-  <script src="../../js/common/api.js"></script>
-  <script src="../../js/common/auth.js"></script>
-  <script src="../../js/teacher/edit_course.js"></script>
-</body>
-</html>
