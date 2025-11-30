@@ -1,23 +1,8 @@
-const mockChats = [
-    { id: 1, name: 'Иванов И.И.', avatar: '../../assets/student.png', messages: [
-        {type: 'received', author: 'Иванов И.И.', time: '14:32', text: 'Привет! Отличный подход с DFS!'},
-        {type: 'sent', time: '14:35', text: 'Спасибо! Оптимизировал по времени.'}
-    ]},
-    { id: 2, name: 'Петров П.П.', avatar: '../../assets/student.png', messages: [
-        {type: 'received', author: 'Петров П.П.', time: '15:10', text: 'Не понял задание по графам'},
-        {type: 'sent', time: '15:12', text: 'Смотри пример с adjacency list'}
-    ]},
-    { id: 3, name: 'Сидорова А.А.', avatar: '../../assets/student.png', messages: [
-        {type: 'received', author: 'Сидорова А.А.', time: '12:15', text: 'Проверьте мою работу!'}
-    ]},
-    { id: 4, name: 'Козлов К.К.', avatar: '../../assets/student.png', messages: [
-        {type: 'received', author: 'Козлов К.К.', time: '10:30', text: 'Спасибо за разъяснение!'}
-    ]}
-];
-
+let mockChats = [];
 let currentChatId = 0;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadChats();
     bindChatEvents();
     showNoChatSelected();
 });
@@ -75,60 +60,35 @@ function createNewChat() {
         alert('Введите имя для чата!');
         return;
     }
-
-    const newChatId = mockChats.length + 1;
-    const newChat = {
-        id: newChatId,
-        name: name.trim(),
-        avatar: '../../assets/student.png',
-        messages: []
-    };
-
-    mockChats.push(newChat);
-
-    const chatsList = document.getElementById('chatsList');
-    const newChatEl = document.createElement('div');
-    newChatEl.className = 'chat-item';
-    newChatEl.dataset.chat = newChatId;
-    newChatEl.innerHTML = `
-        <img src="../../assets/student.png" alt="${name.trim()}" class="chat-avatar">
-        <div class="chat-info">
-            <div class="chat-name">${name.trim()}</div>
-            <div class="chat-preview">Новый чат</div>
-            <div class="chat-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-        </div>
-        <div class="chat-status"></div>
-        <button class="delete-chat-btn" data-chat="${newChatId}" title="Удалить">❌</button>
-    `;
-
-    chatsList.insertBefore(newChatEl, chatsList.firstChild);
-
-    newChatEl.addEventListener('click', function(e) {
-        if (e.target.classList.contains('delete-chat-btn')) return;
-        switchChat(this.dataset.chat);
-    });
-    const delBtn = newChatEl.querySelector('.delete-chat-btn');
-    delBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        deleteChat(this.dataset.chat);
-    });
-
-    switchChat(newChatId.toString());
+    try {
+        const data = await API.common.createChat(name.trim());
+        await loadChats();
+        const chatId = data.chat && data.chat.id;
+        if (chatId) switchChat(chatId.toString());
+    } catch (err) {
+        console.warn('Create chat failed, falling back to local mock', err);
+        const newChatId = mockChats.length + 1;
+        const newChat = {
+            id: newChatId,
+            name: name.trim(),
+            avatar: '../../assets/student.png',
+            messages: []
+        };
+        mockChats.unshift(newChat);
+        renderChats();
+        switchChat(newChatId.toString());
+    }
 }
 
 function deleteChat(chatId) {
-    if (!confirm(`Удалить чат "${mockChats[chatId-1]?.name}"?`)) return;
-
-    mockChats.splice(chatId - 1, 1);
-    const chatEl = document.querySelector(`[data-chat="${chatId}"]`);
-    if (chatEl) chatEl.remove();
-
-    if (currentChatId == chatId) {
-        currentChatId = 0;
-        showNoChatSelected();
+    if (!confirm('Удалить чат?')) return;
+    try {
+        mockChats = mockChats.filter(c => String(c.id) !== String(chatId));
+        renderChats();
+        if (currentChatId == chatId) { currentChatId = 0; showNoChatSelected(); }
+    } catch (e) {
+        console.warn('Failed to delete chat locally', e);
     }
-
-    updateChatDataAttributes();
 }
 
 function updateChatDataAttributes() {
@@ -142,25 +102,21 @@ function updateChatDataAttributes() {
 
 function switchChat(chatId) {
     currentChatId = parseInt(chatId);
-
     document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
-    document.querySelector(`[data-chat="${chatId}"]`).classList.add('active');
-
-    const chat = mockChats[currentChatId - 1];
-    document.getElementById('chatTitle').textContent = chat.name;
-    
-    const chatStatus = document.getElementById('chatStatus');
-    const statusEl = document.querySelector(`[data-chat="${chatId}"] .chat-status`);
-    if (statusEl && statusEl.classList.contains('online')) {
-        chatStatus.textContent = 'В сети';
-    } else {
-        chatStatus.textContent = 'Был(а) в сети недавно';
+    const el = document.querySelector(`[data-chat="${chatId}"]`);
+    if (el) el.classList.add('active');
+    try {
+        const data = await API.common.getChatMessages(chatId);
+        const title = el ? (el.querySelector('.chat-name')?.textContent || 'Чат') : 'Чат';
+        document.getElementById('chatTitle').textContent = title;
+        document.getElementById('chatStatus').textContent = 'В сети';
+        loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), text: m.content })));
+    } catch (err) {
+        console.warn('Failed to load messages from server, falling back to local', err);
+        const chat = mockChats.find(c => String(c.id) === String(chatId)) || { messages: [] };
+        document.getElementById('chatTitle').textContent = chat.name || 'Чат';
+        loadMessages(chat.messages || []);
     }
-
-    const unread = document.querySelector(`[data-chat="${chatId}"] .chat-unread`);
-    if (unread) unread.style.display = 'none';
-
-    loadMessages(chat.messages);
 }
 
 function loadMessages(messages) {
@@ -220,23 +176,66 @@ function sendMessage() {
     input.value = '';
     scrollToBottom();
 
-    setTimeout(() => {
-        const chat = mockChats[currentChatId - 1];
-        const replyDiv = document.createElement('div');
-        replyDiv.className = 'message received';
-        replyDiv.innerHTML = `
-            <img src="../../assets/student.png" class="msg-avatar" alt="${chat.name}">
-            <div class="msg-bubble">
-                <div class="msg-header">
-                    <span class="msg-author">${chat.name}</span>
-                    <span class="msg-time">${new Date(Date.now() + 1000).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+    (async () => {
+        try {
+            await API.common.postChatMessage(currentChatId, text);
+            const data = await API.common.getChatMessages(currentChatId);
+            loadMessages((data.messages || []).map(m => ({ type: m.senderType === 'bot' || !m.senderId ? 'received' : 'sent', author: '', time: new Date(m.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), text: m.content })));
+        } catch (err) {
+            console.warn('Failed to send message, fallback to local echo', err);
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            const replyDiv = document.createElement('div');
+            replyDiv.className = 'message received';
+            replyDiv.innerHTML = `
+                <img src="../../assets/student.png" class="msg-avatar" alt="Ответ">
+                <div class="msg-bubble">
+                    <div class="msg-header">
+                        <span class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                    </div>
+                    <p>Понял! Отличная работа 🚀</p>
                 </div>
-                <p>Понял! Отличная работа 🚀</p>
+            `;
+            document.getElementById('messagesContainer').appendChild(replyDiv);
+            scrollToBottom();
+        }
+    })();
+}
+
+async function loadChats() {
+    try {
+        const data = await API.common.getChats();
+        mockChats = (data.chats || []).map(c => ({ id: c.id, name: c.title || 'Чат', avatar: '../../assets/student.png' }));
+        renderChats();
+    } catch (err) {
+        console.warn('Failed to load chats from server, using mock', err);
+        if (!mockChats || mockChats.length === 0) {
+            mockChats = [ { id: 1, name: 'Иванов И.И.', avatar: '../../assets/student.png', messages: [] } ];
+        }
+        renderChats();
+    }
+}
+
+function renderChats() {
+    const chatsList = document.getElementById('chatsList');
+    if (!chatsList) return;
+    chatsList.innerHTML = '';
+    mockChats.forEach(c => {
+        const el = document.createElement('div');
+        el.className = 'chat-item';
+        el.dataset.chat = c.id;
+        el.innerHTML = `
+            <img src="${c.avatar}" alt="${c.name}" class="chat-avatar">
+            <div class="chat-info">
+                <div class="chat-name">${c.name}</div>
+                <div class="chat-preview">&nbsp;</div>
+                <div class="chat-time">&nbsp;</div>
             </div>
+            <div class="chat-status"></div>
+            <button class="delete-chat-btn" data-chat="${c.id}" title="Удалить">❌</button>
         `;
-        document.getElementById('messagesContainer').appendChild(replyDiv);
-        scrollToBottom();
-    }, 800);
+        chatsList.appendChild(el);
+    });
+    bindChatEvents();
 }
 
 function scrollToBottom() {

@@ -9,6 +9,9 @@ const Material = require('./Material');
 const Assignment = require('./Assignment');
 const Submission = require('./Submission');
 const Enrollment = require('./Enrollment');
+const Chat = require('./Chat');
+const Message = require('./Message');
+const Notification = require('./Notification');
 
 // User связи
 User.hasOne(Student, { foreignKey: 'userId', as: 'studentProfile' });
@@ -61,6 +64,13 @@ Enrollment.belongsTo(Student, { foreignKey: 'studentId', as: 'student' });
 Course.belongsToMany(Student, { through: Enrollment, foreignKey: 'courseId', otherKey: 'studentId', as: 'students' });
 Student.belongsToMany(Course, { through: Enrollment, foreignKey: 'studentId', otherKey: 'courseId', as: 'courses' });
 
+// Chats & Messages
+Chat.hasMany(Message, { foreignKey: 'chatId', as: 'messages' });
+Message.belongsTo(Chat, { foreignKey: 'chatId', as: 'chat' });
+
+// Notifications
+Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
   User,
   Direction,
@@ -73,4 +83,9 @@ module.exports = {
   Assignment,
   Submission,
   Enrollment
+  ,
+  Chat,
+  Message
+  ,
+  Notification
 };

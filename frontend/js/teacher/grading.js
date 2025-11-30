@@ -28,14 +28,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function loadAllSubmissions() {
     try {
         const data = await API.teacher.getPendingSubmissions();
-        const submissionsList = document.getElementById('submissions-list');
+            const submissionsList = document.getElementById('submissions-list');
 
-        if (!data.submissions || data.submissions.length === 0) {
-            submissionsList.innerHTML = '<p>Нет работ на проверке</p>';
-            return;
-        }
+            if (!submissionsList) return;
 
-        submissionsList.innerHTML = data.submissions.map(submission => {
+            if (!data.submissions || data.submissions.length === 0) {
+                submissionsList.innerHTML = '<p>Нет работ на проверке</p>';
+                return;
+            }
+
+            submissionsList.innerHTML = data.submissions.map(submission => {
             const assignment = submission.assignment || submission.Assignment || {};
             const deadline = assignment.deadline ? new Date(assignment.deadline) : new Date();
             const submittedAt = submission.submittedAt ? new Date(submission.submittedAt) : new Date();

@@ -59,4 +59,25 @@ router.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
   }
 });
 
+// Удалить студента
+router.delete('/:studentId', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    const student = await Student.findByPk(studentId);
+    if (!student) {
+      return res.status(404).json({ error: 'Студент не найден' });
+    }
+    if (student.directionId !== req.admin.directionId) {
+      return res.status(403).json({ error: 'Нет доступа к этому студенту' });
+    }
+    
+    await User.destroy({ where: { id: student.userId } });
+
+    res.json({ message: 'Студент удалён успешно' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

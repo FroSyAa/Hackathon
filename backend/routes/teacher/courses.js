@@ -3,15 +3,42 @@ const router = express.Router();
 const { Course, Assignment, Submission, Student } = require('../../models');
 const { authenticateToken, authorizeTeacher } = require('../../middleware/auth');
 const { Sequelize } = require('sequelize');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-// Создать курс
-router.post('/', authenticateToken, authorizeTeacher, async (req, res) => {
+const uploadDir = path.join(__dirname, '..', '..', 'uploads', 'courses');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, name);
+  }
+});
+
+const upload = multer({ storage });
+
+// Создать курс 
+router.post('/', authenticateToken, authorizeTeacher, upload.single('image'), async (req, res) => {
   try {
     const { title, description } = req.body;
+
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = `/uploads/courses/${req.file.filename}`;
+    }
 
     const course = await Course.create({
       title,
       description,
+      imageUrl,
       teacherId: req.teacher.id
     });
 
@@ -92,7 +119,6 @@ router.get('/statistics', authenticateToken, authorizeTeacher, async (req, res) 
     });
     const totalStudents = uniqueStudents.length;
 
-    // Получить количество работ на проверке
     const pendingSubmissions = await Submission.count({
       where: {
         assignmentId: assignmentIds,
@@ -196,6 +222,61 @@ router.patch('/:courseId/image', authenticateToken, authorizeTeacher, async (req
   }
 });
 
+// Обновить поля курса (title, description)
+router.patch('/:courseId', authenticateToken, authorizeTeacher, async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { title, description } = req.body;
+
+    const course = await Course.findByPk(courseId);
+    if (!course) return res.status(404).json({ error: 'Курс не найден' });
+    if (course.teacherId !== req.teacher.id) return res.status(403).json({ error: 'Это не ваш курс' });
+
+    await course.update({ title: title || course.title, description: description || course.description });
+
+    res.json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Загрузить изображение курса (multipart) и сохранить файл
+router.post('/:courseId/image/upload', authenticateToken, authorizeTeacher, upload.single('image'), async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    const course = await Course.findByPk(courseId);
+    if (!course) {
+      return res.status(404).json({ error: 'Курс не найден' });
+    }
+
+    if (course.teacherId !== req.teacher.id) {
+      return res.status(403).json({ error: 'Это не ваш курс' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Файл не передан' });
+    }
+
+    try {
+      if (course.imageUrl && (course.imageUrl.startsWith('/uploads/courses') || course.imageUrl.startsWith('uploads/courses'))) {
+        const existingPath = path.join(__dirname, '..', '..', course.imageUrl.replace(/^\//, ''));
+        if (fs.existsSync(existingPath)) {
+          fs.unlinkSync(existingPath);
+        }
+      }
+    } catch (e) {
+    }
+
+    const imageUrl = `/uploads/courses/${req.file.filename}`;
+    await course.update({ imageUrl });
+
+    res.json({ course, imageUrl });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Создать задание
 router.post('/:courseId/assignments', authenticateToken, authorizeTeacher, async (req, res) => {
   try {
@@ -221,6 +302,28 @@ router.post('/:courseId/assignments', authenticateToken, authorizeTeacher, async
     });
 
     res.status(201).json({ assignment });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/:courseId/assignments/:assignmentId', authenticateToken, authorizeTeacher, async (req, res) => {
+  try {
+    const { courseId, assignmentId } = req.params;
+
+    const course = await Course.findByPk(courseId);
+    if (!course) return res.status(404).json({ error: 'Курс не найден' });
+    if (course.teacherId !== req.teacher.id) return res.status(403).json({ error: 'Это не ваш курс' });
+
+    const assignment = await Assignment.findByPk(assignmentId);
+    if (!assignment) return res.status(404).json({ error: 'Задание не найдено' });
+    if (String(assignment.courseId) !== String(courseId)) return res.status(400).json({ error: 'Задание не принадлежит этому курсу' });
+    
+    await require('../../models').Material.destroy({ where: { assignmentId } });
+    await require('../../models').Submission.destroy({ where: { assignmentId } });
+    await assignment.destroy();
+
+    res.json({ message: 'Задание и связанные данные удалены' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -77,6 +77,11 @@ function renderStudents(students) {
         <td>${groupName}</td>
         <td class="password-cell">${password}</td>
         <td>${createdAt}</td>
+        <td>
+          <button class="btn btn-outline btn-small" onclick="deleteStudent('${student.id}', '${fullName}')" style="border-color:#dc3545;color:#dc3545;">
+            <i class="fas fa-trash"></i> Удалить
+          </button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -130,5 +135,20 @@ async function handleAddStudent(e) {
     await loadStudents();
   } catch (error) {
     alert('Ошибка: ' + error.message);
+  }
+}
+
+// Удалить студента
+async function deleteStudent(studentId, fullName) {
+  if (!confirm(`Вы уверены, что хотите удалить студента "${fullName}"?\n\nЭто действие необратимо и удалит все его работы и результаты.`)) {
+    return;
+  }
+
+  try {
+    await API.admin.deleteStudent(studentId);
+    alert('Студент удалён');
+    await loadStudents();
+  } catch (error) {
+    alert('Ошибка удаления: ' + error.message);
   }
 }
