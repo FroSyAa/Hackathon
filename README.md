@@ -1,142 +1,145 @@
-# Образовательная платформа
+# Education Platform — Hackathon Project
 
-Веб-платформа для организации онлайн-обучения с разделением ролей для студентов и преподавателей.
+Этот репозиторий содержит учебную платформу (backend + frontend). Включает скрипты для заполнения тестовыми данными и инструкции по запуску.
 
-## Описание проекта
+**Команда**
+- Елизавета Фирсова — капитан, frontend
+- Никита Шипунов — backend
+- Полина Кряквина — frontend
+- Спирягина Варвара — создание презентации
+- Никита Лукьянов — генератор идей, backend
 
-Платформа решает проблемы современных образовательных сервисов:
-- Сложная навигация и потеря материалов
-- Отсутствие оперативной обратной связи
-- Непрозрачный пользовательский сценарий
+## Структура проекта
 
-## Архитектура проекта
+Корневая структура (важные файлы/папки):
 
-```
-Hackathon/
-├── backend/                 # Серверная часть (Node.js + Express)
-│   ├── routes/             # Маршруты API
-│   │   ├── teacher/        # Маршруты для преподавателей
-│   │   │   ├── materials.js    # Загрузка и управление учебными материалами
-│   │   │   └── grading.js      # Проверка работ и выставление оценок
-│   │   ├── student/        # Маршруты для студентов
-│   │   │   ├── courses.js      # Просмотр курсов и материалов
-│   │   │   └── assignments.js  # Загрузка домашних заданий
-│   │   └── common/         # Общие маршруты
-│   │       ├── auth.js         # Аутентификация и авторизация
-│   │       └── chat.js         # Чат между студентами и преподавателями
-│   ├── controllers/        # Бизнес-логика
-│   │   ├── teacher/        # Контроллеры для преподавателей
-│   │   └── student/        # Контроллеры для студентов
-│   ├── models/             # Модели данных
-│   │   ├── User.js         # Пользователи (студенты и преподаватели)
-│   │   ├── Course.js       # Курсы
-│   │   └── Assignment.js   # Домашние задания
-│   ├── middleware/         # Промежуточное ПО
-│   │   └── auth.js         # Проверка JWT токенов и ролей
-│   ├── config/             # Конфигурация
-│   ├── uploads/            # Загруженные файлы
-│   │   ├── materials/      # Учебные материалы
-│   │   └── assignments/    # Работы студентов
-│   ├── server.js           # Главный файл сервера
-│   ├── package.json        # Зависимости backend
-│   └── Dockerfile          # Docker конфигурация для backend
-│
-├── frontend/               # Клиентская часть (HTML5 + CSS + JS)
-│   ├── pages/              # HTML страницы
-│   │   ├── teacher/        # Страницы для преподавателей
-│   │   │   ├── dashboard.html  # Панель преподавателя
-│   │   │   └── grading.html    # Проверка работ студентов
-│   │   ├── student/        # Страницы для студентов
-│   │   │   ├── dashboard.html  # Панель студента
-│   │   │   └── course.html     # Просмотр курса
-│   │   └── common/         # Общие страницы
-│   │       ├── login.html      # Вход в систему
-│   │       └── chat.html       # Чат
-│   ├── components/         # Переиспользуемые компоненты
-│   │   ├── teacher/        # Компоненты для преподавателей
-│   │   ├── student/        # Компоненты для студентов
-│   │   └── common/         # Общие компоненты
-│   ├── js/                 # JavaScript логика
-│   │   ├── teacher/        # JS для преподавателей
-│   │   ├── student/        # JS для студентов
-│   │   └── common/         # Общий JS (авторизация, API)
-│   ├── styles/             # CSS стили
-│   │   └── main.css        # Основные стили
-│   ├── assets/             # Изображения, иконки
-│   └── package.json        # Зависимости frontend
-│
-├── .gitignore              # Игнорируемые файлы Git
-├── docker-compose.yml      # Docker Compose конфигурация
-└── README.md               # Этот файл
+- `backend/` — серверная часть (Node.js, Express, Sequelize + Postgres)
+	- `models/` — модели Sequelize
+	- `routes/` — маршруты API
+	- `config/` — конфигурация (например `database.js`)
+	- `scripts/` — вспомогательные скрипты: `createSuperAdmin.js`, `createTestData.js`, `TestData.json`, `generatedTestData.json`
+	- `uploads/` — загруженные файлы (аватарки, материалы, сдачи)
 
+- `frontend/` — статическая клиентская часть (HTML, JS, CSS)
+
+- `Test/` — папка с примерами файлов (аватарки, изображения курсов, материалы). При запуске сидера файлы копируются в `backend/uploads`.
+
+- `docker-compose.yml` — запускает сервисы: `db` (Postgres), `backend`, `frontend`.
+
+## Зависимости и версии
+
+Пакеты (основные) в `backend/package.json`:
+- `express` — веб-сервер
+- `sequelize` — ORM
+- `pg` — драйвер Postgres
+- `bcryptjs` — хэширование паролей
+- `jsonwebtoken` — JWT
+
+Пакеты (основные) в `frontend/package.json` (если используются сборщики):
+- стандартные frontend зависимости (необязательно для статики)
+
+Чтобы увидеть точные версии, откройте `backend/package.json` и `frontend/package.json`.
+
+## Настройка и запуск (локально, используя Docker Compose)
+
+1. Скопируйте репозиторий:
+
+```powershell
+git clone <repo-url>
+cd Hackathon
 ```
 
-## Основные функции
+2. Создайте/проверьте `.env` в `backend/` 
+Важно задать:
 
-### Для студентов
-- Просмотр учебных материалов (видео, тексты, презентации)
-- Загрузка домашних заданий
-- Просмотр оценок и комментариев преподавателя
-- Отслеживание прогресса по курсу
-- Чат с преподавателем и другими студентами
+```text
+DB_HOST=db
+DB_PORT=5432
+DB_USER=admin
+DB_PASSWORD=password
+DB_NAME=education_platform
+JWT_SECRET=your_jwt_secret_key_here
+SUPER_ADMIN_EMAIL=123@123.ru
+SUPER_ADMIN_PASSWORD=supersecret
+```
 
-### Для преподавателей
-- Загрузка и управление учебными материалами
-- Создание и редактирование заданий
-- Проверка работ студентов
-- Выставление оценок и комментариев
-- Журнал успеваемости группы
-- Чат со студентами
+3. Запустите контейнеры:
 
-## Технологический стек
+```powershell
+docker-compose up -d --build
+```
 
-**Backend:**
-- Node.js
-- Express.js
-- PostgreSQL (база данных)
-- JWT (аутентификация)
-- Multer (загрузка файлов)
+4. Выполните сидер для создания супер-админа и тестовых данных (рекомендуется выполнять внутри контейнера, чтобы скрипт корректно подключился к Postgres):
 
-**Frontend:**
-- HTML5
-- CSS3
-- JavaScript (Vanilla JS)
+```powershell
+docker-compose exec backend node scripts/createTestData.js
+```
 
-**DevOps:**
-- Docker
-- Docker Compose
+5. Проверьте файл с результатом: `backend/scripts/generatedTestData.json`. В нём содержатся логины, пароли (из `TestData.json`) и созданные ID.
 
-Приложение будет доступно:
-- Frontend: http://localhost:8080
-- Backend API: http://localhost:3000
+6. Откройте frontend в браузере: `http://localhost:8080` (Nginx в `frontend` контейнере)
 
-### Аутентификация
-- `POST /api/auth/register` - Регистрация
-- `POST /api/auth/login` - Вход
-- `GET /api/auth/me` - Получить профиль
+## Запуск локально без Docker
 
-### Для студентов
-- `GET /api/student/courses` - Список курсов
-- `GET /api/student/courses/:id/materials` - Материалы курса
-- `GET /api/student/assignments` - Список заданий
-- `POST /api/student/assignments/:id/submit` - Загрузить работу
+1. Убедитесь, что PostgreSQL запущен и доступны креды из `.env`.
+2. Установите зависимости и запустите backend:
 
-### Для преподавателей
-- `POST /api/teacher/materials` - Загрузить материал
-- `GET /api/teacher/assignments/pending` - Работы на проверке
-- `POST /api/teacher/grade/:id` - Выставить оценку
-- `GET /api/teacher/progress/:courseId` - Журнал успеваемости
+```powershell
+cd backend
+npm install
+node server.js
+```
 
-### Общие
-- `GET /api/chat/rooms` - Список чатов
-- `POST /api/chat/rooms/:id/messages` - Отправить сообщение
+3. Для frontend — откройте `frontend/index.html` в браузере или используйте статический сервер.
 
-## База данных
+## Скрипты для тестовых данных
 
-Проект использует PostgreSQL. Основные таблицы:
-- `users` - Пользователи (студенты и преподаватели)
-- `courses` - Курсы
-- `materials` - Учебные материалы
-- `assignments` - Домашние задания
-- `submissions` - Работы студентов
-- `messages` - Сообщения в чате
+- `backend/scripts/TestData.json` — источник детерминированных тестовых данных (логины/пароли/курсы).
+- `backend/scripts/createTestData.js` — читает `TestData.json`, копирует файлы (или создаёт плейсхолдеры), создаёт записи в БД и пишет `generatedTestData.json`.
+- Если хотите изменить тестовые данные — отредактируйте `TestData.json` и перезапустите скрипт.
+
+## Комментарии по использованию файлов из `Test/` и Docker
+
+При запуске внутри контейнера `backend` (в `docker-compose`) директория, видимая контейнеру, — это `./backend` смонтированная в `/app`. Поэтому `createTestData.js` предпочитает `backend/Test` (если вы поместите `Test/` внутрь `backend`) — тогда контейнер сможет скопировать реальные картинки и файлы. В противном случае скрипт создаёт плейсхолдеры.
+
+Если хотите, чтобы реальные картинки использовались автоматически, скопируйте содержимое корневого `Test/` в `backend/Test/`.
+
+# Скрипты для управления БД
+
+## Создание супер-админа
+
+### Автоматически (через Node.js)
+```bash
+npm run create-superadmin
+```
+
+### Вручную (через PostgreSQL)
+Если автоматический скрипт не работает из-за проблем с аутентификацией, используйте следующую команду:
+
+```bash
+# 1. Создать пользователя
+docker exec education_db psql -U admin -d education_platform -c "
+INSERT INTO \"Users\" (id, email, password, \"firstName\", \"lastName\", \"middleName\", \"createdAt\", \"updatedAt\")
+VALUES (gen_random_uuid(), '123@123.ru', '\$2a\$10\$yNTg6pfgVGD3cz.Mgf47Kua8y1bt7czLMiQUkwXYN0ruwThB2Kca.', 'Super', 'Admin', '', NOW(), NOW())
+ON CONFLICT DO NOTHING
+RETURNING id;
+"
+
+# 2. Получить ID созданного пользователя
+docker exec education_db psql -U admin -d education_platform -c "SELECT id FROM \"Users\" WHERE email = '123@123.ru';"
+
+# 3. Создать запись SuperAdmin (замените USER_ID на полученный ID)
+docker exec education_db psql -U admin -d education_platform -c "
+INSERT INTO \"SuperAdmins\" (id, \"userId\", \"isMainAdmin\", \"createdAt\", \"updatedAt\")
+VALUES (gen_random_uuid(), 'USER_ID', true, NOW(), NOW())
+ON CONFLICT DO NOTHING;
+"
+```
+
+### Данные для входа
+- **Email**: 123@123.ru
+- **Пароль**: 123456
+
+## Примечание
+Пароль хешируется с помощью bcrypt (10 раундов).
+Хеш пароля `123456`: `$2a$10$yNTg6pfgVGD3cz.Mgf47Kua8y1bt7czLMiQUkwXYN0ruwThB2Kca.`
